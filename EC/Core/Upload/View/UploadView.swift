@@ -20,6 +20,7 @@ struct UploadView: View {
     @Binding var showTabBar: Bool
     @State var selectedMedia: [UUID: LibrayPhotos] = [:]
     @State var previewPost: Bool = false
+    @State var completePost: Bool = false
     
     // grid Item Structure
     private let gridItem: [GridItem] = [
@@ -125,10 +126,15 @@ struct UploadView: View {
             }
             .fullScreenCover(isPresented: $previewPost) {
                 let values = selectedMedia.map {$0.value}
-                PreviewPostView(selectedMedia: values)
+                PreviewPostView(selectedMedia: values, completePost: $completePost)
                     .onDisappear {
-                        mainTabBarSelected = .feed
-                        showTabBar = true
+                        if completePost {
+                            mainTabBarSelected = .feed
+                            showTabBar = true
+                            completePost.toggle()
+                            selectedMedia = [:]
+                            getImages()
+                        }
                     }
             }
         }
@@ -371,8 +377,14 @@ extension UploadView {
                 }
             }
             
+            // display recent ablum first
             if self.selectAlbum.number == 0 {
-                self.selectAlbum = albumList[0]
+                let idx = albumList.firstIndex { item in
+                    item.title == "Recents"
+                }
+                if let idx = idx {
+                    self.selectAlbum = albumList[idx]
+                }
             }
         }
     }

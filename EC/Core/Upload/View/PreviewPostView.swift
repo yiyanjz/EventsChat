@@ -11,9 +11,11 @@ struct PreviewPostView: View {
     @Environment (\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
     @StateObject var viewModel: PreviewPostViewModel
+    @Binding var completePost: Bool
     
-    init(selectedMedia: [LibrayPhotos]) {
+    init(selectedMedia: [LibrayPhotos], completePost: Binding<Bool>) {
         self._viewModel = StateObject(wrappedValue: PreviewPostViewModel(selectedMedia: selectedMedia))
+        self._completePost = completePost
     }
 
     // grid Item Structure
@@ -40,6 +42,7 @@ struct PreviewPostView: View {
                     
                     Button {
                         Task { try await viewModel.uploadPost() }
+                        completePost.toggle()
                         dismiss()
                     } label: {
                         Text("Post")
