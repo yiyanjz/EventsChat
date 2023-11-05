@@ -18,6 +18,8 @@ struct test2: View {
         .init(.flexible(), spacing: 2)
     ]
     
+    @State var draggingItem: Image?
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -41,22 +43,46 @@ struct test2: View {
                 }
                 .padding()
                             
-                    ScrollView {
+                    ScrollView(showsIndicators: false) {
                         HStack {
                             LazyVGrid(columns: gridItem, spacing: 2) {
-                                ForEach(0..<9) { _ in
-                                    Image("shin")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(width: 120, height: 120)
-                                        .clipShape(RoundedRectangle(cornerRadius: 5))
-                                        .overlay(
-                                            Text("2:09")
-                                                .font(.footnote)
-                                                .foregroundColor(.white)
-                                                .frame(maxWidth:.infinity,maxHeight: .infinity,alignment: .bottomTrailing)
-                                                .padding(8)
-                                        )
+                                ForEach(0..<9) { int in
+                                    GeometryReader {
+                                        let size = $0.size
+                                            
+                                        Image("shin")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(width: 120, height: 120)
+                                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                                            .overlay(
+                                                Text("2:09")
+                                                    .font(.footnote)
+                                                    .foregroundColor(.white)
+                                                    .frame(maxWidth:.infinity,maxHeight: .infinity,alignment: .bottomTrailing)
+                                                    .padding(8)
+                                            )
+                                            .draggable("SDFSDF") {
+                                                Image("shin")
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fill)
+                                                    .frame(width: size.width, height: size.height)
+                                                    .clipShape(RoundedRectangle(cornerRadius: 5))
+                                                    .overlay(
+                                                        Text("2:09")
+                                                            .font(.footnote)
+                                                            .foregroundColor(.white)
+                                                            .frame(maxWidth:.infinity,maxHeight: .infinity,alignment: .bottomTrailing)
+                                                            .padding(8)
+                                                    )
+                                            }
+                                            .dropDestination(for: String.self) { items, location in
+                                                return false
+                                            } isTargeted: { status in
+                                                print("found")
+                                            }
+                                    }
+                                    .frame(height: 120)
                                 }
                             }
                         }

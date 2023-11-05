@@ -52,7 +52,7 @@ struct PreviewPostView: View {
                 }
                 .padding()
                 
-                ScrollView {
+                ScrollView(showsIndicators: false) {
                     VStack {
                         // media files
                         HStack {
