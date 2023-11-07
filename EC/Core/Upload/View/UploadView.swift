@@ -18,7 +18,7 @@ struct UploadView: View {
     @State var allList: [LibrayPhotos] = []
     @Binding var mainTabBarSelected: TabBarSelection
     @Binding var showTabBar: Bool
-    @State var selectedMedia: [UUID: LibrayPhotos] = [:]
+    @State var selectedMedia = [LibrayPhotos]()
     @State var previewPost: Bool = false
     @State var completePost: Bool = false
     
@@ -125,14 +125,13 @@ struct UploadView: View {
                 }
             }
             .fullScreenCover(isPresented: $previewPost) {
-                let values = selectedMedia.map {$0.value}
-                PreviewPostView(selectedMedia: values, completePost: $completePost)
+                PreviewPostView(selectedMedia: $selectedMedia, completePost: $completePost)
                     .onDisappear {
                         if completePost {
                             mainTabBarSelected = .feed
                             showTabBar = true
                             completePost.toggle()
-                            selectedMedia = [:]
+                            selectedMedia = []
                             getImages()
                         }
                     }
@@ -181,12 +180,12 @@ extension UploadView {
                                         if allList[index].selected == false && selectedMedia.count < 9 {
                                             allList[index].selected.toggle()
                                             let media = allList[index]
-                                            selectedMedia[media.id] = media
+                                            selectedMedia.append(media)
                                         }else if allList[index].selected || selectedMedia.count > 9 {
                                             allList[index].selected.toggle()
                                             let media = allList[index]
-                                            if selectedMedia.contains(where: { key,value in key == media.id }) {
-                                                selectedMedia.removeValue(forKey: media.id)
+                                            if selectedMedia.contains(where: { key in key.id == media.id }) {
+                                                selectedMedia.removeAll(where: { key in key.id == media.id })
                                             }
                                         }
                                     } label: {
@@ -225,12 +224,12 @@ extension UploadView {
                                         if allList[index].selected == false && selectedMedia.count < 9 {
                                             allList[index].selected.toggle()
                                             let media = allList[index]
-                                            selectedMedia[media.id] = media
+                                            selectedMedia.append(media)
                                         }else if allList[index].selected || selectedMedia.count > 9 {
                                             allList[index].selected.toggle()
                                             let media = allList[index]
-                                            if selectedMedia.contains(where: { key,value in key == media.id }) {
-                                                selectedMedia.removeValue(forKey: media.id)
+                                            if selectedMedia.contains(where: { key in key.id == media.id }) {
+                                                selectedMedia.removeAll(where: { key in key.id == media.id })
                                             }
                                         }
                                     } label: {
@@ -276,12 +275,12 @@ extension UploadView {
                                         if allList[index].selected == false && selectedMedia.count < 9 {
                                             allList[index].selected.toggle()
                                             let media = allList[index]
-                                            selectedMedia[media.id] = media
+                                            selectedMedia.append(media)
                                         }else if allList[index].selected || selectedMedia.count > 9 {
                                             allList[index].selected.toggle()
                                             let media = allList[index]
-                                            if selectedMedia.contains(where: { key,value in key == media.id }) {
-                                                selectedMedia.removeValue(forKey: media.id)
+                                            if selectedMedia.contains(where: { key in key.id == media.id }) {
+                                                selectedMedia.removeAll(where: { key in key.id == media.id })
                                             }
                                         }
                                     } label: {
@@ -317,12 +316,12 @@ extension UploadView {
                                         if allList[index].selected == false && selectedMedia.count < 9 {
                                             allList[index].selected.toggle()
                                             let media = allList[index]
-                                            selectedMedia[media.id] = media
+                                            selectedMedia.append(media)
                                         }else if allList[index].selected || selectedMedia.count > 9 {
                                             allList[index].selected.toggle()
                                             let media = allList[index]
-                                            if selectedMedia.contains(where: { key,value in key == media.id }) {
-                                                selectedMedia.removeValue(forKey: media.id)
+                                            if selectedMedia.contains(where: { key in key.id == media.id }) {
+                                                selectedMedia.removeAll(where: { key in key.id == media.id })
                                             }
                                         }
                                     } label: {
@@ -392,7 +391,7 @@ extension UploadView {
     // get images, videos from albums
     public func getImages(){
         allList = []
-        selectedMedia = [:]
+        selectedMedia = []
         let manager = PHImageManager.default()
         let option = PHImageRequestOptions()
         option.isSynchronous = true

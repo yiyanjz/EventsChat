@@ -12,13 +12,9 @@ import Firebase
 class PreviewPostViewModel: ObservableObject {
     @Published var caption = ""
     @Published var captionTitle = ""
-    @Published var selectedMedia: [LibrayPhotos]
+    @Published var draggedItem: LibrayPhotos?
     
-    init(selectedMedia: [LibrayPhotos]) {
-        self.selectedMedia = selectedMedia
-    }
-    
-    func uploadPost() async throws {
+    func uploadPost(selectedMedia: [LibrayPhotos]) async throws {
         var mediaUrls = [String]()
         guard let uid = Auth.auth().currentUser?.uid else {return}
         guard !selectedMedia.isEmpty else {return}
@@ -41,5 +37,36 @@ class PreviewPostViewModel: ObservableObject {
         guard let encodedPost = try? Firestore.Encoder().encode(post) else {return}
         
         try await postRef.setData(encodedPost)
+    }
+}
+
+struct DropViewDelegate: DropDelegate {
+    
+    let destinationItem: LibrayPhotos
+    @Binding var media: [LibrayPhotos]
+    @Binding var draggedItem: LibrayPhotos?
+    
+    func dropUpdated(info: DropInfo) -> DropProposal? {
+        return DropProposal(operation: .move)
+    }
+    
+    func performDrop(info: DropInfo) -> Bool {
+        draggedItem = nil
+        return true
+    }
+    
+    func dropEntered(info: DropInfo) {
+        // Swap Items
+        if let draggedItem {
+            let fromIndex = media.firstIndex(of: draggedItem)
+            if let fromIndex {
+                let toIndex = media.firstIndex(of: destinationItem)
+                if let toIndex, fromIndex != toIndex {
+                    withAnimation {
+                        self.media.move(fromOffsets: IndexSet(integer: fromIndex), toOffset: (toIndex > fromIndex ? (toIndex + 1) : toIndex))
+                    }
+                }
+            }
+        }
     }
 }

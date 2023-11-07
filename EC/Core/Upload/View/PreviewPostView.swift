@@ -10,11 +10,12 @@ import SwiftUI
 struct PreviewPostView: View {
     @Environment (\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
-    @StateObject var viewModel: PreviewPostViewModel
+    @StateObject var viewModel = PreviewPostViewModel()
     @Binding var completePost: Bool
+    @Binding var selectedMedia: [LibrayPhotos]
     
-    init(selectedMedia: [LibrayPhotos], completePost: Binding<Bool>) {
-        self._viewModel = StateObject(wrappedValue: PreviewPostViewModel(selectedMedia: selectedMedia))
+    init(selectedMedia: Binding<[LibrayPhotos]>, completePost: Binding<Bool>) {
+        self._selectedMedia = selectedMedia
         self._completePost = completePost
     }
 
@@ -41,7 +42,7 @@ struct PreviewPostView: View {
                     Spacer()
                     
                     Button {
-                        Task { try await viewModel.uploadPost() }
+                        Task { try await viewModel.uploadPost(selectedMedia: selectedMedia) }
                         completePost.toggle()
                         dismiss()
                     } label: {
@@ -57,7 +58,7 @@ struct PreviewPostView: View {
                         // media files
                         HStack {
                             LazyVGrid(columns: gridItem, spacing: 2) {
-                                ForEach(viewModel.selectedMedia) { item in
+                                ForEach(selectedMedia) { item in
                                     if item.imageUrl != nil {
                                         NavigationLink {
                                             PreviewVideoView(item: item)
@@ -74,6 +75,13 @@ struct PreviewPostView: View {
                                                         .frame(maxWidth:.infinity,maxHeight: .infinity,alignment: .bottomTrailing)
                                                         .padding(8)
                                                 )
+                                                .onDrag {
+                                                    viewModel.draggedItem = item
+                                                    return NSItemProvider()
+                                                }
+                                                .onDrop(of: [.video],
+                                                        delegate: DropViewDelegate(destinationItem:item, media:$selectedMedia, draggedItem:$viewModel.draggedItem)
+                                                )
                                         }
                                     }else{
                                         NavigationLink {
@@ -84,6 +92,13 @@ struct PreviewPostView: View {
                                                 .aspectRatio(contentMode: .fill)
                                                 .frame(width: 120, height: 120)
                                                 .clipShape(RoundedRectangle(cornerRadius: 5))
+                                                .onDrag {
+                                                    viewModel.draggedItem = item
+                                                    return NSItemProvider()
+                                                }
+                                                .onDrop(of: [.image],
+                                                        delegate: DropViewDelegate(destinationItem:item, media:$selectedMedia, draggedItem:$viewModel.draggedItem)
+                                                )
                                         }
                                     }
                                 }
