@@ -15,12 +15,26 @@ struct test2: View {
         .init(.flexible(), spacing: 2)
     ]
     
-    @State var draggingItem: Image?
+    var images = [Image]()
     
     var body: some View {
         VStack{
-            Image("shin")
-                .opacity(0.0)
+            LazyVGrid(columns: gridItem, spacing: 2) {
+                ForEach(0..<9) { _ in
+                    Button {
+                    } label: {
+                        Image("shin")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: UIScreen.main.bounds.width / 3 - 5,height: UIScreen.main.bounds.width / 3 - 5)
+                            .clipShape(RoundedRectangle(cornerRadius: 5))
+                    }
+                }
+            }
+            
+            VStack{
+                Image(systemName: "person")
+            }
         }
     }
 }

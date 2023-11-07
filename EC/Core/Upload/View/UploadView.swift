@@ -21,6 +21,8 @@ struct UploadView: View {
     @State var selectedMedia = [LibrayPhotos]()
     @State var previewPost: Bool = false
     @State var completePost: Bool = false
+    @State var draggedItemSheet: LibrayPhotos?
+    @State var hasChangedLocationSheet: Bool = false
     
     // grid Item Structure
     private let gridItem: [GridItem] = [
@@ -113,6 +115,10 @@ struct UploadView: View {
                         .tag(UploadFilter.photo)
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
+                
+                if selectedMedia.count > 0 {
+                    sheetView
+                }
             }
             .onAppear {
                 DispatchQueue.main.async{
@@ -340,6 +346,99 @@ extension UploadView {
                 }
             }
         }
+    }
+    
+    var sheetView: some View {
+        VStack{
+            ScrollView(.horizontal, showsIndicators: false){
+                HStack{
+                    ForEach(selectedMedia) { item in
+                        if item.imageUrl != nil {
+                            NavigationLink {
+                                PreviewVideoView(item: item)
+                            } label: {
+                                Image(uiImage: item.uiImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 100, height: 100)
+                                    .clipShape(RoundedRectangle(cornerRadius: 5))
+                                    .overlay(
+                                        Text(item.duration ?? "")
+                                            .font(.footnote)
+                                            .foregroundColor(.white)
+                                            .frame(maxWidth:.infinity,maxHeight: .infinity,alignment: .bottomTrailing)
+                                            .padding(8)
+                                    )
+                                    .overlay(
+                                        Button {
+                                            selectedMedia.removeAll(where: { key in key.id == item.id })
+                                            let allListIdx = allList.firstIndex(where: {key in key.id == item.id })
+                                            if let allListIdx = allListIdx, allList[allListIdx].selected == true {
+                                                allList[allListIdx].selected.toggle()
+                                            }
+                                        } label: {
+                                            Image(systemName: "x.circle.fill")
+                                                .font(.footnote)
+                                                .foregroundColor(.white)
+                                                .padding(5)
+                                                .frame(width: 20, height: 20)
+                                                .padding(8)
+                                        }
+                                        .offset(x: 38, y: -40)
+                                    )
+                                    .onDrag {
+                                        draggedItemSheet = item
+                                        return NSItemProvider(object: ("\(item.id) media") as NSString)
+                                    }
+                                    .onDrop(of: [.text],
+                                            delegate: DropViewDelegate(destinationItem:item, media:$selectedMedia, draggedItem:$draggedItemSheet, hasChangedLocation: $hasChangedLocationSheet)
+                                    )
+                                    .overlay(draggedItemSheet?.id == item.id && hasChangedLocationSheet ? Color(uiColor: .systemBackground).opacity(1) : Color.clear)
+                                
+                            }
+                        }else{
+                            NavigationLink {
+                                PreviewImageView(photo: item)
+                            } label: {
+                                Image(uiImage: item.uiImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 100, height: 100)
+                                    .clipShape(RoundedRectangle(cornerRadius: 5))
+                                    .overlay(
+                                        Button {
+                                            selectedMedia.removeAll(where: { key in key.id == item.id })
+                                            let allListIdx = allList.firstIndex(where: {key in key.id == item.id })
+                                            if let allListIdx = allListIdx, allList[allListIdx].selected == true {
+                                                allList[allListIdx].selected.toggle()
+                                            }
+                                        } label: {
+                                            Image(systemName: "x.circle.fill")
+                                                .font(.footnote)
+                                                .foregroundColor(.white)
+                                                .padding(5)
+                                                .frame(width: 20, height: 20)
+                                                .padding(8)
+                                        }
+                                        .offset(x: 38, y: -40)
+                                    )
+                                    .onDrag {
+                                        draggedItemSheet = item
+                                        return NSItemProvider(object: ("\(item.id) media") as NSString)
+                                    }
+                                    .onDrop(of: [.text],
+                                            delegate: DropViewDelegate(destinationItem:item, media:$selectedMedia, draggedItem:$draggedItemSheet, hasChangedLocation: $hasChangedLocationSheet)
+                                    )
+                                    .overlay(draggedItemSheet?.id == item.id && hasChangedLocationSheet ? Color(uiColor: .systemBackground).opacity(1) : Color.clear)
+                            }
+                        }
+                    }
+                }
+                .padding()
+                .onDrop(of: [.text], delegate: DropOutsideDelegate(current: $draggedItemSheet, changedView: $hasChangedLocationSheet))
+            }
+        }
+        .frame(width: UIScreen.main.bounds.width, height: 100)
     }
 }
 
