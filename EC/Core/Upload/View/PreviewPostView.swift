@@ -107,7 +107,7 @@ struct PreviewPostView: View {
                             }
                             .animation(.default, value: selectedMedia)
                         }
-                        .onDrop(of: [.text], delegate: DropOutsideDelegate(current: $viewModel.draggedItem, changedView: $viewModel.hasChangedLocation))
+                        .onDrop(of: [.text], delegate: DropOutsideDelegate(draggedItem: $viewModel.draggedItem, hasChangedLocation: $viewModel.hasChangedLocation))
                         
                         Divider()
                             .padding(4)

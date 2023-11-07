@@ -75,15 +75,16 @@ struct DropViewDelegate: DropDelegate {
 }
 
 struct DropOutsideDelegate: DropDelegate {
-    @Binding var current: LibrayPhotos?
-    @Binding var changedView: Bool
+    @Binding var draggedItem: LibrayPhotos?
+    @Binding var hasChangedLocation: Bool
         
     func dropEntered(info: DropInfo) {
-        changedView = true
+        hasChangedLocation = true
     }
+    
     func performDrop(info: DropInfo) -> Bool {
-        changedView = false
-        current = nil
+        hasChangedLocation = false
+        draggedItem = nil
         return true
     }
 }

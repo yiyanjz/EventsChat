@@ -435,7 +435,7 @@ extension UploadView {
                     }
                 }
                 .padding()
-                .onDrop(of: [.text], delegate: DropOutsideDelegate(current: $draggedItemSheet, changedView: $hasChangedLocationSheet))
+                .onDrop(of: [.text], delegate: DropOutsideDelegate(draggedItem: $draggedItemSheet, hasChangedLocation: $hasChangedLocationSheet))
             }
         }
         .frame(width: UIScreen.main.bounds.width, height: 100)
