@@ -31,6 +31,14 @@ struct UploadView: View {
         .init(.flexible(), spacing: 1)
     ]
     
+    class MYItemProvider: NSItemProvider {
+        var didEnd: (() -> Void)?
+        deinit {
+            print("[x] destroyed")
+            didEnd?()
+        }
+    }
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -388,13 +396,19 @@ extension UploadView {
                                     )
                                     .onDrag {
                                         draggedItemSheet = item
-                                        return NSItemProvider(object: ("\(item.id) media") as NSString)
+                                        let provider = MYItemProvider(contentsOf: URL(string: "\(item.id)"))!
+                                        provider.didEnd = {
+                                            DispatchQueue.main.async {
+                                                hasChangedLocationSheet = false
+                                            }
+                                        }
+                                        print(">> created")
+                                        return provider
                                     }
                                     .onDrop(of: [.text],
                                             delegate: DropViewDelegate(destinationItem:item, media:$selectedMedia, draggedItem:$draggedItemSheet, hasChangedLocation: $hasChangedLocationSheet)
                                     )
-                                    .overlay(draggedItemSheet?.id == item.id && hasChangedLocationSheet ? Color(uiColor: .systemBackground).opacity(1) : Color.clear)
-                                
+                                    .opacity(draggedItemSheet?.id == item.id && hasChangedLocationSheet ? 0 : 1)
                             }
                         }else{
                             NavigationLink {
@@ -424,12 +438,19 @@ extension UploadView {
                                     )
                                     .onDrag {
                                         draggedItemSheet = item
-                                        return NSItemProvider(object: ("\(item.id) media") as NSString)
+                                        let provider = MYItemProvider(contentsOf: URL(string: "\(item.id)"))!
+                                        provider.didEnd = {
+                                            DispatchQueue.main.async {
+                                                hasChangedLocationSheet = false
+                                            }
+                                        }
+                                        print(">> created")
+                                        return provider
                                     }
                                     .onDrop(of: [.text],
                                             delegate: DropViewDelegate(destinationItem:item, media:$selectedMedia, draggedItem:$draggedItemSheet, hasChangedLocation: $hasChangedLocationSheet)
                                     )
-                                    .overlay(draggedItemSheet?.id == item.id && hasChangedLocationSheet ? Color(uiColor: .systemBackground).opacity(1) : Color.clear)
+                                    .opacity(draggedItemSheet?.id == item.id && hasChangedLocationSheet ? 0 : 1)
                             }
                         }
                     }

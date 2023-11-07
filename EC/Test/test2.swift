@@ -15,7 +15,17 @@ struct test2: View {
         .init(.flexible(), spacing: 2)
     ]
     
-    var images = [Image]()
+    class MYItemProvider: NSItemProvider {
+        var didEnd: (() -> Void)?
+        deinit {
+            print("[x] destroyed")
+            didEnd?()
+        }
+    }
+    
+    @State var images = [Image]()
+    @State var draggedItemSheet: Image?
+    
     
     var body: some View {
         VStack{
