@@ -13,6 +13,7 @@ class PreviewPostViewModel: ObservableObject {
     @Published var caption = ""
     @Published var captionTitle = ""
     @Published var draggedItem: LibrayPhotos?
+    @Published var hasChangedLocation: Bool = false
     
     func uploadPost(selectedMedia: [LibrayPhotos]) async throws {
         var mediaUrls = [String]()
@@ -41,17 +42,20 @@ class PreviewPostViewModel: ObservableObject {
 }
 
 struct DropViewDelegate: DropDelegate {
-    
     let destinationItem: LibrayPhotos
     @Binding var media: [LibrayPhotos]
     @Binding var draggedItem: LibrayPhotos?
+    @Binding var hasChangedLocation: Bool
     
     func dropUpdated(info: DropInfo) -> DropProposal? {
         return DropProposal(operation: .move)
     }
     
     func performDrop(info: DropInfo) -> Bool {
-        draggedItem = nil
+        withAnimation {
+            hasChangedLocation = false
+            draggedItem = nil
+        }
         return true
     }
     
@@ -62,11 +66,24 @@ struct DropViewDelegate: DropDelegate {
             if let fromIndex {
                 let toIndex = media.firstIndex(of: destinationItem)
                 if let toIndex, fromIndex != toIndex {
-                    withAnimation {
-                        self.media.move(fromOffsets: IndexSet(integer: fromIndex), toOffset: (toIndex > fromIndex ? (toIndex + 1) : toIndex))
-                    }
+                    hasChangedLocation = true
+                    self.media.move(fromOffsets: IndexSet(integer: fromIndex), toOffset: (toIndex > fromIndex ? (toIndex + 1) : toIndex))
                 }
             }
         }
+    }
+}
+
+struct DropOutsideDelegate: DropDelegate {
+    @Binding var current: LibrayPhotos?
+    @Binding var changedView: Bool
+        
+    func dropEntered(info: DropInfo) {
+        changedView = true
+    }
+    func performDrop(info: DropInfo) -> Bool {
+        changedView = false
+        current = nil
+        return true
     }
 }

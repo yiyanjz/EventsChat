@@ -56,7 +56,7 @@ struct PreviewPostView: View {
                 ScrollView(showsIndicators: false) {
                     VStack {
                         // media files
-                        HStack {
+                        VStack {
                             LazyVGrid(columns: gridItem, spacing: 2) {
                                 ForEach(selectedMedia) { item in
                                     if item.imageUrl != nil {
@@ -77,11 +77,12 @@ struct PreviewPostView: View {
                                                 )
                                                 .onDrag {
                                                     viewModel.draggedItem = item
-                                                    return NSItemProvider()
+                                                    return NSItemProvider(object: ("\(item.id) media") as NSString)
                                                 }
-                                                .onDrop(of: [.video],
-                                                        delegate: DropViewDelegate(destinationItem:item, media:$selectedMedia, draggedItem:$viewModel.draggedItem)
+                                                .onDrop(of: [.text],
+                                                        delegate: DropViewDelegate(destinationItem:item, media:$selectedMedia, draggedItem:$viewModel.draggedItem, hasChangedLocation: $viewModel.hasChangedLocation)
                                                 )
+                                                .overlay(viewModel.draggedItem?.id == item.id && viewModel.hasChangedLocation ? Color(uiColor: .systemBackground).opacity(1) : Color.clear)
                                         }
                                     }else{
                                         NavigationLink {
@@ -94,16 +95,19 @@ struct PreviewPostView: View {
                                                 .clipShape(RoundedRectangle(cornerRadius: 5))
                                                 .onDrag {
                                                     viewModel.draggedItem = item
-                                                    return NSItemProvider()
+                                                    return NSItemProvider(object: ("\(item.id) media") as NSString)
                                                 }
-                                                .onDrop(of: [.image],
-                                                        delegate: DropViewDelegate(destinationItem:item, media:$selectedMedia, draggedItem:$viewModel.draggedItem)
+                                                .onDrop(of: [.text],
+                                                        delegate: DropViewDelegate(destinationItem:item, media:$selectedMedia, draggedItem:$viewModel.draggedItem, hasChangedLocation: $viewModel.hasChangedLocation)
                                                 )
+                                                .overlay(viewModel.draggedItem?.id == item.id && viewModel.hasChangedLocation ? Color.white.opacity(0.8) : Color.clear)
                                         }
                                     }
                                 }
                             }
+                            .animation(.default, value: selectedMedia)
                         }
+                        .onDrop(of: [.text], delegate: DropOutsideDelegate(current: $viewModel.draggedItem, changedView: $viewModel.hasChangedLocation))
                         
                         Divider()
                             .padding(4)
