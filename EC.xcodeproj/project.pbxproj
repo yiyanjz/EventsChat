@@ -57,6 +57,7 @@
 		179664412AF59645001CCED9 /* PreviewImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179664402AF59645001CCED9 /* PreviewImageView.swift */; };
 		179664432AF5A079001CCED9 /* PreviewVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179664422AF5A079001CCED9 /* PreviewVideoView.swift */; };
 		179664452AF5A33F001CCED9 /* PreviewPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179664442AF5A33F001CCED9 /* PreviewPostView.swift */; };
+		17D0F89C2AFB315D00AEFC41 /* UploadViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D0F89B2AFB315D00AEFC41 /* UploadViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -106,6 +107,7 @@
 		179664402AF59645001CCED9 /* PreviewImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreviewImageView.swift; path = EC/Core/Upload/View/PreviewImageView.swift; sourceTree = SOURCE_ROOT; };
 		179664422AF5A079001CCED9 /* PreviewVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreviewVideoView.swift; path = EC/Core/Upload/View/PreviewVideoView.swift; sourceTree = SOURCE_ROOT; };
 		179664442AF5A33F001CCED9 /* PreviewPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreviewPostView.swift; path = EC/Core/Upload/View/PreviewPostView.swift; sourceTree = SOURCE_ROOT; };
+		17D0F89B2AFB315D00AEFC41 /* UploadViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -416,6 +418,7 @@
 			isa = PBXGroup;
 			children = (
 				1782EA4F2AF6ECAD006867FD /* PreviewPostViewModel.swift */,
+				17D0F89B2AFB315D00AEFC41 /* UploadViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -571,6 +574,7 @@
 				177FB9AE2AF46237008C2175 /* ECApp.swift in Sources */,
 				177FB9DB2AF47170008C2175 /* BottomSheetView.swift in Sources */,
 				177FB9E12AF473C0008C2175 /* LoginViewModel.swift in Sources */,
+				17D0F89C2AFB315D00AEFC41 /* UploadViewModel.swift in Sources */,
 				179664432AF5A079001CCED9 /* PreviewVideoView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

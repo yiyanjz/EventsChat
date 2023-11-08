@@ -10,19 +10,10 @@ import Photos
 import AVKit
 
 struct UploadView: View {
-    @State private var selectedFilter: UploadFilter = .allItems
+    @StateObject var viewModel = UploadViewModel()
     @Environment(\.colorScheme) var colorScheme
-    @State var showMoreAblum: Bool = false
-    @State var albumList: [ImageAlbumItem] = []
-    @State var selectAlbum : ImageAlbumItem = ImageAlbumItem(number: 0, fetchResult: PHFetchResult<PHAsset>.init())
-    @State var allList: [LibrayPhotos] = []
     @Binding var mainTabBarSelected: TabBarSelection
     @Binding var showTabBar: Bool
-    @State var selectedMedia = [LibrayPhotos]()
-    @State var previewPost: Bool = false
-    @State var completePost: Bool = false
-    @State var draggedItemSheet: LibrayPhotos?
-    @State var hasChangedLocationSheet: Bool = false
     
     // grid Item Structure
     private let gridItem: [GridItem] = [
@@ -43,52 +34,7 @@ struct UploadView: View {
         NavigationStack {
             VStack {
                 // header
-                HStack {
-                    Button {
-                        mainTabBarSelected = .feed
-                        showTabBar = true
-                    } label: {
-                        Image(systemName: "x.circle")
-                    }
-                    .padding(.top, 8)
-                    .padding(.horizontal, 5)
-                    
-                    Spacer()
-                    
-                    Menu {
-                        ForEach(albumList, id:\.self) { album in
-                            Button {
-                                selectAlbum = album
-                            } label: {
-                                Text(album.title ?? "")
-                            }
-                        }
-                    }label: {
-                        HStack {
-                            Text(selectAlbum.title ?? "Recents")
-                            
-                            Image(systemName: showMoreAblum ? "chevron.up":"chevron.down")
-                                .font(.footnote)
-                        }
-                        .frame(width: 100)
-                    }
-                    
-                    Spacer()
-                    
-                    Button {
-                        previewPost.toggle()
-                    } label: {
-                        if selectedMedia.count > 0 {
-                            Text("Next \(selectedMedia.count)")
-                                .font(.footnote)
-                        }else{
-                            Text("Next")
-                                .font(.footnote)
-                        }
-                    }
-                }
-                .padding()
-                .foregroundColor(colorScheme == .light ? .black : .white)
+                headerView
                 
                 // upload filters
                 HStack(spacing: 15) {
@@ -96,16 +42,16 @@ struct UploadView: View {
                         VStack{
                             Text(item.title)
                                 .font(.caption)
-                                .fontWeight(selectedFilter == item ? .semibold : .regular)
+                                .fontWeight(viewModel.selectedFilter == item ? .semibold : .regular)
                                 .foregroundColor(colorScheme == .light ? .black : .white)
                                 // .frame == underline's height .offset = underlines y's pos
-                                .background( selectedFilter == item ? Color.red.frame(width: 60, height: 2).offset(y: 14)
+                                .background( viewModel.selectedFilter == item ? Color.red.frame(width: 60, height: 2).offset(y: 14)
                                              : Color.clear.frame(width: 30, height: 1).offset(y: 14)
                                 )
                         }
                         .onTapGesture {
                             withAnimation(.easeInOut) {
-                                selectedFilter = item
+                                viewModel.selectedFilter = item
                             }
                         }
                         .padding(.horizontal, 25)
@@ -114,7 +60,7 @@ struct UploadView: View {
                 
                 Divider()
                 
-                TabView(selection: $selectedFilter) {
+                TabView(selection: $viewModel.selectedFilter) {
                     allAlbum
                         .tag(UploadFilter.allItems)
                     albumVideoView
@@ -124,29 +70,29 @@ struct UploadView: View {
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 
-                if selectedMedia.count > 0 {
+                if viewModel.selectedMedia.count > 0 {
                     sheetView
                 }
             }
             .onAppear {
                 DispatchQueue.main.async{
-                    getAlbum()
+                    viewModel.getAlbum()
                 }
             }
-            .onChange(of: selectAlbum) { newValue in
+            .onChange(of: viewModel.selectAlbum) { newValue in
                 DispatchQueue.main.async{
-                    getImages()
+                    viewModel.getImages()
                 }
             }
-            .fullScreenCover(isPresented: $previewPost) {
-                PreviewPostView(selectedMedia: $selectedMedia, completePost: $completePost)
+            .fullScreenCover(isPresented: $viewModel.previewPost) {
+                PreviewPostView(selectedMedia: $viewModel.selectedMedia, completePost: $viewModel.completePost)
                     .onDisappear {
-                        if completePost {
+                        if viewModel.completePost {
                             mainTabBarSelected = .feed
                             showTabBar = true
-                            completePost.toggle()
-                            selectedMedia = []
-                            getImages()
+                            viewModel.completePost.toggle()
+                            viewModel.selectedMedia = []
+                            viewModel.getImages()
                         }
                     }
             }
@@ -160,6 +106,7 @@ struct UploadView_Previews: PreviewProvider {
     }
 }
 
+// ImageAlbumItem Model
 struct ImageAlbumItem : Identifiable,Equatable,Hashable{
     var id = UUID()
     var number : Int
@@ -167,6 +114,7 @@ struct ImageAlbumItem : Identifiable,Equatable,Hashable{
     var fetchResult : PHFetchResult<PHAsset>
 }
 
+// LibrayPhotos Model
 struct LibrayPhotos: Identifiable, Hashable {
     var id = UUID()
     var uiImage: UIImage
@@ -175,11 +123,65 @@ struct LibrayPhotos: Identifiable, Hashable {
     var selected: Bool = false
 }
 
+// Header View
+extension UploadView {
+    var headerView: some View {
+        // header
+        HStack {
+            Button {
+                mainTabBarSelected = .feed
+                showTabBar = true
+            } label: {
+                Image(systemName: "x.circle")
+            }
+            .padding(.top, 8)
+            .padding(.horizontal, 5)
+            
+            Spacer()
+            
+            Menu {
+                ForEach(viewModel.albumList, id:\.self) { album in
+                    Button {
+                        viewModel.selectAlbum = album
+                    } label: {
+                        Text(album.title ?? "")
+                    }
+                }
+            }label: {
+                HStack {
+                    Text(viewModel.selectAlbum.title ?? "Recents")
+                    
+                    Image(systemName: viewModel.showMoreAblum ? "chevron.up":"chevron.down")
+                        .font(.footnote)
+                }
+                .frame(width: 100)
+            }
+            
+            Spacer()
+            
+            Button {
+                viewModel.previewPost.toggle()
+            } label: {
+                if viewModel.selectedMedia.count > 0 {
+                    Text("Next \(viewModel.selectedMedia.count)")
+                        .font(.footnote)
+                }else{
+                    Text("Next")
+                        .font(.footnote)
+                }
+            }
+        }
+        .padding()
+        .foregroundColor(colorScheme == .light ? .black : .white)
+    }
+}
+
+// album Image View
 extension UploadView {
     var albumImageView: some View {
         ScrollView {
             LazyVGrid(columns: gridItem, spacing: 2) {
-                ForEach(Array(allList.enumerated()), id: \.element) { index, item in
+                ForEach(Array(viewModel.allList.enumerated()), id: \.element) { index, item in
                     if item.imageUrl == nil {
                         NavigationLink {
                             PreviewImageView(photo: item)
@@ -191,15 +193,15 @@ extension UploadView {
                                 .clipShape(RoundedRectangle(cornerRadius: 5))
                                 .overlay(
                                     Button {
-                                        if allList[index].selected == false && selectedMedia.count < 9 {
-                                            allList[index].selected.toggle()
-                                            let media = allList[index]
-                                            selectedMedia.append(media)
-                                        }else if allList[index].selected || selectedMedia.count > 9 {
-                                            allList[index].selected.toggle()
-                                            let media = allList[index]
-                                            if selectedMedia.contains(where: { key in key.id == media.id }) {
-                                                selectedMedia.removeAll(where: { key in key.id == media.id })
+                                        if viewModel.allList[index].selected == false && viewModel.selectedMedia.count < 9 {
+                                            viewModel.allList[index].selected.toggle()
+                                            let media = viewModel.allList[index]
+                                            viewModel.selectedMedia.append(media)
+                                        }else if viewModel.allList[index].selected || viewModel.selectedMedia.count > 9 {
+                                            viewModel.allList[index].selected.toggle()
+                                            let media = viewModel.allList[index]
+                                            if viewModel.selectedMedia.contains(where: { key in key.id == media.id }) {
+                                                viewModel.selectedMedia.removeAll(where: { key in key.id == media.id })
                                             }
                                         }
                                     } label: {
@@ -219,11 +221,14 @@ extension UploadView {
             }
         }
     }
-    
+}
+
+// album video View
+extension UploadView {
     var albumVideoView: some View {
         ScrollView {
             LazyVGrid(columns: gridItem, spacing: 2) {
-                ForEach(Array(allList.enumerated()), id: \.element) { index, item in
+                ForEach(Array(viewModel.allList.enumerated()), id: \.element) { index, item in
                     if item.imageUrl != nil {
                         NavigationLink {
                             PreviewVideoView(item: item)
@@ -235,15 +240,15 @@ extension UploadView {
                                 .clipShape(RoundedRectangle(cornerRadius: 5))
                                 .overlay(
                                     Button {
-                                        if allList[index].selected == false && selectedMedia.count < 9 {
-                                            allList[index].selected.toggle()
-                                            let media = allList[index]
-                                            selectedMedia.append(media)
-                                        }else if allList[index].selected || selectedMedia.count > 9 {
-                                            allList[index].selected.toggle()
-                                            let media = allList[index]
-                                            if selectedMedia.contains(where: { key in key.id == media.id }) {
-                                                selectedMedia.removeAll(where: { key in key.id == media.id })
+                                        if viewModel.allList[index].selected == false && viewModel.selectedMedia.count < 9 {
+                                            viewModel.allList[index].selected.toggle()
+                                            let media = viewModel.allList[index]
+                                            viewModel.selectedMedia.append(media)
+                                        }else if viewModel.allList[index].selected || viewModel.selectedMedia.count > 9 {
+                                            viewModel.allList[index].selected.toggle()
+                                            let media = viewModel.allList[index]
+                                            if viewModel.selectedMedia.contains(where: { key in key.id == media.id }) {
+                                                viewModel.selectedMedia.removeAll(where: { key in key.id == media.id })
                                             }
                                         }
                                     } label: {
@@ -270,11 +275,14 @@ extension UploadView {
             }
         }
     }
-    
+}
+
+// all album view
+extension UploadView {
     var allAlbum: some View {
         ScrollView {
             LazyVGrid(columns: gridItem, spacing: 2) {
-                ForEach(Array(allList.enumerated()), id: \.element) { index, item in
+                ForEach(Array(viewModel.allList.enumerated()), id: \.element) { index, item in
                     if item.imageUrl != nil {
                         NavigationLink {
                             PreviewVideoView(item: item)
@@ -286,15 +294,15 @@ extension UploadView {
                                 .clipShape(RoundedRectangle(cornerRadius: 5))
                                 .overlay(
                                     Button {
-                                        if allList[index].selected == false && selectedMedia.count < 9 {
-                                            allList[index].selected.toggle()
-                                            let media = allList[index]
-                                            selectedMedia.append(media)
-                                        }else if allList[index].selected || selectedMedia.count > 9 {
-                                            allList[index].selected.toggle()
-                                            let media = allList[index]
-                                            if selectedMedia.contains(where: { key in key.id == media.id }) {
-                                                selectedMedia.removeAll(where: { key in key.id == media.id })
+                                        if viewModel.allList[index].selected == false && viewModel.selectedMedia.count < 9 {
+                                            viewModel.allList[index].selected.toggle()
+                                            let media = viewModel.allList[index]
+                                            viewModel.selectedMedia.append(media)
+                                        }else if viewModel.allList[index].selected || viewModel.selectedMedia.count > 9 {
+                                            viewModel.allList[index].selected.toggle()
+                                            let media = viewModel.allList[index]
+                                            if viewModel.selectedMedia.contains(where: { key in key.id == media.id }) {
+                                                viewModel.selectedMedia.removeAll(where: { key in key.id == media.id })
                                             }
                                         }
                                     } label: {
@@ -327,15 +335,15 @@ extension UploadView {
                                 .clipShape(RoundedRectangle(cornerRadius: 5))
                                 .overlay(
                                     Button {
-                                        if allList[index].selected == false && selectedMedia.count < 9 {
-                                            allList[index].selected.toggle()
-                                            let media = allList[index]
-                                            selectedMedia.append(media)
-                                        }else if allList[index].selected || selectedMedia.count > 9 {
-                                            allList[index].selected.toggle()
-                                            let media = allList[index]
-                                            if selectedMedia.contains(where: { key in key.id == media.id }) {
-                                                selectedMedia.removeAll(where: { key in key.id == media.id })
+                                        if viewModel.allList[index].selected == false && viewModel.selectedMedia.count < 9 {
+                                            viewModel.allList[index].selected.toggle()
+                                            let media = viewModel.allList[index]
+                                            viewModel.selectedMedia.append(media)
+                                        }else if viewModel.allList[index].selected || viewModel.selectedMedia.count > 9 {
+                                            viewModel.allList[index].selected.toggle()
+                                            let media = viewModel.allList[index]
+                                            if viewModel.selectedMedia.contains(where: { key in key.id == media.id }) {
+                                                viewModel.selectedMedia.removeAll(where: { key in key.id == media.id })
                                             }
                                         }
                                     } label: {
@@ -355,12 +363,15 @@ extension UploadView {
             }
         }
     }
-    
+}
+
+// sheet view
+extension UploadView {
     var sheetView: some View {
         VStack{
             ScrollView(.horizontal, showsIndicators: false){
                 HStack{
-                    ForEach(selectedMedia) { item in
+                    ForEach(viewModel.selectedMedia) { item in
                         if item.imageUrl != nil {
                             NavigationLink {
                                 PreviewVideoView(item: item)
@@ -379,10 +390,10 @@ extension UploadView {
                                     )
                                     .overlay(
                                         Button {
-                                            selectedMedia.removeAll(where: { key in key.id == item.id })
-                                            let allListIdx = allList.firstIndex(where: {key in key.id == item.id })
-                                            if let allListIdx = allListIdx, allList[allListIdx].selected == true {
-                                                allList[allListIdx].selected.toggle()
+                                            viewModel.selectedMedia.removeAll(where: { key in key.id == item.id })
+                                            let allListIdx = viewModel.allList.firstIndex(where: {key in key.id == item.id })
+                                            if let allListIdx = allListIdx, viewModel.allList[allListIdx].selected == true {
+                                                viewModel.allList[allListIdx].selected.toggle()
                                             }
                                         } label: {
                                             Image(systemName: "x.circle.fill")
@@ -395,20 +406,20 @@ extension UploadView {
                                         .offset(x: 38, y: -40)
                                     )
                                     .onDrag {
-                                        draggedItemSheet = item
+                                        viewModel.draggedItemSheet = item
                                         let provider = MYItemProvider(contentsOf: URL(string: "\(item.id)"))!
                                         provider.didEnd = {
                                             DispatchQueue.main.async {
-                                                hasChangedLocationSheet = false
+                                                viewModel.hasChangedLocationSheet = false
                                             }
                                         }
                                         print(">> created")
                                         return provider
                                     }
                                     .onDrop(of: [.text],
-                                            delegate: DropViewDelegate(destinationItem:item, media:$selectedMedia, draggedItem:$draggedItemSheet, hasChangedLocation: $hasChangedLocationSheet)
+                                            delegate: DropViewDelegate(destinationItem:item, media:$viewModel.selectedMedia, draggedItem:$viewModel.draggedItemSheet, hasChangedLocation: $viewModel.hasChangedLocationSheet)
                                     )
-                                    .opacity(draggedItemSheet?.id == item.id && hasChangedLocationSheet ? 0 : 1)
+                                    .opacity(viewModel.draggedItemSheet?.id == item.id && viewModel.hasChangedLocationSheet ? 0 : 1)
                             }
                         }else{
                             NavigationLink {
@@ -421,10 +432,10 @@ extension UploadView {
                                     .clipShape(RoundedRectangle(cornerRadius: 5))
                                     .overlay(
                                         Button {
-                                            selectedMedia.removeAll(where: { key in key.id == item.id })
-                                            let allListIdx = allList.firstIndex(where: {key in key.id == item.id })
-                                            if let allListIdx = allListIdx, allList[allListIdx].selected == true {
-                                                allList[allListIdx].selected.toggle()
+                                            viewModel.selectedMedia.removeAll(where: { key in key.id == item.id })
+                                            let allListIdx = viewModel.allList.firstIndex(where: {key in key.id == item.id })
+                                            if let allListIdx = allListIdx, viewModel.allList[allListIdx].selected == true {
+                                                viewModel.allList[allListIdx].selected.toggle()
                                             }
                                         } label: {
                                             Image(systemName: "x.circle.fill")
@@ -437,114 +448,28 @@ extension UploadView {
                                         .offset(x: 38, y: -40)
                                     )
                                     .onDrag {
-                                        draggedItemSheet = item
+                                        viewModel.draggedItemSheet = item
                                         let provider = MYItemProvider(contentsOf: URL(string: "\(item.id)"))!
                                         provider.didEnd = {
                                             DispatchQueue.main.async {
-                                                hasChangedLocationSheet = false
+                                                viewModel.hasChangedLocationSheet = false
                                             }
                                         }
                                         print(">> created")
                                         return provider
                                     }
                                     .onDrop(of: [.text],
-                                            delegate: DropViewDelegate(destinationItem:item, media:$selectedMedia, draggedItem:$draggedItemSheet, hasChangedLocation: $hasChangedLocationSheet)
+                                            delegate: DropViewDelegate(destinationItem:item, media:$viewModel.selectedMedia, draggedItem:$viewModel.draggedItemSheet, hasChangedLocation: $viewModel.hasChangedLocationSheet)
                                     )
-                                    .opacity(draggedItemSheet?.id == item.id && hasChangedLocationSheet ? 0 : 1)
+                                    .opacity(viewModel.draggedItemSheet?.id == item.id && viewModel.hasChangedLocationSheet ? 0 : 1)
                             }
                         }
                     }
                 }
                 .padding()
-                .onDrop(of: [.text], delegate: DropOutsideDelegate(draggedItem: $draggedItemSheet, hasChangedLocation: $hasChangedLocationSheet))
+                .onDrop(of: [.text], delegate: DropOutsideDelegate(draggedItem: $viewModel.draggedItemSheet, hasChangedLocation: $viewModel.hasChangedLocationSheet))
             }
         }
         .frame(width: UIScreen.main.bounds.width, height: 100)
-    }
-}
-
-
-extension UploadView {
-    // get albums
-    public func getAlbum(){
-        albumList = []
-        PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
-            guard status == .authorized else {return}
-            let smartOptions = PHFetchOptions()
-            let smartAlbums = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .albumRegular, options: smartOptions)
-            let customAlbums = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .albumRegular, options: smartOptions)
-            
-            for i in 0..<smartAlbums.count {
-                let album = smartAlbums[i]
-                // fectch ablum photos, video etc
-                let resultsOptions = PHFetchOptions()
-                let assetsFetchResult = PHAsset.fetchAssets(in: album , options: resultsOptions)
-                if assetsFetchResult.count > 0 {
-                    let data = ImageAlbumItem(number: assetsFetchResult.count, title: album.localizedTitle, fetchResult: assetsFetchResult)
-                    self.albumList.append(data)
-                }
-            }
-            
-            for i in 0..<customAlbums.count {
-                let album = customAlbums[i]
-                // fectch ablum photos, video etc
-                let resultsOptions = PHFetchOptions()
-                let assetsFetchResult = PHAsset.fetchAssets(in: album , options: resultsOptions)
-                if assetsFetchResult.count > 0 {
-                    let data = ImageAlbumItem(number: assetsFetchResult.count, title: album.localizedTitle, fetchResult: assetsFetchResult)
-                    self.albumList.append(data)
-                }
-            }
-            
-            // display recent ablum first
-            if self.selectAlbum.number == 0 {
-                let idx = albumList.firstIndex { item in
-                    item.title == "Recents"
-                }
-                if let idx = idx {
-                    self.selectAlbum = albumList[idx]
-                }
-            }
-        }
-    }
-    
-    // get images, videos from albums
-    public func getImages(){
-        allList = []
-        selectedMedia = []
-        let manager = PHImageManager.default()
-        let option = PHImageRequestOptions()
-        option.isSynchronous = true
-        option.deliveryMode = .highQualityFormat
-        let liveOption = PHLivePhotoRequestOptions()
-        liveOption.deliveryMode = .highQualityFormat
-        for i in 0..<selectAlbum.fetchResult.count {
-            let fetchresult = selectAlbum.fetchResult[i]
-            if fetchresult.mediaType == .image {
-                manager.requestImage(for: selectAlbum.fetchResult.object(at: i), targetSize: UIScreen.main.bounds.size, contentMode: .aspectFill, options: option) { image, _ in
-                    if let image = image {
-                        allList.append(LibrayPhotos(uiImage: image))
-                    }
-                }
-            } else if fetchresult.mediaType == .video{
-                manager.requestAVAsset(forVideo: selectAlbum.fetchResult.object(at: i), options: nil) { video, _, _ in
-                    if video != nil {
-                        let avasset = video as! AVURLAsset
-                        let urlVideo = avasset.url
-                        // create uiimage
-                        let imageGenerator = AVAssetImageGenerator(asset: avasset)
-                        let time = CMTimeMake(value: 1, timescale: 1)
-                        let imageRef = try! imageGenerator.copyCGImage(at: time, actualTime: nil)
-                        let thumbnail = UIImage(cgImage:imageRef)
-                        // get video time length
-                        let duration = avasset.duration
-                        let durationTime = CMTimeGetSeconds(duration)
-                        let minutes = durationTime/60
-                        let videoDuration = String(format: "%.2f", minutes)
-                        allList.append(LibrayPhotos(uiImage: thumbnail, imageUrl: urlVideo, duration: videoDuration))
-                    }
-                }
-            }
-        }
     }
 }
