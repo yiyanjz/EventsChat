@@ -45,6 +45,7 @@ struct RegisterView_Previews: PreviewProvider {
     }
 }
 
+// extension views
 extension RegisterView {
     var headerView: some View {
         // header

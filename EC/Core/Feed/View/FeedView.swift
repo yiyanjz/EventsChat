@@ -34,6 +34,7 @@ struct FeedView_Previews: PreviewProvider {
     }
 }
 
+// extension views
 extension FeedView {
     var headerView: some View {
         VStack {

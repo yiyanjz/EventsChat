@@ -36,8 +36,9 @@ struct EditProfileView_Previews: PreviewProvider {
     }
 }
 
-// headerView
+// extensions views
 extension EditProfileView {
+    // headerView
     var headerView: some View {
         // ToolBar
         HStack {
@@ -68,11 +69,8 @@ extension EditProfileView {
         }
         .padding(.horizontal)
     }
-}
-
-
-// bodyView
-extension EditProfileView {
+    
+    // bodyView
     var bodyView: some View {
         VStack {
             VStack(spacing: 15) {
@@ -164,9 +162,8 @@ extension EditProfileView {
             Spacer()
         }
     }
-}
-
-extension EditProfileView {
+    
+    // gender view
     var genderView: some View {
         // gender
         HStack() {
@@ -194,10 +191,8 @@ extension EditProfileView {
             GenderView(selectedItemText: $viewModel.selectedGender)
         }
     }
-}
-
-
-extension EditProfileView {
+    
+    // background image view
     var backgroundImageView: some View {
         // Background image
         HStack() {

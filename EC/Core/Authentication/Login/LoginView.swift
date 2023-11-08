@@ -29,6 +29,7 @@ struct LoginView_Previews: PreviewProvider {
     }
 }
 
+// extension views
 extension LoginView {
     var GetStartedButtonView: some View{
         ZStack {

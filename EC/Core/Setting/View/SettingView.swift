@@ -46,7 +46,9 @@ struct SettingView_Previews: PreviewProvider {
     }
 }
 
+// extensions views
 extension SettingView {
+    // header view
     var headerView: some View {
         HStack {
             // > icon
@@ -69,9 +71,8 @@ extension SettingView {
         .padding(.horizontal)
         .padding(.vertical)
     }
-}
-
-extension SettingView {
+    
+    // logout view
     var LogoutView: some View {
         Section {
             Button {
@@ -87,4 +88,8 @@ extension SettingView {
             }
         }
     }
+}
+
+extension SettingView {
+
 }

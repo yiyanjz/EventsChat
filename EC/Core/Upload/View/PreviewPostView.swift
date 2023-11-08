@@ -29,7 +29,6 @@ struct PreviewPostView: View {
     class MYItemProvider: NSItemProvider {
         var didEnd: (() -> Void)?
         deinit {
-            print("[x] destroyed")
             didEnd?()
         }
     }
@@ -91,7 +90,6 @@ struct PreviewPostView: View {
                                                             viewModel.hasChangedLocation = false
                                                         }
                                                     }
-                                                    print(">> created")
                                                     return provider
                                                 }
                                                 .onDrop(of: [.text],
@@ -116,7 +114,6 @@ struct PreviewPostView: View {
                                                             viewModel.hasChangedLocation = false
                                                         }
                                                     }
-                                                    print(">> created")
                                                     return provider
                                                 }
                                                 .onDrop(of: [.text],

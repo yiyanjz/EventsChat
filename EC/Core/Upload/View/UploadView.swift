@@ -25,7 +25,6 @@ struct UploadView: View {
     class MYItemProvider: NSItemProvider {
         var didEnd: (() -> Void)?
         deinit {
-            print("[x] destroyed")
             didEnd?()
         }
     }
@@ -123,10 +122,10 @@ struct LibrayPhotos: Identifiable, Hashable {
     var selected: Bool = false
 }
 
-// Header View
+// extensions views
 extension UploadView {
+    // Header View
     var headerView: some View {
-        // header
         HStack {
             Button {
                 mainTabBarSelected = .feed
@@ -174,10 +173,8 @@ extension UploadView {
         .padding()
         .foregroundColor(colorScheme == .light ? .black : .white)
     }
-}
-
-// album Image View
-extension UploadView {
+    
+    // album Image View
     var albumImageView: some View {
         ScrollView {
             LazyVGrid(columns: gridItem, spacing: 2) {
@@ -221,10 +218,8 @@ extension UploadView {
             }
         }
     }
-}
-
-// album video View
-extension UploadView {
+    
+    // album video View
     var albumVideoView: some View {
         ScrollView {
             LazyVGrid(columns: gridItem, spacing: 2) {
@@ -275,10 +270,8 @@ extension UploadView {
             }
         }
     }
-}
-
-// all album view
-extension UploadView {
+    
+    // all album view
     var allAlbum: some View {
         ScrollView {
             LazyVGrid(columns: gridItem, spacing: 2) {
@@ -363,10 +356,8 @@ extension UploadView {
             }
         }
     }
-}
-
-// sheet view
-extension UploadView {
+    
+    // sheet view
     var sheetView: some View {
         VStack{
             ScrollView(.horizontal, showsIndicators: false){
@@ -413,7 +404,6 @@ extension UploadView {
                                                 viewModel.hasChangedLocationSheet = false
                                             }
                                         }
-                                        print(">> created")
                                         return provider
                                     }
                                     .onDrop(of: [.text],
@@ -455,7 +445,6 @@ extension UploadView {
                                                 viewModel.hasChangedLocationSheet = false
                                             }
                                         }
-                                        print(">> created")
                                         return provider
                                     }
                                     .onDrop(of: [.text],

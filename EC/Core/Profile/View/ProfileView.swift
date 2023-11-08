@@ -83,8 +83,9 @@ struct ProfileView_Previews: PreviewProvider {
     }
 }
 
-// Background View
+// extensions views
 extension ProfileView {
+    // Background View
     var backgroundView: some View {
         VStack {
             let height = screenHeight * 0.6
@@ -110,11 +111,8 @@ extension ProfileView {
             .frame(height: height)
         }
     }
-}
-
-
-// headerView
-extension ProfileView {
+    
+    // header view
     var headerView: some View {
         VStack {
             let height = screenHeight * 0.6
@@ -218,10 +216,8 @@ extension ProfileView {
             }
         }
     }
-}
-
-// footerTitleView
-extension ProfileView {
+    
+    // footerTitleView
     var footerTitleView: some View {
         VStack {
             let height = screenHeight * 0.06
@@ -274,10 +270,8 @@ extension ProfileView {
         
         return color
     }
-}
-
-// footerView
-extension ProfileView {
+    
+    // footerView
     var footerView: some View {
         VStack {
             LazyVGrid(columns: gridItem, spacing: 2) {

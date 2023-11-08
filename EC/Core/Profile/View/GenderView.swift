@@ -30,8 +30,9 @@ struct GenderView_Previews: PreviewProvider {
     }
 }
 
-// headerView
+// extensions views
 extension GenderView {
+    // headerView
     var headerView: some View {
         // ToolBar
         HStack {
@@ -62,9 +63,8 @@ extension GenderView {
         }
         .padding(.horizontal)
     }
-}
-
-extension GenderView {
+    
+    // body view
     var bodyView: some View {
         VStack(alignment: .leading) {
             // info

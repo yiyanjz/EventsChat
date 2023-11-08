@@ -38,6 +38,7 @@ struct BottomSheetView_Previews: PreviewProvider {
     }
 }
 
+// extension views
 extension BottomSheetView {
     var actionButton: some View {
         // action buttons

@@ -46,6 +46,7 @@ struct LoginWithEmailView_Previews: PreviewProvider {
     }
 }
 
+// extension views
 extension LoginWithEmailView {
     var headerView: some View {
         // header
