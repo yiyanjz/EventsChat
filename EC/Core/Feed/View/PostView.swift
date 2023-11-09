@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct PostView: View {
     @Environment(\.colorScheme) var colorScheme
@@ -13,7 +14,8 @@ struct PostView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
-            Image(post.imagesUrl.first ?? "")
+            KFImage(URL(string: post.imagesUrl.first ?? ""))
+//            Image(post.imagesUrl.first ?? "")
                 .resizable()
                 .scaledToFit()
             
@@ -29,18 +31,20 @@ struct PostView: View {
                 // user + likes
                 HStack {
                     if let postUser = post.user{
-                        CircularProfileImageView(user: postUser, size: .xxsmall)
+                        CircularProfileImageView(user: postUser, size: .xxxsmall)
                         
                         Text(postUser.username)
-                            .font(.subheadline)
+                            .font(.system(size: 12))
                             .foregroundColor(colorScheme == .light ? .black : .white)
                             .lineLimit(1)
                         
                         Spacer()
                         
-                        Image(systemName:"heart.fill")
+                        Image(systemName:"heart")
+                            .font(.system(size: 12))
                         
                         Text("\(post.likes)")
+                            .font(.system(size: 12))
                     }
                 }
                 .font(.footnote)

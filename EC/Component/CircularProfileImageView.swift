@@ -10,6 +10,7 @@ import SwiftUI
 
 // give the image different sizes
 enum ProfileImageSize {
+    case xxxsmall
     case xxsmall
     case xsmall
     case small
@@ -18,6 +19,8 @@ enum ProfileImageSize {
     
     var dimension: CGFloat {
         switch self {
+        case .xxxsmall:
+            return 20
         case .xxsmall:
             return 30
         case .xsmall:

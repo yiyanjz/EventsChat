@@ -125,7 +125,7 @@ extension FeedView {
                 
                 // posts
                 LazyVStack {
-                    ForEach(viewModel.posts, id: \.self) { post in
+                    ForEach(viewModel.posts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}), id: \.self) { post in
                         FollowView(post: post)
                             .background(Color(uiColor: .systemBackground).brightness(0.1))
                             .cornerRadius(15)
@@ -140,14 +140,14 @@ extension FeedView {
             ScrollView(showsIndicators: false) {
                 HStack(alignment:.top) {
                     LazyVStack {
-                        ForEach(Array(viewModel.posts.enumerated()), id: \.offset) { index,post in
+                        ForEach(Array(viewModel.posts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}).enumerated()), id: \.offset) { index,post in
                             if index & 2 == 0 {
                                 PostView(post: post)
                             }
                         }
                     }
                     LazyVStack {
-                        ForEach(Array(viewModel.posts.enumerated()), id: \.offset) { index,post in
+                        ForEach(Array(viewModel.posts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}).enumerated()), id: \.offset) { index,post in
                             if index & 2 != 0 {
                                 PostView(post: post)
                             }
