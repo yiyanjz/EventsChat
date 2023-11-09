@@ -57,7 +57,8 @@ struct ProfileView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     NavigationLink(destination: SettingView().navigationBarBackButtonHidden(true)) {
                         Image(systemName: "line.3.horizontal")
-                            .fontWeight(.semibold)
+                            .frame(width: 30, height: 30, alignment: .center)
+                            .cornerRadius(15)
                             .foregroundColor(colorScheme == .light ? .black : .white)
                     }
                     .navigationBarBackButtonHidden(true)
@@ -67,7 +68,8 @@ struct ProfileView: View {
                         print("ProfileView: Shared Button Tapped")
                     } label: {
                         Image(systemName: "arrow.up.forward.circle")
-                            .fontWeight(.semibold)
+                            .frame(width: 30, height: 30, alignment: .center)
+                            .cornerRadius(15)
                             .foregroundColor(colorScheme == .light ? .black : .white )
                     }
                 }

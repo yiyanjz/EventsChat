@@ -25,6 +25,7 @@ struct UserService {
         }
     }
     
+    // fectch current user with completion handler
     static func fetchUserCompletion(withUid uid: String, completion: @escaping(User) -> Void) {
         Firestore.firestore().collection("users").document(uid).getDocument { querySnapshot, error in
             guard let document = querySnapshot else {return}

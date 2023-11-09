@@ -36,18 +36,6 @@ struct FollowView_Previews: PreviewProvider {
     }
 }
 
-extension Color {
-    init(hex: UInt, alpha: Double = 1) {
-        self.init(
-            .sRGB,
-            red: Double((hex >> 16) & 0xff) / 255,
-            green: Double((hex >> 08) & 0xff) / 255,
-            blue: Double((hex >> 00) & 0xff) / 255,
-            opacity: alpha
-        )
-    }
-}
-
 extension FollowView {
     var headerView: some View {
         HStack {
@@ -111,12 +99,20 @@ extension FollowView {
                 print("FollowView: like button clicked")
             }label: {
                 HStack(spacing:0){
-                    Image(systemName: "heart")
-                        .frame(width: 30, height: 30, alignment: .center)
-                        .cornerRadius(15)
-                    Text("\(post.likes) likes")
-                        .fontWeight(.semibold)
-                        .font(.system(size: 13))
+                    Button {
+                        print("FollowView: heart button clicked")
+                    } label: {
+                        Image(systemName: "heart")
+                            .frame(width: 30, height: 30, alignment: .center)
+                            .cornerRadius(15)
+                    }
+                    Button {
+                        print("FollowView: Liked List button clicked")
+                    } label: {
+                        Text("\(post.likes) likes")
+                            .fontWeight(.semibold)
+                            .font(.system(size: 13))
+                    }
                 }
             }
             

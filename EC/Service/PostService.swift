@@ -33,7 +33,7 @@ struct PostService {
             snapshot.documentChanges.forEach { documentChange in
                 switch documentChange.type {
                 case .added:
-                    guard var data = try? documentChange.document.data(as: Post.self) else {return}
+                    guard let data = try? documentChange.document.data(as: Post.self) else {return}
                     pendingPost.append(data)
                 case .modified:
                     print("Pending User Modified")
