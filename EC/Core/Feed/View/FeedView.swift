@@ -24,6 +24,9 @@ struct FeedView: View {
                 Color(uiColor: colorScheme == .light ? .gray : .black)
                     .opacity(0.1)
             )
+            .fullScreenCover(isPresented: $viewModel.showSearchView) {
+                SearchView()
+            }
         }
     }
 }
@@ -72,7 +75,7 @@ extension FeedView {
                 
                 // search button
                 Button{
-                    print("FeedView: Search button pressed")
+                    viewModel.showSearchView.toggle()
                 }label: {
                     Image(systemName: "magnifyingglass")
                         .fontWeight(.semibold)
