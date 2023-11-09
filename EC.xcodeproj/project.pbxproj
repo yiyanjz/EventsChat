@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		17438C5C2AFC26CF007088F6 /* FeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17438C5B2AFC26CF007088F6 /* FeedViewModel.swift */; };
+		17438C5E2AFC5189007088F6 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17438C5D2AFC5189007088F6 /* DateExtension.swift */; };
+		17438C602AFC52EF007088F6 /* PostService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17438C5F2AFC52EF007088F6 /* PostService.swift */; };
 		177FB9AE2AF46237008C2175 /* ECApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177FB9AD2AF46237008C2175 /* ECApp.swift */; };
 		177FB9B02AF46237008C2175 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177FB9AF2AF46237008C2175 /* ContentView.swift */; };
 		177FB9B22AF46238008C2175 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 177FB9B12AF46238008C2175 /* Assets.xcassets */; };
@@ -63,6 +65,8 @@
 
 /* Begin PBXFileReference section */
 		17438C5B2AFC26CF007088F6 /* FeedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewModel.swift; sourceTree = "<group>"; };
+		17438C5D2AFC5189007088F6 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
+		17438C5F2AFC52EF007088F6 /* PostService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostService.swift; sourceTree = "<group>"; };
 		177FB9AA2AF46237008C2175 /* EC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		177FB9AD2AF46237008C2175 /* ECApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ECApp.swift; sourceTree = "<group>"; };
 		177FB9AF2AF46237008C2175 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -217,6 +221,7 @@
 				177FB9FB2AF478CF008C2175 /* UserService.swift */,
 				177FBA172AF484BD008C2175 /* ImageUploader.swift */,
 				1782EA512AF70AB6006867FD /* VideoUploader.swift */,
+				17438C5F2AFC52EF007088F6 /* PostService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -395,6 +400,7 @@
 			isa = PBXGroup;
 			children = (
 				177FBA232AF487E9008C2175 /* FeedFilter.swift */,
+				17438C5D2AFC5189007088F6 /* DateExtension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -567,6 +573,8 @@
 				177FB9CD2AF463E5008C2175 /* TabBarView.swift in Sources */,
 				179664452AF5A33F001CCED9 /* PreviewPostView.swift in Sources */,
 				177FB9E72AF4754F008C2175 /* RegisterViewModel.swift in Sources */,
+				17438C602AFC52EF007088F6 /* PostService.swift in Sources */,
+				17438C5E2AFC5189007088F6 /* DateExtension.swift in Sources */,
 				177FB9D92AF4701E008C2175 /* LoginView.swift in Sources */,
 				177FBA2A2AF48849008C2175 /* FollowView.swift in Sources */,
 				177FBA1C2AF485FA008C2175 /* SettingView.swift in Sources */,

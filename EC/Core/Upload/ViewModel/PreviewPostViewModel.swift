@@ -33,7 +33,7 @@ class PreviewPostViewModel: ObservableObject {
                 mediaUrls.append(imageUrl)
             }
         }
-        let post = Post(id: postRef.documentID, caption: caption, title: captionTitle, likes: 0, stars: 0, comments: 0, timestamp: Timestamp(), imagesUrl: mediaUrls, userId: uid)
+        let post = Post(id: postRef.documentID, caption: caption, title: captionTitle, likes: 0, stars: 0, comments: 0, timestamp: Timestamp(), imagesUrl: mediaUrls, ownerId: uid)
         
         guard let encodedPost = try? Firestore.Encoder().encode(post) else {return}
         
