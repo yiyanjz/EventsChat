@@ -40,9 +40,13 @@ struct PostView: View {
                         
                         Spacer()
                         
-                        Image(systemName:"heart")
-                            .font(.system(size: 12))
-                        
+                        Button {
+                            print("PostView: Heart Button Clicked")
+                        } label: {
+                            Image(systemName:"heart")
+                                .font(.system(size: 12))
+                        }
+
                         Text("\(post.likes)")
                             .font(.system(size: 12))
                     }

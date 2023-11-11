@@ -98,22 +98,17 @@ extension FollowView {
             Button{
                 print("FollowView: like button clicked")
             }label: {
-                HStack(spacing:0){
-                    Button {
-                        print("FollowView: heart button clicked")
-                    } label: {
-                        Image(systemName: "heart")
-                            .frame(width: 30, height: 30, alignment: .center)
-                            .cornerRadius(15)
-                    }
-                    Button {
-                        print("FollowView: Liked List button clicked")
-                    } label: {
-                        Text("\(post.likes) likes")
-                            .fontWeight(.semibold)
-                            .font(.system(size: 13))
-                    }
-                }
+                Image(systemName: "heart")
+                    .frame(width: 30, height: 30, alignment: .center)
+                    .cornerRadius(15)
+            }
+            
+            Button {
+                print("FollowView: Liked List button clicked")
+            } label: {
+                Text("\(post.likes) likes")
+                    .fontWeight(.semibold)
+                    .font(.system(size: 13))
             }
             
             Spacer()
@@ -122,22 +117,18 @@ extension FollowView {
             Button{
                 print("FollowView: comment button clicked")
             }label: {
-                HStack(spacing:0){
-                    Image(systemName: "ellipsis.bubble")
-                        .frame(width: 30, height: 30, alignment: .center)
-                        .cornerRadius(15)
-                }
+                Image(systemName: "ellipsis.bubble")
+                    .frame(width: 30, height: 30, alignment: .center)
+                    .cornerRadius(15)
             }
 
             // star
             Button{
                 print("FollowView: secret button clicked")
             }label: {
-                HStack(spacing:0){
-                    Image(systemName: "star")
-                        .frame(width: 30, height: 30, alignment: .center)
-                        .cornerRadius(15)
-                }
+                Image(systemName: "star")
+                    .frame(width: 30, height: 30, alignment: .center)
+                    .cornerRadius(15)
             }
         }
         .foregroundColor(colorScheme == .light ? .black : .white)
