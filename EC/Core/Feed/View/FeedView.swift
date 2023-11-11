@@ -104,7 +104,7 @@ extension FeedView {
     
     var followView: some View {
         VStack {
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 // Story
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
