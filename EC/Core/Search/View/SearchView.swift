@@ -12,6 +12,7 @@ struct SearchView: View {
     @State var searched: Bool = false
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
+    @State var showResultView: Bool = false
     
     let names = ["Holly", "Josh", "Rhonda", "Ted"]
     var searchResults: [String] {
@@ -31,6 +32,10 @@ struct SearchView: View {
             }
             .padding(.horizontal,15)
             .navigationBarHidden(true)
+            .fullScreenCover(isPresented: $showResultView) {
+                SearchResultView(searchText: $searchText, searched: $searched)
+                    .NavigationHidden()
+            }
         }
     }
 }
@@ -89,18 +94,28 @@ extension SearchView {
                             
                             Spacer()
                             
-                            Image(systemName:"trash")
-                                .font(.footnote)
-                                .foregroundColor(.gray)
+                            Button {
+                                print("SearchView: trash button pressed")
+                            } label: {
+                                Image(systemName:"trash")
+                                    .font(.footnote)
+                                    .foregroundColor(.gray)
+                            }
                         }
                         
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack {
                                 ForEach(0..<5) { _ in
-                                    Text("Jay Chow baby my old baby")
-                                        .ButtonStyleWhite()
+                                    Button {
+                                        searchText = "Holly"
+                                        showResultView.toggle()
+                                    } label: {
+                                        Text("Jay Chow baby my old baby")
+                                            .ButtonStyleWhite()
+                                    }
                                 }
                             }
+                            .foregroundColor(Color(uiColor: colorScheme == .light ? .black : .white))
                         }
                     }
                     .padding(.vertical)
@@ -114,44 +129,27 @@ extension SearchView {
                         }
                         
                         VStack(spacing:15){
-                            
-                            HStack{
-                                Circle()
-                                    .frame(width: 5, height:5)
-                                    .foregroundColor(.yellow)
-                                Text("hannah is xiao ben dan")
-                                Spacer()
-                                Text("102.8w")
-                                Image(systemName: "arrow.up")
-                                    .font(.footnote)
-                                    .foregroundColor(.red)
+                            ForEach(0..<5) { _ in
+                                Button {
+                                    searchText = "hannah is xiao ben dan"
+                                    showResultView.toggle()
+                                } label: {
+                                    HStack{
+                                        Circle()
+                                            .frame(width: 5, height:5)
+                                            .foregroundColor(.yellow)
+                                        Text("hannah is xiao ben dan")
+                                        Spacer()
+                                        Text("102.8w")
+                                        Image(systemName: "arrow.up")
+                                            .font(.footnote)
+                                            .foregroundColor(.red)
+                                    }
+                                    .foregroundColor(Color(uiColor: colorScheme == .light ? .black : .white))
+                                    
+                                    Divider()
+                                }
                             }
-                            
-                            Divider()
-                            HStack{
-                                Circle()
-                                    .frame(width: 5, height:5)
-                                    .foregroundColor(.yellow.opacity(0.5))
-                                Text("hannah is xiao ben dan")
-                                Spacer()
-                                Text("102.8w")
-                                Image(systemName: "arrow.up")
-                                    .font(.footnote)
-                                    .foregroundColor(.red)
-                            }
-                            Divider()
-                            HStack{
-                                Circle()
-                                    .frame(width: 5, height:5)
-                                    .foregroundColor(.gray.opacity(0.5))
-                                Text("hannah is xiao ben dan")
-                                Spacer()
-                                Text("102.8w")
-                                Image(systemName: "arrow.up")
-                                    .font(.footnote)
-                                    .foregroundColor(.red)
-                            }
-                            
                         }
                     }
                 }
