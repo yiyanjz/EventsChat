@@ -15,7 +15,7 @@ enum SearchFilter: Int, CaseIterable {
     var title: String {
         switch self {
         case .all:
-            return "All Media"
+            return "Media"
         case .users:
             return "User"
         }

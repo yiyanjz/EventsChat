@@ -29,8 +29,8 @@ struct SearchResultView: View {
                     searchText = ""
                 }label: {
                     Image(systemName: "chevron.backward")
+                        .foregroundColor(colorScheme == .light ? .black : .white)
                 }
-                .foregroundColor(.black)
                 
                 HStack{
                     Image(systemName: "magnifyingglass")
@@ -39,7 +39,6 @@ struct SearchResultView: View {
                 .padding(5)
                 .background(.gray.opacity(0.2),in: RoundedRectangle(cornerRadius: 20))
             }
-            .foregroundColor(.gray)
             .padding(.horizontal)
             .padding(.top)
             
@@ -63,12 +62,7 @@ struct SearchResultView: View {
                     }
                 }
             }
-            .padding(.vertical,5)
             .padding(.horizontal)
-            
-            if scrollsize > -100{
-                Divider()
-            }
             
             TabView(selection: $selectedFilter){
                 SearchResultAllView(scrollsize: $scrollsize)
@@ -76,14 +70,11 @@ struct SearchResultView: View {
                 SearchResultUserView()
                     .tag(SearchFilter.users)
             }
-            .frame(minHeight:700,maxHeight: .infinity)
             .tabViewStyle(.page(indexDisplayMode: .never))
         }
         .offset(y:scrollsize < 0 ? scrollsize:0)
         .offset(y:scrollsize < -115 ? -(scrollsize+115):0)
         .frame(width: UIScreen.main.bounds.width)
-        .background(.white)
-        
     }
 }
 
