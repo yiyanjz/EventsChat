@@ -8,10 +8,19 @@
 import SwiftUI
 
 struct SearchView: View {
-    @State var searchtext: String = ""
+    @State var searchText: String = ""
     @State var searched: Bool = false
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
+    
+    let names = ["Holly", "Josh", "Rhonda", "Ted"]
+    var searchResults: [String] {
+        if searchText.isEmpty {
+            return names
+        } else {
+            return names.filter { $0.contains(searchText) }
+        }
+    }
     
     var body: some View {
         NavigationStack {
@@ -43,7 +52,7 @@ extension SearchView {
                     .fontWeight(.semibold)
                     .padding(.leading, 10)
                 
-                TextField("Search", text: $searchtext)
+                TextField("Search", text: $searchText)
                 
             }
             .frame(height: 35)
@@ -148,13 +157,13 @@ extension SearchView {
                 }
             }else{
                 VStack{
-                    ForEach(0..<19){ item in
+                    ForEach(searchResults, id: \.self) { name in
                         NavigationLink{
-                            SearchResultView(searchtext: $searchtext, searched: $searched)
+                            SearchResultView(searchText: $searchText, searched: $searched)
                                 .NavigationHidden()
                         }label: {
                             HStack{
-                                Text("Hannah Zhang")
+                                HighlightedText(text: name, searchText: searchText)
                                 Spacer()
                             }
                             .foregroundColor(Color(uiColor: colorScheme == .light ? .black : .white))
@@ -162,6 +171,7 @@ extension SearchView {
                         Divider()
                     }
                 }
+                .searchable(text: $searchText)
             }
         }
     }

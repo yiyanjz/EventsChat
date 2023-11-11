@@ -11,7 +11,7 @@ struct SearchResultView: View {
     @State var scrollsize : CGFloat = 0
     
     @Environment(\.dismiss) var dismiss
-    @Binding var searchtext: String
+    @Binding var searchText: String
     @Binding var searched: Bool
     @State private var selectedFilter: SearchFilter = .all
     @Environment(\.colorScheme) var colorScheme
@@ -26,7 +26,7 @@ struct SearchResultView: View {
                         dismiss()
                     }
                     searched = false
-                    searchtext = ""
+                    searchText = ""
                 }label: {
                     Image(systemName: "chevron.backward")
                 }
@@ -34,7 +34,7 @@ struct SearchResultView: View {
                 
                 HStack{
                     Image(systemName: "magnifyingglass")
-                    TextField("\(searchtext)", text: $searchtext)
+                    TextField("\(searchText)", text: $searchText)
                 }
                 .padding(5)
                 .background(.gray.opacity(0.2),in: RoundedRectangle(cornerRadius: 20))
@@ -89,6 +89,6 @@ struct SearchResultView: View {
 
 struct SearchResultView_Previews: PreviewProvider {
     static var previews: some View {
-        SearchResultView(searchtext: .constant(""), searched: .constant(false))
+        SearchResultView(searchText: .constant(""), searched: .constant(false))
     }
 }
