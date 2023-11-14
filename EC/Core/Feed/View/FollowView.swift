@@ -13,8 +13,12 @@ import _AVKit_SwiftUI
 struct FollowView: View {
     @Environment(\.colorScheme) var colorScheme
     @State private var selectedFilter: FeedFilter = .follow
-    var post: Post
-
+    @StateObject var viewModel: FollowViewModel
+    
+    init(post: Post) {
+        self._viewModel = StateObject(wrappedValue: FollowViewModel(post: post))
+    }
+    
     var body: some View {
         VStack {
             headerView
@@ -39,7 +43,7 @@ struct FollowView_Previews: PreviewProvider {
 extension FollowView {
     var headerView: some View {
         HStack {
-            if let postUser = post.user{
+            if let postUser = viewModel.post.user{
                 CircularProfileImageView(user: postUser, size: .xsmall)
                 
                 VStack(alignment: .leading) {
@@ -47,7 +51,7 @@ extension FollowView {
                         .fontWeight(.bold)
                         .font(.system(size: 15))
                     
-                    let date = post.timestamp.dateValue()
+                    let date = viewModel.post.timestamp.dateValue()
                     Text("\(date.calenderTimeSinceNow())")
                         .fontWeight(.regular)
                         .font(.system(size: 10))
@@ -72,7 +76,7 @@ extension FollowView {
     var imageView: some View {
         VStack {
             TabView {
-                ForEach(post.imagesUrl, id: \.self){ image in
+                ForEach(viewModel.post.imagesUrl, id: \.self){ image in
                     if image.contains("post_images") {
                         KFImage(URL(string: image))
                             .resizable()
@@ -106,7 +110,7 @@ extension FollowView {
             Button {
                 print("FollowView: Liked List button clicked")
             } label: {
-                Text("\(post.likes) likes")
+                Text("\(viewModel.post.likes) likes")
                     .fontWeight(.semibold)
                     .font(.system(size: 13))
             }
@@ -139,7 +143,7 @@ extension FollowView {
         VStack(spacing: 8){
             HStack{
                 let icon = Image(systemName: "text.bubble")
-                Text("\(icon): \(post.caption)")
+                Text("\(icon): \(viewModel.post.caption)")
                     .font(.system(size: 15))
                     .lineLimit(1)
 
