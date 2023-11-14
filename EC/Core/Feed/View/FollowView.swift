@@ -90,6 +90,9 @@ extension FollowView {
                             .cornerRadius(15)
                     }
                 }
+                .onTapGesture(count: 2) {
+                    viewModel.post.didLike ?? false ? viewModel.unlikePost() : viewModel.likePost()
+                }
             }
             .tabViewStyle(.page)
             .frame(height: 400)
@@ -100,17 +103,18 @@ extension FollowView {
         HStack {
             // likes
             Button{
-                print("FollowView: like button clicked")
+                viewModel.post.didLike ?? false ? viewModel.unlikePost() : viewModel.likePost()
             }label: {
-                Image(systemName: "heart")
+                Image(systemName: viewModel.post.didLike ?? false ? "heart.fill" : "heart")
                     .frame(width: 30, height: 30, alignment: .center)
                     .cornerRadius(15)
+                    .foregroundColor(viewModel.post.didLike ?? false ? .red : .gray)
             }
             
             Button {
                 print("FollowView: Liked List button clicked")
             } label: {
-                Text("\(viewModel.post.likes) likes")
+                Text("\(viewModel.likes) likes")
                     .fontWeight(.semibold)
                     .font(.system(size: 13))
             }

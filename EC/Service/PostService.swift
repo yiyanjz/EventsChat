@@ -45,4 +45,41 @@ struct PostService {
             completion(pendingPost)
         }
     }
+    
+    // like post
+    func likePost(_ post: Post, completion: @escaping() -> Void) {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        
+        let userLikeRef = Firestore.firestore().collection("users").document(uid).collection("user-likes")
+        
+        Firestore.firestore().collection("posts").document(post.id).updateData(["likes": post.likes + 1]) { _ in
+            userLikeRef.document(post.id).setData([:]) { _ in
+                completion()
+            }
+        }
+    }
+    
+    // unlike post
+    func unlikePost(_ post: Post, completion: @escaping() -> Void) {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        guard post.likes > 0 else {return}
+        
+        let userLikeRef = Firestore.firestore().collection("users").document(uid).collection("user-likes")
+
+        Firestore.firestore().collection("posts").document(post.id).updateData(["likes": post.likes - 1]) { _ in
+            userLikeRef.document(post.id).delete() { _ in
+                completion()
+            }
+        }
+    }
+    
+    // prefill user liked post
+    func checkIfUserLikedPost(_ post: Post, completion: @escaping(Bool) -> Void) {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        
+        Firestore.firestore().collection("users").document(uid).collection("user-likes").document(post.id).getDocument { snapshot, _ in
+            guard let snapshot = snapshot else {return}
+            completion(snapshot.exists)
+        }
+    }
 }
