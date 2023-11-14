@@ -9,15 +9,15 @@ import SwiftUI
 
 struct AllLikesView: View {
     @Environment(\.colorScheme) var colorScheme
-    @State var likedList: [String]
+    @StateObject var viewModel: AllLikesViewModel
+    
+    init(likedList: [String]) {
+        self._viewModel = StateObject(wrappedValue: AllLikesViewModel(likedList: likedList))
+    }
     
     var body: some View {
         ScrollView(showsIndicators: false){
             VStack {
-                Text("Liked by")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
-                
                 ForEach(0..<10){ item in
                     HStack{
                         Button {
@@ -78,6 +78,6 @@ struct AllLikesView: View {
 
 struct AllLikesView_Previews: PreviewProvider {
     static var previews: some View {
-        AllLikesView(likedList: ["sdf"])
+        AllLikesView(likedList: [""])
     }
 }

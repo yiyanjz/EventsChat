@@ -20,14 +20,12 @@ class FollowViewModel: ObservableObject {
     }
     
     func likePost(){
-        print("\(post.likes)")
         service.likePost(post) {
             self.post.didLike = true
         }
     }
     
     func unlikePost(){
-        print("\(post.likes)")
         service.unlikePost(post) {
             self.post.didLike = false
         }
