@@ -138,11 +138,12 @@ extension FollowView {
 
             // star
             Button{
-                print("FollowView: secret button clicked")
+                viewModel.post.didStar ?? false ? viewModel.unstarPost() : viewModel.starPost()
             }label: {
-                Image(systemName: "star")
+                Image(systemName: viewModel.post.didStar ?? false ? "star.fill" : "star")
                     .frame(width: 30, height: 30, alignment: .center)
                     .cornerRadius(15)
+                    .foregroundColor(viewModel.post.didStar ?? false ? .yellow : .gray)
             }
         }
         .foregroundColor(colorScheme == .light ? .black : .white)

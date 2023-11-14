@@ -95,4 +95,41 @@ struct PostService {
             completion(snapshot.exists)
         }
     }
+    
+    // star post
+    func starPost(_ post: Post, completion: @escaping() -> Void) {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        
+        let userLikeRef = Firestore.firestore().collection("users").document(uid).collection("user-stars")
+        
+        Firestore.firestore().collection("posts").document(post.id).updateData(["stars": post.stars + 1]) { _ in
+            userLikeRef.document(post.id).setData([:]) { _ in
+                completion()
+            }
+        }
+    }
+    
+    // unstar post
+    func unstarPost(_ post: Post, completion: @escaping() -> Void) {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        guard post.stars >= 0 else {return}
+        
+        let userLikeRef = Firestore.firestore().collection("users").document(uid).collection("user-stars")
+        
+        Firestore.firestore().collection("posts").document(post.id).updateData(["stars": post.stars - 1]) { _ in
+            userLikeRef.document(post.id).delete() { _ in
+                completion()
+            }
+        }
+    }
+    
+    // prefill user star post
+    func checkIfUserStaredPost(_ post: Post, completion: @escaping(Bool) -> Void) {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        
+        Firestore.firestore().collection("users").document(uid).collection("user-stars").document(post.id).getDocument { snapshot, _ in
+            guard let snapshot = snapshot else {return}
+            completion(snapshot.exists)
+        }
+    }
 }

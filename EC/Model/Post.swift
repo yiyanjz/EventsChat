@@ -20,6 +20,7 @@ struct Post: Identifiable, Codable, Hashable {
     var imagesUrl: [String]
     var ownerId: String?
     var didLike: Bool? = false
+    var didStar: Bool? = false
     var userLiked: [String]? = []
 }
 
