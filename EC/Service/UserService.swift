@@ -33,4 +33,15 @@ struct UserService {
             completion(data)
         }
     }
+    
+    // fetch posts
+    static func fetchLikedUsers(likedList: [String]) async throws -> [User] {
+        var users = [User]()
+        for i in 0..<likedList.count {
+            let likedUserId = likedList[i]
+            let postUser = try await UserService.fetchUser(withUid: likedUserId)
+            users.append(postUser)
+        }
+        return users
+    }
 }

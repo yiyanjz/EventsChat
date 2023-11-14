@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct AllLikesView: View {
     @Environment(\.colorScheme) var colorScheme
@@ -16,62 +17,64 @@ struct AllLikesView: View {
     }
     
     var body: some View {
-        ScrollView(showsIndicators: false){
-            VStack {
-                ForEach(0..<10){ item in
-                    HStack{
-                        Button {
-                            print("SearchResultUserView: other profile clicked")
-                        } label: {
-                            Image("shin")
-                                .resizable()
-                                .frame(width: 40, height: 40)
-                                .clipShape(Circle())
-                                
-                            VStack(alignment:.leading,spacing: 2){
-                                Text("Username")
-                                    .font(.system(size: 15))
-                                    .foregroundColor(colorScheme == .light ? .black : .white)
+        VStack {
+            ScrollView(showsIndicators: false){
+                VStack {
+                    ForEach(viewModel.likedListUsers ?? []){ user in
+                        HStack{
+                            Button {
+                                print("SearchResultUserView: other profile clicked")
+                            } label: {
+                                KFImage(URL(string: user.profileImageUrl ?? ""))
+                                    .resizable()
+                                    .frame(width: 40, height: 40)
+                                    .clipShape(Circle())
+                                    
+                                VStack(alignment:.leading,spacing: 2){
+                                    Text(user.username)
+                                        .font(.system(size: 15))
+                                        .foregroundColor(colorScheme == .light ? .black : .white)
 
-                                HStack{
-                                    Text("EC ID:")
-                                    Text("1999286616")
-                                }
-                                
-                                HStack{
-                                    Text("Posts-18882")
+                                    HStack{
+                                        Text("EC ID:")
+                                        Text("1999286616")
+                                    }
                                     
-                                    Divider()
-                                        .frame(height:10)
-                                    
-                                    Text("Followers-8w")
+                                    HStack{
+                                        Text("Posts-18882")
+                                        
+                                        Divider()
+                                            .frame(height:10)
+                                        
+                                        Text("Followers-8w")
+                                    }
                                 }
+                                .font(.system(size: 12))
+                                .foregroundColor(.gray)
+                            }
+                            
+                            Spacer()
+                            
+                            Button{
+                                print("SearchResultUserView: Follow button clicked")
+                            }label: {
+                                Text("Follow")
+                                    .foregroundColor(.red)
+                                    .padding(.vertical,5)
+                                    .padding(.horizontal,18)
+                                    .padding(1)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(Color(uiColor: .red), lineWidth: 1)
+                                    )
                             }
                             .font(.system(size: 12))
-                            .foregroundColor(.gray)
                         }
-                        
-                        Spacer()
-                        
-                        Button{
-                            print("SearchResultUserView: Follow button clicked")
-                        }label: {
-                            Text("Follow")
-                                .foregroundColor(.red)
-                                .padding(.vertical,5)
-                                .padding(.horizontal,18)
-                                .padding(1)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(Color(uiColor: .red), lineWidth: 1)
-                                )
-                        }
-                        .font(.system(size: 12))
                     }
                 }
+                .padding(.horizontal)
+                .padding(.vertical)
             }
-            .padding(.horizontal)
-            .padding(.vertical)
         }
     }
 }

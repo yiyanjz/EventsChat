@@ -49,7 +49,6 @@ struct PostService {
             snapshot.documentChanges.forEach { documentChange in
                 if documentChange.type == .modified {
                     guard let data = try? documentChange.document.data(as: Post.self) else {return}
-                    print(data)
                     completion(data)
                 }
             }

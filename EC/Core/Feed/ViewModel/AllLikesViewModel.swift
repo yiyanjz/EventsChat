@@ -8,11 +8,16 @@
 import SwiftUI
 
 class AllLikesViewModel: ObservableObject {
-    @State var likedList: [String]
+    @Published var likedList: [String]
+    @Published var likedListUsers: [User]?
     
     init(likedList: [String]) {
         self.likedList = likedList
+        Task { try await fectchLikedUsers() }
     }
     
-    
+    @MainActor
+    func fectchLikedUsers() async throws {
+        self.likedListUsers = try await UserService.fetchLikedUsers(likedList: likedList)
+    }
 }
