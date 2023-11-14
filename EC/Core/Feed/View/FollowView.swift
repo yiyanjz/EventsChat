@@ -108,12 +108,14 @@ extension FollowView {
         HStack {
             // likes
             Button{
-                viewModel.post.didLike ?? false ? viewModel.unlikePost() : viewModel.likePost()
+                withAnimation(.spring()) {
+                    viewModel.post.didLike ?? false ? viewModel.unlikePost() : viewModel.likePost()
+                }
             }label: {
                 Image(systemName: viewModel.post.didLike ?? false ? "heart.fill" : "heart")
                     .frame(width: 30, height: 30, alignment: .center)
                     .cornerRadius(15)
-                    .foregroundColor(viewModel.post.didLike ?? false ? .red : .gray)
+                    .foregroundColor(viewModel.post.didLike ?? false ? .red : .black)
             }
             
             // all likes
@@ -143,7 +145,7 @@ extension FollowView {
                 Image(systemName: viewModel.post.didStar ?? false ? "star.fill" : "star")
                     .frame(width: 30, height: 30, alignment: .center)
                     .cornerRadius(15)
-                    .foregroundColor(viewModel.post.didStar ?? false ? .yellow : .gray)
+                    .foregroundColor(viewModel.post.didStar ?? false ? .yellow : .black)
             }
         }
         .foregroundColor(colorScheme == .light ? .black : .white)

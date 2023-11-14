@@ -63,7 +63,7 @@ struct PostService {
         guard let userLiked = post.userLiked else {return}
         let newUserLiked = userLiked + [uid]
         
-        Firestore.firestore().collection("posts").document(post.id).updateData(["likes": post.likes + 1, "userLiked": newUserLiked]) { _ in
+        Firestore.firestore().collection("posts").document(post.id).updateData(["likes": post.likes + 1, "userLiked": newUserLiked, "didLike": true]) { _ in
             userLikeRef.document(post.id).setData([:]) { _ in
                 completion()
             }
@@ -79,7 +79,7 @@ struct PostService {
         guard let userLiked = post.userLiked else {return}
         let newUserLiked = userLiked.filter({ $0 != uid })
 
-        Firestore.firestore().collection("posts").document(post.id).updateData(["likes": post.likes - 1, "userLiked": newUserLiked]) { _ in
+        Firestore.firestore().collection("posts").document(post.id).updateData(["likes": post.likes - 1, "userLiked": newUserLiked, "didLike": false]) { _ in
             userLikeRef.document(post.id).delete() { _ in
                 completion()
             }
@@ -102,7 +102,7 @@ struct PostService {
         
         let userLikeRef = Firestore.firestore().collection("users").document(uid).collection("user-stars")
         
-        Firestore.firestore().collection("posts").document(post.id).updateData(["stars": post.stars + 1]) { _ in
+        Firestore.firestore().collection("posts").document(post.id).updateData(["stars": post.stars + 1, "didStar": true]) { _ in
             userLikeRef.document(post.id).setData([:]) { _ in
                 completion()
             }
@@ -116,7 +116,7 @@ struct PostService {
         
         let userLikeRef = Firestore.firestore().collection("users").document(uid).collection("user-stars")
         
-        Firestore.firestore().collection("posts").document(post.id).updateData(["stars": post.stars - 1]) { _ in
+        Firestore.firestore().collection("posts").document(post.id).updateData(["stars": post.stars - 1, "didStar": false]) { _ in
             userLikeRef.document(post.id).delete() { _ in
                 completion()
             }

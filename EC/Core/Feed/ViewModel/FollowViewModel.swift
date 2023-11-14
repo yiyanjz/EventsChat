@@ -22,16 +22,12 @@ class FollowViewModel: ObservableObject {
     
     // like post
     func likePost(){
-        service.likePost(post) {
-            self.post.didLike = true
-        }
+        service.likePost(post){}
     }
     
     // unlike post
     func unlikePost(){
-        service.unlikePost(post) {
-            self.post.didLike = false
-        }
+        service.unlikePost(post){}
     }
     
     // check for prefilled likes
@@ -46,28 +42,20 @@ class FollowViewModel: ObservableObject {
     // listener for modified changes
     func fetchUpdatePost(){
         PostService.observePost { post in
-            var temp_user = self.post.user
-            var tempDidLike = self.post.didLike
-            var tempDidStar = self.post.didStar
+            let temp_user = self.post.user
             self.post = post
             self.post.user = temp_user
-            self.post.didLike = tempDidLike
-            self.post.didStar = tempDidStar
         }
     }
     
     // star post
     func starPost() {
-        service.starPost(post) {
-            self.post.didStar = true
-        }
+        service.starPost(post){}
     }
     
     // unstar post
     func unstarPost() {
-        service.unstarPost(post) {
-            self.post.didStar = false
-        }
+        service.unstarPost(post) {}
     }
     
     // check for prefilled stars
