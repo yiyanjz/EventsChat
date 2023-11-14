@@ -31,6 +31,11 @@ struct FollowView: View {
                 .padding(.bottom)
         }
         .cornerRadius(15)
+        .sheet(isPresented: $viewModel.showAllLikes) {
+            if let userLiked = viewModel.post.userLiked {
+                AllLikesView(likedList: userLiked)
+            }
+        }
     }
 }
 
@@ -111,10 +116,11 @@ extension FollowView {
                     .foregroundColor(viewModel.post.didLike ?? false ? .red : .gray)
             }
             
+            // all likes
             Button {
-                print("FollowView: Liked List button clicked")
+                viewModel.showAllLikes.toggle()
             } label: {
-                Text("\(viewModel.likes) likes")
+                Text("\(viewModel.post.likes) likes")
                     .fontWeight(.semibold)
                     .font(.system(size: 13))
             }

@@ -31,14 +31,9 @@ struct PostService {
             var pendingPost = [Post]()
 
             snapshot.documentChanges.forEach { documentChange in
-                switch documentChange.type {
-                case .added:
+                if documentChange.type == .added {
                     guard let data = try? documentChange.document.data(as: Post.self) else {return}
                     pendingPost.append(data)
-                case .modified:
-                    print("Pending User Modified")
-                case .removed:
-                    print("User pending removed")
                 }
             }
             
@@ -57,12 +52,16 @@ struct PostService {
                 completion()
             }
         }
+        
+        guard let userLiked = post.userLiked else {return}
+        let newUserLiked = userLiked + [uid]
+        Firestore.firestore().collection("posts").document(post.id).updateData(["userLiked": newUserLiked])
     }
     
     // unlike post
     func unlikePost(_ post: Post, completion: @escaping() -> Void) {
         guard let uid = Auth.auth().currentUser?.uid else {return}
-        guard post.likes > 0 else {return}
+        guard post.likes >= 0 else {return}
         
         let userLikeRef = Firestore.firestore().collection("users").document(uid).collection("user-likes")
 
@@ -71,6 +70,10 @@ struct PostService {
                 completion()
             }
         }
+        
+        guard let userLiked = post.userLiked else {return}
+        let newUserLiked = userLiked.filter({ $0 == uid })
+        Firestore.firestore().collection("posts").document(post.id).updateData(["userLiked": newUserLiked])
     }
     
     // prefill user liked post

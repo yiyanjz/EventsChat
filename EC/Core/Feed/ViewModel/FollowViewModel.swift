@@ -11,25 +11,26 @@ import Firebase
 class FollowViewModel: ObservableObject {
     private let service = PostService()
     @Published var post: Post
-    @Published var likes: Int = 0
+    @Published var showAllLikes: Bool = false
     
     init(post: Post) {
         self.post = post
-        self.likes = self.post.likes
         checkIfUserLikedPost()
     }
     
     func likePost(){
+        print("\(post.likes)")
         service.likePost(post) {
             self.post.didLike = true
-            self.likes += 1
+            self.post.likes += 1
         }
     }
     
     func unlikePost(){
+        print("\(post.likes)")
         service.unlikePost(post) {
             self.post.didLike = false
-            self.likes -= 1
+            self.post.likes -= 1
         }
     }
     
