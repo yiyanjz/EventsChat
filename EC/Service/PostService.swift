@@ -41,21 +41,34 @@ struct PostService {
         }
     }
     
+    // check for modify posts
+    static func observePost(completion: @escaping(Post) -> Void) {
+        Firestore.firestore().collection("posts").addSnapshotListener { (querySnapshot, error) in
+            guard let snapshot = querySnapshot else { return }
+
+            snapshot.documentChanges.forEach { documentChange in
+                if documentChange.type == .modified {
+                    guard let data = try? documentChange.document.data(as: Post.self) else {return}
+                    print(data)
+                    completion(data)
+                }
+            }
+        }
+    }
+    
     // like post
     func likePost(_ post: Post, completion: @escaping() -> Void) {
         guard let uid = Auth.auth().currentUser?.uid else {return}
         
         let userLikeRef = Firestore.firestore().collection("users").document(uid).collection("user-likes")
+        guard let userLiked = post.userLiked else {return}
+        let newUserLiked = userLiked + [uid]
         
-        Firestore.firestore().collection("posts").document(post.id).updateData(["likes": post.likes + 1]) { _ in
+        Firestore.firestore().collection("posts").document(post.id).updateData(["likes": post.likes + 1, "userLiked": newUserLiked]) { _ in
             userLikeRef.document(post.id).setData([:]) { _ in
                 completion()
             }
         }
-        
-        guard let userLiked = post.userLiked else {return}
-        let newUserLiked = userLiked + [uid]
-        Firestore.firestore().collection("posts").document(post.id).updateData(["userLiked": newUserLiked])
     }
     
     // unlike post
@@ -64,16 +77,14 @@ struct PostService {
         guard post.likes >= 0 else {return}
         
         let userLikeRef = Firestore.firestore().collection("users").document(uid).collection("user-likes")
+        guard let userLiked = post.userLiked else {return}
+        let newUserLiked = userLiked.filter({ $0 != uid })
 
-        Firestore.firestore().collection("posts").document(post.id).updateData(["likes": post.likes - 1]) { _ in
+        Firestore.firestore().collection("posts").document(post.id).updateData(["likes": post.likes - 1, "userLiked": newUserLiked]) { _ in
             userLikeRef.document(post.id).delete() { _ in
                 completion()
             }
         }
-        
-        guard let userLiked = post.userLiked else {return}
-        let newUserLiked = userLiked.filter({ $0 == uid })
-        Firestore.firestore().collection("posts").document(post.id).updateData(["userLiked": newUserLiked])
     }
     
     // prefill user liked post

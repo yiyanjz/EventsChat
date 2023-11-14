@@ -16,13 +16,13 @@ class FollowViewModel: ObservableObject {
     init(post: Post) {
         self.post = post
         checkIfUserLikedPost()
+        fetchUpdatePost()
     }
     
     func likePost(){
         print("\(post.likes)")
         service.likePost(post) {
             self.post.didLike = true
-            self.post.likes += 1
         }
     }
     
@@ -30,7 +30,6 @@ class FollowViewModel: ObservableObject {
         print("\(post.likes)")
         service.unlikePost(post) {
             self.post.didLike = false
-            self.post.likes -= 1
         }
     }
     
@@ -39,6 +38,13 @@ class FollowViewModel: ObservableObject {
             if didLike {
                 self.post.didLike = true
             }
+        }
+    }
+    
+    // listener for modified changes
+    func fetchUpdatePost(){
+        PostService.observePost { post in
+            self.post = post
         }
     }
 }

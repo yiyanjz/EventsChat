@@ -11,7 +11,9 @@ struct AllLikesView: View {
     @State var likedList: [String]
     
     var body: some View {
-        Text("all Likes")
+        ForEach(likedList, id: \.self) { user in
+            Text(user)
+        }
     }
 }
 
