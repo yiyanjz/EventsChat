@@ -12,6 +12,7 @@ class FollowViewModel: ObservableObject {
     private let service = PostService()
     @Published var post: Post
     @Published var showAllLikes: Bool = false
+    @Published var showComments: Bool = false
     
     init(post: Post) {
         self.post = post

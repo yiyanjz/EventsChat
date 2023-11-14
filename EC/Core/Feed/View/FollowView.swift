@@ -36,6 +36,12 @@ struct FollowView: View {
                 AllLikesView(likedList: userLiked)
             }
         }
+        .sheet(isPresented: $viewModel.showComments) {
+            if let user = viewModel.post.user {
+                CommentsView(user: user)
+                    .presentationDetents([.medium, .large])
+            }
+        }
     }
 }
 
@@ -115,7 +121,7 @@ extension FollowView {
                 Image(systemName: viewModel.post.didLike ?? false ? "heart.fill" : "heart")
                     .frame(width: 30, height: 30, alignment: .center)
                     .cornerRadius(15)
-                    .foregroundColor(viewModel.post.didLike ?? false ? .red : .black)
+                    .foregroundColor(viewModel.post.didLike ?? false ? .red : colorScheme == .light ? .black : .white)
             }
             
             // all likes
@@ -131,7 +137,7 @@ extension FollowView {
             
             // comment
             Button{
-                print("FollowView: comment button clicked")
+                viewModel.showComments.toggle()
             }label: {
                 Image(systemName: "ellipsis.bubble")
                     .frame(width: 30, height: 30, alignment: .center)
@@ -145,7 +151,8 @@ extension FollowView {
                 Image(systemName: viewModel.post.didStar ?? false ? "star.fill" : "star")
                     .frame(width: 30, height: 30, alignment: .center)
                     .cornerRadius(15)
-                    .foregroundColor(viewModel.post.didStar ?? false ? .yellow : .black)
+                    .foregroundColor(viewModel.post.didStar ?? false ? .yellow : colorScheme == .light ? .black : .white)
+                    .offset(y: -1)
             }
         }
         .foregroundColor(colorScheme == .light ? .black : .white)
