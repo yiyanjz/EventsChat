@@ -43,7 +43,7 @@ class FollowViewModel: ObservableObject {
     
     // listener for modified changes
     func fetchUpdatePost(){
-        PostService.observePost { post in
+        service.observeCurrentPost(withPostID: post.id) { post in
             let temp_user = self.post.user
             self.post = post
             self.post.user = temp_user

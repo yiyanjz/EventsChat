@@ -129,12 +129,14 @@ extension FollowView {
             }
             
             // all likes
-            Button {
-                viewModel.showAllLikes.toggle()
-            } label: {
-                Text("\(viewModel.post.likes) likes")
-                    .fontWeight(.semibold)
-                    .font(.system(size: 13))
+            if let allLikesCount = viewModel.post.userLiked?.count, allLikesCount > 0 {
+                Button {
+                    viewModel.showAllLikes.toggle()
+                } label: {
+                    Text("\(viewModel.post.likes) likes")
+                        .fontWeight(.semibold)
+                        .font(.system(size: 13))
+                }
             }
             
             Spacer()

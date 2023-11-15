@@ -81,6 +81,6 @@ struct AllLikesView: View {
 
 struct AllLikesView_Previews: PreviewProvider {
     static var previews: some View {
-        AllLikesView(likedList: [""])
+        AllLikesView(likedList: ["ddd"])
     }
 }

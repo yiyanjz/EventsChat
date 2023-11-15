@@ -132,4 +132,13 @@ struct PostService {
             completion(snapshot.exists)
         }
     }
+    
+    // check for modify posts
+    func observeCurrentPost(withPostID postID: String, completion: @escaping(Post) -> Void) {
+        Firestore.firestore().collection("posts").document(postID).addSnapshotListener { querySnapshot, error in
+            guard let document = querySnapshot else {return}
+            guard let data = try? document.data(as: Post.self) else {return}
+            completion(data)
+        }
+    }
 }
