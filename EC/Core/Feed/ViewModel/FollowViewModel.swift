@@ -13,6 +13,7 @@ class FollowViewModel: ObservableObject {
     @Published var post: Post
     @Published var showAllLikes: Bool = false
     @Published var showComments: Bool = false
+    @Published var showShared: Bool = false
     
     init(post: Post) {
         self.post = post

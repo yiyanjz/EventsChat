@@ -42,6 +42,10 @@ struct FollowView: View {
                     .presentationDetents([.medium, .large])
             }
         }
+        .sheet(isPresented: $viewModel.showShared) {
+            SharedView()
+                .presentationDetents([.medium, .large])
+        }
     }
 }
 
@@ -73,7 +77,7 @@ extension FollowView {
                 Spacer()
                 
                 Button{
-                    print("FollowView: shared button clicked")
+                    viewModel.showShared.toggle()
                 }label: {
                     Image(systemName: "square.and.arrow.up")
                         .frame(width: 30, height: 30, alignment: .center)
