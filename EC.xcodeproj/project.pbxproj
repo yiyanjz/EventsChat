@@ -71,7 +71,9 @@
 		179664412AF59645001CCED9 /* PreviewImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179664402AF59645001CCED9 /* PreviewImageView.swift */; };
 		179664432AF5A079001CCED9 /* PreviewVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179664422AF5A079001CCED9 /* PreviewVideoView.swift */; };
 		179664452AF5A33F001CCED9 /* PreviewPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179664442AF5A33F001CCED9 /* PreviewPostView.swift */; };
+		17B710D12B047F88003BFF67 /* CommentsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B710D02B047F88003BFF67 /* CommentsCell.swift */; };
 		17D0F89C2AFB315D00AEFC41 /* UploadViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D0F89B2AFB315D00AEFC41 /* UploadViewModel.swift */; };
+		17E698A02B048048006799E2 /* LikeAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E6989F2B048048006799E2 /* LikeAnimation.swift */; };
 		17F4BC2B2B02F8940078A088 /* FollowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F4BC2A2B02F8940078A088 /* FollowViewModel.swift */; };
 		17F4BC2D2B030C730078A088 /* AllLikesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F4BC2C2B030C730078A088 /* AllLikesView.swift */; };
 /* End PBXBuildFile section */
@@ -137,7 +139,9 @@
 		179664402AF59645001CCED9 /* PreviewImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreviewImageView.swift; path = EC/Core/Upload/View/PreviewImageView.swift; sourceTree = SOURCE_ROOT; };
 		179664422AF5A079001CCED9 /* PreviewVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreviewVideoView.swift; path = EC/Core/Upload/View/PreviewVideoView.swift; sourceTree = SOURCE_ROOT; };
 		179664442AF5A33F001CCED9 /* PreviewPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreviewPostView.swift; path = EC/Core/Upload/View/PreviewPostView.swift; sourceTree = SOURCE_ROOT; };
+		17B710D02B047F88003BFF67 /* CommentsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsCell.swift; sourceTree = "<group>"; };
 		17D0F89B2AFB315D00AEFC41 /* UploadViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadViewModel.swift; sourceTree = "<group>"; };
+		17E6989F2B048048006799E2 /* LikeAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeAnimation.swift; sourceTree = "<group>"; };
 		17F4BC2A2B02F8940078A088 /* FollowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowViewModel.swift; sourceTree = "<group>"; };
 		17F4BC2C2B030C730078A088 /* AllLikesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllLikesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -428,6 +432,7 @@
 			children = (
 				177FBA232AF487E9008C2175 /* FeedFilter.swift */,
 				17438C5D2AFC5189007088F6 /* DateExtension.swift */,
+				17E6989F2B048048006799E2 /* LikeAnimation.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -447,6 +452,7 @@
 			isa = PBXGroup;
 			children = (
 				17F4BC2C2B030C730078A088 /* AllLikesView.swift */,
+				17B710D02B047F88003BFF67 /* CommentsCell.swift */,
 				1759604E2B04338C00203003 /* CommentsView.swift */,
 				177FBA252AF48800008C2175 /* FeedView.swift */,
 				177FBA292AF48849008C2175 /* FollowView.swift */,
@@ -638,12 +644,14 @@
 				177FB9DD2AF471E3008C2175 /* LoginButtonModifer.swift in Sources */,
 				1782EA502AF6ECAD006867FD /* PreviewPostViewModel.swift in Sources */,
 				1785C83C2AFD737F00B2B927 /* SearchView.swift in Sources */,
+				17E698A02B048048006799E2 /* LikeAnimation.swift in Sources */,
 				177FB9DF2AF472D7008C2175 /* LoginWithEmailView.swift in Sources */,
 				177FBA102AF47D81008C2175 /* RoundedShape.swift in Sources */,
 				177FBA062AF47C9C008C2175 /* GenderSelection.swift in Sources */,
 				177FBA0C2AF47D09008C2175 /* CircularProfileImageView.swift in Sources */,
 				177FB9FA2AF47899008C2175 /* User.swift in Sources */,
 				179664412AF59645001CCED9 /* PreviewImageView.swift in Sources */,
+				17B710D12B047F88003BFF67 /* CommentsCell.swift in Sources */,
 				177FB9F82AF4786A008C2175 /* AuthService.swift in Sources */,
 				17F4BC2B2B02F8940078A088 /* FollowViewModel.swift in Sources */,
 				171FD5202AFF00FE00E701A4 /* SearchResultUserView.swift in Sources */,
