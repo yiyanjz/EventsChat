@@ -15,6 +15,13 @@ struct FollowView: View {
     @State private var selectedFilter: FeedFilter = .follow
     @StateObject var viewModel: FollowViewModel
     
+    @State var loveCount = 0
+    @State var animationXCord = 0.0
+    @State var animationYCord = 0.0
+    func TapAction() {
+        loveCount += 1
+    }
+    
     init(post: Post) {
         self._viewModel = StateObject(wrappedValue: FollowViewModel(post: post))
     }
@@ -92,21 +99,39 @@ extension FollowView {
         VStack {
             TabView {
                 ForEach(viewModel.post.imagesUrl, id: \.self){ image in
-                    if image.contains("post_images") {
-                        KFImage(URL(string: image))
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: UIScreen.main.bounds.width - 20, height: 400, alignment: .center)
-                            .cornerRadius(15)
-                    } else {
-                        VideoPlayer(player: AVPlayer(url: URL(string: image)!))
-                            .scaledToFill()
-                            .frame(width: UIScreen.main.bounds.width - 20, height: 400, alignment: .center)
-                            .cornerRadius(15)
+                    ZStack {
+                        VStack {
+                            if image.contains("post_images") {
+                                KFImage(URL(string: image))
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: UIScreen.main.bounds.width - 20, height: 400, alignment: .center)
+                                    .cornerRadius(15)
+                            } else {
+                                VideoPlayer(player: AVPlayer(url: URL(string: image)!))
+                                    .scaledToFill()
+                                    .frame(width: UIScreen.main.bounds.width - 20, height: 400, alignment: .center)
+                                    .cornerRadius(15)
+                            }
+                        }
+                        
+                        ForEach(0 ..< loveCount, id: \.self) { _ in
+                            Image(systemName: "heart.fill")
+                                .resizable()
+                                .frame(width: 60, height: 60)
+                                .padding()
+                                .modifier(LoveTapModifier())
+                                .position(x: animationXCord, y: animationYCord)
+                        }
                     }
                 }
-                .onTapGesture(count: 2) {
-                    viewModel.post.didLike ?? false ? viewModel.unlikePost() : viewModel.likePost()
+                .onTapGesture(count: 2) { location in
+                    if viewModel.post.didLike == false {
+                        viewModel.likePost()
+                    }
+                    TapAction()
+                    animationXCord = location.x
+                    animationYCord = location.y
                 }
             }
             .tabViewStyle(.page)
