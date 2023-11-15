@@ -10,19 +10,23 @@ import Kingfisher
 
 struct PostView: View {
     @Environment(\.colorScheme) var colorScheme
-    var post: Post
+    @StateObject var viewModel: PostViewModel
+    
+    init(post: Post) {
+        self._viewModel = StateObject(wrappedValue: PostViewModel(post: post))
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
-//            KFImage(URL(string: post.imagesUrl.first ?? ""))
-            Image(post.imagesUrl.first ?? "")
+            KFImage(URL(string: viewModel.post.imagesUrl.first ?? ""))
+//            Image(post.imagesUrl.first ?? "")
                 .resizable()
                 .scaledToFit()
             
             // title
             VStack(alignment: .leading) {
                 HStack {
-                    Text(post.title)
+                    Text(viewModel.post.title)
                         .font(.title3).bold()
                         .foregroundColor(colorScheme == .light ? .black : .white)
                         .lineLimit(2)
@@ -30,7 +34,7 @@ struct PostView: View {
                 
                 // user + likes
                 HStack {
-                    if let postUser = post.user{
+                    if let postUser = viewModel.post.user{
                         CircularProfileImageView(user: postUser, size: .xxxsmall)
                         
                         Text(postUser.username)
@@ -40,14 +44,19 @@ struct PostView: View {
                         
                         Spacer()
                         
-                        Button {
-                            print("PostView: Heart Button Clicked")
-                        } label: {
-                            Image(systemName:"heart")
-                                .font(.system(size: 12))
+                        // likes
+                        Button{
+                            withAnimation(.spring()) {
+                                viewModel.post.didLike ?? false ? viewModel.unlikePost() : viewModel.likePost()
+                            }
+                        }label: {
+                            Image(systemName: viewModel.post.didLike ?? false ? "heart.fill" : "heart")
+                                .frame(width: 30, height: 30, alignment: .center)
+                                .cornerRadius(15)
+                                .foregroundColor(viewModel.post.didLike ?? false ? .red : colorScheme == .light ? .black : .white)
                         }
 
-                        Text("\(post.likes)")
+                        Text("\(viewModel.post.likes)")
                             .font(.system(size: 12))
                     }
                 }
