@@ -8,31 +8,28 @@
 import SwiftUI
 
 struct test: View {
-    @Environment(\.colorScheme) var colorScheme
-    @Namespace private var animation
+    @Namespace var animation
+    @State private var isFlipped = false
 
     var body: some View {
-        VStack {
-            ScrollView(showsIndicators: false) {
-                HStack(alignment:.top) {
-                    LazyVStack {
-                        ForEach(Array(Post.MOCK_POST.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}).enumerated()), id: \.offset) { index,post in
-                            if index & 2 == 0 {
-                                PostView(post: post)
-                            }
-                        }
-                    }
-                    LazyVStack {
-                        ForEach(Array(Post.MOCK_POST.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}).enumerated()), id: \.offset) { index,post in
-                            if index & 2 != 0 {
-                                PostView(post: post)
-                            }
-                        }
-                    }
+        ZStack {
+            VStack{
+                test2(animation: animation)
+            }
+            .opacity(isFlipped ? 0 : 1)
+
+            VStack {
+                if isFlipped{
+                    test3(animation: animation)
                 }
             }
+            .opacity(isFlipped ? 1 : 0)
         }
-        .padding(.horizontal, 4)
+        .onTapGesture {
+            withAnimation(.spring(response: 0.7, dampingFraction: 0.8)) {
+                isFlipped.toggle()
+            }
+        }
     }
 }
 
@@ -41,3 +38,28 @@ struct test_Previews: PreviewProvider {
         test()
     }
 }
+
+
+struct test2: View {
+    let animation: Namespace.ID
+
+    var body: some View {
+        Image("shin")
+            .resizable()
+            .scaledToFit()
+            .matchedGeometryEffect(id: "images", in: animation)
+    }
+}
+
+struct test3: View {
+    let animation: Namespace.ID
+
+    var body: some View {
+        Image("shin")
+            .resizable()
+            .frame(width: 150, height: 150)
+            .scaledToFit()
+            .matchedGeometryEffect(id: "images", in: animation)
+    }
+}
+
