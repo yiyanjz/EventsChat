@@ -16,9 +16,15 @@ struct FeedView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                headerView
-                
-                bodyView
+                if viewModel.showPostDetail {
+                    if let selectedPost = viewModel.selectedPost {
+                        PostDetailView(showPostDetail: $viewModel.showPostDetail, post: selectedPost)
+                    }
+                }else {
+                    headerView
+                    
+                    bodyView
+                }
             }
             .background(
                 Color(uiColor: colorScheme == .light ? .gray : .black)
@@ -144,15 +150,24 @@ extension FeedView {
                 HStack(alignment:.top) {
                     LazyVStack {
                         ForEach(Array(viewModel.posts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}).enumerated()), id: \.offset) { index,post in
-                            if index & 2 == 0 {
+                            if index % 2 == 0 {
                                 PostView(post: post)
+                                    .onTapGesture {
+                                        viewModel.selectedPost = post
+                                        viewModel.showPostDetail.toggle()
+                                    }
                             }
                         }
                     }
+                    
                     LazyVStack {
                         ForEach(Array(viewModel.posts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}).enumerated()), id: \.offset) { index,post in
-                            if index & 2 != 0 {
+                            if index % 2 != 0 {
                                 PostView(post: post)
+                                    .onTapGesture {
+                                        viewModel.selectedPost = post
+                                        viewModel.showPostDetail.toggle()
+                                    }
                             }
                         }
                     }

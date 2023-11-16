@@ -11,6 +11,8 @@ import Firebase
 class FeedViewModel: ObservableObject {
     @Published var posts = [Post]()
     @Published var showSearchView: Bool = false
+    @Published var showPostDetail: Bool = false
+    @Published var selectedPost: Post?
     
     init(){
         Task { try await fetchPost() }

@@ -6,10 +6,15 @@
 //
 
 import SwiftUI
+import Kingfisher
+import AVFoundation
+import _AVKit_SwiftUI
 
 struct PostDetailView: View {
     @Environment(\.colorScheme) var colorScheme
+    @Binding var showPostDetail: Bool
     @State var comment = ""
+    @State var post: Post
     
     var body: some View {
         VStack {
@@ -22,7 +27,7 @@ struct PostDetailView: View {
 
 struct PostDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        PostDetailView()
+        PostDetailView(showPostDetail: .constant(false), post: Post.MOCK_POST[0])
     }
 }
 
@@ -33,23 +38,20 @@ extension PostDetailView {
         HStack{
             // Back Button
             Button{
-                print("PostDetailView: Back button clicked")
+                showPostDetail.toggle()
             }label: {
                 Image(systemName: "chevron.backward")
                     .font(.system(size: 20))
             }
             .foregroundColor(colorScheme == .light ? .black : .white)
             
-            // Profile Image
-            Image(systemName: "person.circle.fill")
-                .resizable()
-                .frame(width: 45, height: 45)
-                .clipShape(Circle())
-                .foregroundColor(Color(.systemGray4))
-            
-            // Username
-            Text("UserName")
-                .font(.system(size: 14))
+            // Profile Image + Username
+            if let user = post.user {
+                CircularProfileImageView(user: user, size: .xsmall)
+                
+                Text(user.username)
+                    .font(.system(size: 14))
+            }
             
             Spacer()
             
@@ -88,10 +90,19 @@ extension PostDetailView {
             VStack {
                 // Image
                 TabView {
-                    ForEach(0..<3) { _ in
-                        Image("shin")
-                            .resizable()
-                            .scaledToFill()
+                    ForEach(post.imagesUrl, id: \.self){ image in
+                        ZStack {
+                            VStack {
+                                if image.contains("post_images") {
+                                    KFImage(URL(string: image))
+                                        .resizable()
+                                        .scaledToFill()
+                                } else {
+                                    VideoPlayer(player: AVPlayer(url: URL(string: image)!))
+                                        .scaledToFill()
+                                }
+                            }
+                        }
                     }
                 }
                 .tabViewStyle(.page)
@@ -101,7 +112,7 @@ extension PostDetailView {
                 HStack {
                     // title
                     VStack {
-                        Text("This is the title")
+                        Text(post.title)
                     }
                     .font(.system(size: 25))
                     .fontWeight(.bold)
@@ -139,11 +150,12 @@ extension PostDetailView {
                     }
                 }
                 .padding(.horizontal, 14)
-                .padding(.top)
+                .padding(.top, 5)
                             
                 // Caption
                 VStack{
-                    Text("here is all captions all the captions ")
+                    let icon = Image(systemName: "text.bubble")
+                    Text("\(icon): \(post.caption)")
                 }
                 .font(.system(size: 15))
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -153,7 +165,7 @@ extension PostDetailView {
                 
                 // Comments
                 VStack {
-                    Text("76 comments")
+                    Text("\(post.comments) comments")
                 }
                 .font(.system(size: 15))
                 .fontWeight(.bold)
@@ -162,11 +174,9 @@ extension PostDetailView {
                 
                 HStack {
                     // Profile Image
-                    Image(systemName: "person.circle.fill")
-                        .resizable()
-                        .frame(width: 45, height: 45)
-                        .clipShape(Circle())
-                        .foregroundColor(Color(.systemGray4))
+                    if let user = post.user {
+                        CircularProfileImageView(user: user, size: .xsmall)
+                    }
                     
                     // Comments
                     TextField("Say Something", text: $comment)
