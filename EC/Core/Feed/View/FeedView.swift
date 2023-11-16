@@ -24,8 +24,10 @@ struct FeedView: View {
                 .opacity(viewModel.showPostDetail ? 0 : 1)
                 
                 VStack {
-                    if let selectedPost = viewModel.selectedPost {
-                        PostDetailView(showPostDetail: $viewModel.showPostDetail, post: selectedPost)
+                    if viewModel.showPostDetail {
+                        if let selectedPost = viewModel.selectedPost {
+                            PostDetailView(showPostDetail: $viewModel.showPostDetail, post: selectedPost)
+                        }
                     }
                 }
                 .opacity(viewModel.showPostDetail ? 1 : 0)

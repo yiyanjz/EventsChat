@@ -9,6 +9,7 @@ import SwiftUI
 
 struct test: View {
     @Environment(\.colorScheme) var colorScheme
+    @Namespace private var animation
 
     var body: some View {
         VStack {
