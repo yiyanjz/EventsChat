@@ -10,21 +10,25 @@ import SwiftUI
 struct FeedView: View {
     @Environment(\.colorScheme) var colorScheme
     let screenHeight = UIScreen.main.bounds.height
-    @State private var selectedFilter: FeedFilter = .follow
+    @State private var selectedFilter: FeedFilter = .explore
     @StateObject var viewModel = FeedViewModel()
 
     var body: some View {
         NavigationStack {
-            VStack {
-                if viewModel.showPostDetail {
-                    if let selectedPost = viewModel.selectedPost {
-                        PostDetailView(showPostDetail: $viewModel.showPostDetail, post: selectedPost)
-                    }
-                }else {
+            ZStack {
+                VStack {
                     headerView
                     
                     bodyView
                 }
+                .opacity(viewModel.showPostDetail ? 0 : 1)
+                
+                VStack {
+                    if let selectedPost = viewModel.selectedPost {
+                        PostDetailView(showPostDetail: $viewModel.showPostDetail, post: selectedPost)
+                    }
+                }
+                .opacity(viewModel.showPostDetail ? 1 : 0)
             }
             .background(
                 Color(uiColor: colorScheme == .light ? .gray : .black)

@@ -18,8 +18,8 @@ struct PostView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
-//            KFImage(URL(string: viewModel.post.imagesUrl.first ?? ""))
-            Image(viewModel.post.imagesUrl.first ?? "")
+            KFImage(URL(string: viewModel.post.imagesUrl.first ?? ""))
+//            Image(viewModel.post.imagesUrl.first ?? "")
                 .resizable()
                 .scaledToFit()
             
