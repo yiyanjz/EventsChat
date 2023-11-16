@@ -11,15 +11,15 @@
 //    @State var loveCount = 0
 //    @State var animationXCord = 0.0
 //    @State var animationYCord = 0.0
-//    
+//
 //    func TapAction() {
 //        loveCount += 1
 //    }
-//    
+//
 //    var body: some View {
 //        ZStack {
 //            Color.black.ignoresSafeArea()
-//            
+//
 //            VStack(alignment: .center, spacing: 40) {
 //                ZStack {
 //                    Image(systemName: "heart.fill")
@@ -32,7 +32,7 @@
 //                            animationXCord = location.x
 //                            animationYCord = location.y
 //                        }
-//                    
+//
 //                    ForEach(0 ..< loveCount, id: \.self) { _ in
 //                        Image(systemName: "heart.fill")
 //                            .resizable()
@@ -41,7 +41,7 @@
 //                            .position(x: animationXCord, y: animationYCord)
 //                    }
 //                }
-//                
+//
 //                Text("\(loveCount)")
 //                    .font(.largeTitle)
 //                    .foregroundColor(.white)
