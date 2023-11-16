@@ -37,7 +37,7 @@ struct PostDetailView: View {
         .sheet(isPresented: $viewModel.showShared) {
             SharedView()
                 .presentationDetents([.medium, .large])
-        }	
+        }
     }
 }
 
