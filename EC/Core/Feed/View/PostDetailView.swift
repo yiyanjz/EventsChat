@@ -13,8 +13,20 @@ import _AVKit_SwiftUI
 struct PostDetailView: View {
     @Environment(\.colorScheme) var colorScheme
     @Binding var showPostDetail: Bool
-    @State var comment = ""
-    @State var post: Post
+    @StateObject var viewModel: PostDetailViewModel
+    
+    // like animation
+    @State var likeCount = 0
+    @State var animationXCord = 0.0
+    @State var animationYCord = 0.0
+    func TapAction() {
+        likeCount += 1
+    }
+    
+    init(showPostDetail: Binding<Bool>, post: Post) {
+        self._viewModel = StateObject(wrappedValue: PostDetailViewModel(post: post))
+        self._showPostDetail = showPostDetail
+    }
     
     var body: some View {
         VStack {
@@ -22,6 +34,10 @@ struct PostDetailView: View {
             
             bodyView
         }
+        .sheet(isPresented: $viewModel.showShared) {
+            SharedView()
+                .presentationDetents([.medium, .large])
+        }	
     }
 }
 
@@ -46,7 +62,7 @@ extension PostDetailView {
             .foregroundColor(colorScheme == .light ? .black : .white)
             
             // Profile Image + Username
-            if let user = post.user {
+            if let user = viewModel.post.user {
                 CircularProfileImageView(user: user, size: .xsmall)
                 
                 Text(user.username)
@@ -73,7 +89,7 @@ extension PostDetailView {
             
             // Shared Button
             Button{
-                print("PostDetailView: Shared button clicked")
+                viewModel.showShared.toggle()
             }label: {
                 Image(systemName: "square.and.arrow.up")
                     .frame(width: 30, height: 30, alignment: .center)
@@ -90,7 +106,7 @@ extension PostDetailView {
             VStack {
                 // Image
                 TabView {
-                    ForEach(post.imagesUrl, id: \.self){ image in
+                    ForEach(viewModel.post.imagesUrl, id: \.self){ image in
                         ZStack {
                             VStack {
                                 if image.contains("post_images") {
@@ -102,6 +118,23 @@ extension PostDetailView {
                                         .scaledToFill()
                                 }
                             }
+                            
+                            ForEach(0 ..< likeCount, id: \.self) { _ in
+                                Image(systemName: "heart.fill")
+                                    .resizable()
+                                    .frame(width: 60, height: 60)
+                                    .padding()
+                                    .modifier(LoveTapModifier())
+                                    .position(x: animationXCord, y: animationYCord)
+                            }
+                        }
+                        .onTapGesture(count: 2) { location in
+                            if viewModel.post.didLike == false {
+                                viewModel.likePost()
+                            }
+                            TapAction()
+                            animationXCord = location.x
+                            animationYCord = location.y
                         }
                     }
                 }
@@ -112,7 +145,7 @@ extension PostDetailView {
                 HStack {
                     // title
                     VStack {
-                        Text(post.title)
+                        Text(viewModel.post.title)
                     }
                     .font(.system(size: 25))
                     .fontWeight(.bold)
@@ -122,31 +155,36 @@ extension PostDetailView {
                     // likes
                     Button{
                         withAnimation(.spring()) {
+                            viewModel.post.didLike ?? false ? viewModel.unlikePost() : viewModel.likePost()
                         }
                     }label: {
-                        Image(systemName: "heart")
-                            .frame(width: 30, height: 30, alignment: .center)
-                            .cornerRadius(15)
-                            .foregroundColor(colorScheme == .light ? .black : .white)
-                    }
-                    
-                    // comment
-                    Button{
-                    }label: {
-                        Image(systemName: "ellipsis.bubble")
-                            .frame(width: 30, height: 30, alignment: .center)
-                            .cornerRadius(15)
-                            .foregroundColor(colorScheme == .light ? .black : .white)
+                        HStack(spacing:0) {
+                            Image(systemName: viewModel.post.didLike ?? false ? "heart.fill" : "heart")
+                                .frame(width: 30, height: 30, alignment: .center)
+                                .cornerRadius(15)
+                                .foregroundColor(viewModel.post.didLike ?? false ? .red : colorScheme == .light ? .black : .white)
+                            
+                            Text("\(viewModel.post.likes)")
+                        }
+                        .foregroundColor(colorScheme == .light ? .black : .white)
                     }
 
                     // star
                     Button{
+                        withAnimation(.spring()) {
+                            viewModel.post.didStar ?? false ? viewModel.unstarPost() : viewModel.starPost()
+                        }
                     }label: {
-                        Image(systemName: "star")
-                            .frame(width: 30, height: 30, alignment: .center)
-                            .cornerRadius(15)
-                            .offset(y: -1)
-                            .foregroundColor(colorScheme == .light ? .black : .white)
+                        HStack(spacing:0) {
+                            Image(systemName: viewModel.post.didStar ?? false ? "star.fill" : "star")
+                                .frame(width: 30, height: 30, alignment: .center)
+                                .cornerRadius(15)
+                                .foregroundColor(viewModel.post.didStar ?? false ? .yellow : colorScheme == .light ? .black : .white)
+                                .offset(y: -1)
+                            
+                            Text("\(viewModel.post.stars)")
+                        }
+                        .foregroundColor(colorScheme == .light ? .black : .white)
                     }
                 }
                 .padding(.horizontal, 14)
@@ -155,7 +193,7 @@ extension PostDetailView {
                 // Caption
                 VStack{
                     let icon = Image(systemName: "text.bubble")
-                    Text("\(icon): \(post.caption)")
+                    Text("\(icon): \(viewModel.post.caption)")
                 }
                 .font(.system(size: 15))
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -165,7 +203,7 @@ extension PostDetailView {
                 
                 // Comments
                 VStack {
-                    Text("\(post.comments) comments")
+                    Text("\(viewModel.post.comments) comments")
                 }
                 .font(.system(size: 15))
                 .fontWeight(.bold)
@@ -174,12 +212,12 @@ extension PostDetailView {
                 
                 HStack {
                     // Profile Image
-                    if let user = post.user {
+                    if let user = viewModel.post.user {
                         CircularProfileImageView(user: user, size: .xsmall)
                     }
                     
                     // Comments
-                    TextField("Say Something", text: $comment)
+                    TextField("Say Something", text: $viewModel.comment)
                         .textInputAutocapitalization(.none)
                         .font(.subheadline)
                         .padding(10)

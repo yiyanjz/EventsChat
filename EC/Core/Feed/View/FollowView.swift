@@ -15,11 +15,11 @@ struct FollowView: View {
     @State private var selectedFilter: FeedFilter = .follow
     @StateObject var viewModel: FollowViewModel
     
-    @State var loveCount = 0
+    @State var likeCount = 0
     @State var animationXCord = 0.0
     @State var animationYCord = 0.0
     func TapAction() {
-        loveCount += 1
+        likeCount += 1
     }
     
     init(post: Post) {
@@ -115,7 +115,7 @@ extension FollowView {
                             }
                         }
                         
-                        ForEach(0 ..< loveCount, id: \.self) { _ in
+                        ForEach(0 ..< likeCount, id: \.self) { _ in
                             Image(systemName: "heart.fill")
                                 .resizable()
                                 .frame(width: 60, height: 60)
@@ -177,7 +177,9 @@ extension FollowView {
 
             // star
             Button{
-                viewModel.post.didStar ?? false ? viewModel.unstarPost() : viewModel.starPost()
+                withAnimation(.spring()) {
+                    viewModel.post.didStar ?? false ? viewModel.unstarPost() : viewModel.starPost()
+                }
             }label: {
                 Image(systemName: viewModel.post.didStar ?? false ? "star.fill" : "star")
                     .frame(width: 30, height: 30, alignment: .center)
