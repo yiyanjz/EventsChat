@@ -10,7 +10,7 @@ import SwiftUI
 struct FeedView: View {
     @Environment(\.colorScheme) var colorScheme
     let screenHeight = UIScreen.main.bounds.height
-    @State private var selectedFilter: FeedFilter = .explore
+    @State private var selectedFilter: FeedFilter = .follow
     @StateObject var viewModel = FeedViewModel()
 
     var body: some View {
@@ -157,8 +157,10 @@ extension FeedView {
                             if index % 2 == 0 {
                                 PostView(post: post)
                                     .onTapGesture {
-                                        viewModel.selectedPost = post
-                                        viewModel.showPostDetail.toggle()
+                                        withAnimation(.linear(duration: 0.5)) {
+                                            viewModel.selectedPost = post
+                                            viewModel.showPostDetail.toggle()
+                                        }
                                     }
                             }
                         }
@@ -169,8 +171,10 @@ extension FeedView {
                             if index % 2 != 0 {
                                 PostView(post: post)
                                     .onTapGesture {
-                                        viewModel.selectedPost = post
-                                        viewModel.showPostDetail.toggle()
+                                        withAnimation(.linear(duration: 0.5)) {
+                                            viewModel.selectedPost = post
+                                            viewModel.showPostDetail.toggle()
+                                        }
                                     }
                             }
                         }
