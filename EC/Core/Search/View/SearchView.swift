@@ -8,18 +8,16 @@
 import SwiftUI
 
 struct SearchView: View {
-    @State var searchText: String = ""
-    @State var searched: Bool = false
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
-    @State var showResultView: Bool = false
+    @StateObject var viewModel = SearchViewModel()
     
     let names = ["Holly", "Josh", "Rhonda", "Ted"]
     var searchResults: [String] {
-        if searchText.isEmpty {
+        if viewModel.searchText.isEmpty {
             return names
         } else {
-            return names.filter { $0.contains(searchText) }
+            return names.filter { $0.contains(viewModel.searchText) }
         }
     }
     
@@ -32,8 +30,8 @@ struct SearchView: View {
             }
             .padding(.horizontal,15)
             .navigationBarHidden(true)
-            .fullScreenCover(isPresented: $showResultView) {
-                SearchResultView(searchText: $searchText, searched: $searched)
+            .fullScreenCover(isPresented: $viewModel.showResultView) {
+                SearchResultView(searchText: $viewModel.searchText, searched: $viewModel.searched)
                     .NavigationHidden()
             }
         }
@@ -57,13 +55,18 @@ extension SearchView {
                     .fontWeight(.semibold)
                     .padding(.leading, 10)
                 
-                TextField("Search", text: $searchText)
+                TextField("Search", text: $viewModel.searchText)
+                    .onSubmit {
+                        viewModel.searchText = "\(viewModel.searchText)"
+                        viewModel.showResultView.toggle()
+                        Task { try await viewModel.uploadSearch() }
+                    }
                 
             }
             .frame(height: 35)
             .background(.gray.opacity(0.2),in: RoundedRectangle(cornerRadius: 20))
             .onTapGesture {
-                searched = true
+                viewModel.searched = true
             }
             
             // cancel button
@@ -71,7 +74,7 @@ extension SearchView {
                 withAnimation {
                     dismiss()
                 }
-                searched = false
+                viewModel.searched = false
             }label: {
                 Text("Cancel")
             }
@@ -84,7 +87,7 @@ extension SearchView {
     var bodyView: some View {
         // body view
         ScrollView(showsIndicators: false){
-            if searched == false {
+            if viewModel.searched == false {
                 VStack{
                     VStack{
                         HStack{
@@ -95,7 +98,8 @@ extension SearchView {
                             Spacer()
                             
                             Button {
-                                print("SearchView: trash button pressed")
+                                viewModel.allSearchText = []
+                                Task { try await viewModel.deleteHistory() }
                             } label: {
                                 Image(systemName:"trash")
                                     .font(.footnote)
@@ -105,12 +109,12 @@ extension SearchView {
                         
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack {
-                                ForEach(0..<5) { _ in
+                                ForEach(viewModel.allSearchText, id: \.self) { text in
                                     Button {
-                                        searchText = "Holly"
-                                        showResultView.toggle()
+                                        viewModel.searchText = "\(text)"
+                                        viewModel.showResultView.toggle()
                                     } label: {
-                                        Text("Jay Chow baby my old baby")
+                                        Text("\(text)")
                                             .ButtonStyleWhite()
                                     }
                                 }
@@ -131,8 +135,8 @@ extension SearchView {
                         VStack(spacing:15){
                             ForEach(0..<5) { _ in
                                 Button {
-                                    searchText = "hannah is xiao ben dan"
-                                    showResultView.toggle()
+                                    viewModel.searchText = "hannah is xiao ben dan"
+                                    viewModel.showResultView.toggle()
                                 } label: {
                                     HStack{
                                         Circle()
@@ -157,11 +161,11 @@ extension SearchView {
                 VStack{
                     ForEach(searchResults, id: \.self) { name in
                         NavigationLink{
-                            SearchResultView(searchText: $searchText, searched: $searched)
+                            SearchResultView(searchText: $viewModel.searchText, searched: $viewModel.searched)
                                 .NavigationHidden()
                         }label: {
                             HStack{
-                                HighlightedText(text: name, searchText: searchText)
+                                HighlightedText(text: name, searchText: viewModel.searchText)
                                 Spacer()
                             }
                             .foregroundColor(Color(uiColor: colorScheme == .light ? .black : .white))
@@ -169,7 +173,7 @@ extension SearchView {
                         Divider()
                     }
                 }
-                .searchable(text: $searchText)
+                .searchable(text: $viewModel.searchText)
             }
         }
     }

@@ -20,7 +20,7 @@ extension View{
 extension View{
     func ButtonStyleWhite() -> some View{
         self
-            .frame(height: 30)
+            .frame(height: 25)
             .padding(8)
             .background(
                 RoundedRectangle(cornerRadius: 15).fill(.gray.opacity(0.1))

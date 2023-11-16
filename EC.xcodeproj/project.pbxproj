@@ -14,6 +14,9 @@
 		17438C5C2AFC26CF007088F6 /* FeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17438C5B2AFC26CF007088F6 /* FeedViewModel.swift */; };
 		17438C5E2AFC5189007088F6 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17438C5D2AFC5189007088F6 /* DateExtension.swift */; };
 		17438C602AFC52EF007088F6 /* PostService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17438C5F2AFC52EF007088F6 /* PostService.swift */; };
+		1748FBF12B06B094005B1DFF /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1748FBF02B06B094005B1DFF /* SearchViewModel.swift */; };
+		1748FBF32B06BD8F005B1DFF /* Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1748FBF22B06BD8F005B1DFF /* Search.swift */; };
+		1748FBF52B06BDBE005B1DFF /* SearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1748FBF42B06BDBE005B1DFF /* SearchService.swift */; };
 		1759604D2B04095B00203003 /* AllLikesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1759604C2B04095B00203003 /* AllLikesViewModel.swift */; };
 		1759604F2B04338C00203003 /* CommentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1759604E2B04338C00203003 /* CommentsView.swift */; };
 		175960512B043CA500203003 /* SharedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175960502B043CA500203003 /* SharedView.swift */; };
@@ -88,6 +91,9 @@
 		17438C5B2AFC26CF007088F6 /* FeedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewModel.swift; sourceTree = "<group>"; };
 		17438C5D2AFC5189007088F6 /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		17438C5F2AFC52EF007088F6 /* PostService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostService.swift; sourceTree = "<group>"; };
+		1748FBF02B06B094005B1DFF /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		1748FBF22B06BD8F005B1DFF /* Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Search.swift; sourceTree = "<group>"; };
+		1748FBF42B06BDBE005B1DFF /* SearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchService.swift; sourceTree = "<group>"; };
 		1759604C2B04095B00203003 /* AllLikesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllLikesViewModel.swift; sourceTree = "<group>"; };
 		1759604E2B04338C00203003 /* CommentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsView.swift; sourceTree = "<group>"; };
 		175960502B043CA500203003 /* SharedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedView.swift; sourceTree = "<group>"; };
@@ -246,6 +252,7 @@
 			children = (
 				177FB9F92AF47899008C2175 /* User.swift */,
 				177FBA272AF4882F008C2175 /* Post.swift */,
+				1748FBF22B06BD8F005B1DFF /* Search.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -257,6 +264,7 @@
 				177FBA172AF484BD008C2175 /* ImageUploader.swift */,
 				1782EA512AF70AB6006867FD /* VideoUploader.swift */,
 				17438C5F2AFC52EF007088F6 /* PostService.swift */,
+				1748FBF42B06BDBE005B1DFF /* SearchService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -507,6 +515,7 @@
 		1785C8392AFD63DF00B2B927 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				1748FBF02B06B094005B1DFF /* SearchViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -628,6 +637,7 @@
 				1782EA522AF70AB6006867FD /* VideoUploader.swift in Sources */,
 				177FBA242AF487E9008C2175 /* FeedFilter.swift in Sources */,
 				1782EA542AF72352006867FD /* test.swift in Sources */,
+				1748FBF52B06BDBE005B1DFF /* SearchService.swift in Sources */,
 				177FB9E52AF47487008C2175 /* RegisterView.swift in Sources */,
 				177FBA0A2AF47CCF008C2175 /* ProfileViewModel.swift in Sources */,
 				171FD51C2AFEFE6B00E701A4 /* SearchFilter.swift in Sources */,
@@ -643,6 +653,7 @@
 				1759604D2B04095B00203003 /* AllLikesViewModel.swift in Sources */,
 				177FBA352AF48CA9008C2175 /* UploadView.swift in Sources */,
 				175960512B043CA500203003 /* SharedView.swift in Sources */,
+				1748FBF12B06B094005B1DFF /* SearchViewModel.swift in Sources */,
 				177FBA262AF48800008C2175 /* FeedView.swift in Sources */,
 				177FBA162AF4848A008C2175 /* EditProfileViewModel.swift in Sources */,
 				177FB9B02AF46237008C2175 /* ContentView.swift in Sources */,
@@ -676,6 +687,7 @@
 				177FBA1C2AF485FA008C2175 /* SettingView.swift in Sources */,
 				178BC96B2AF723C300330BBC /* test2.swift in Sources */,
 				17F4BC2D2B030C730078A088 /* AllLikesView.swift in Sources */,
+				1748FBF32B06BD8F005B1DFF /* Search.swift in Sources */,
 				177FBA312AF48974008C2175 /* UploadFilter.swift in Sources */,
 				177FBA122AF48439008C2175 /* EditProfileView.swift in Sources */,
 				177FB9FC2AF478CF008C2175 /* UserService.swift in Sources */,
