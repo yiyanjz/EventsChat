@@ -10,12 +10,16 @@ import Firebase
 
 class SearchResultViewModel: ObservableObject {
     @Published var postsResult = [Post]()
-    @Published var searchText: String
+    @Binding var searchText: String
+    @Binding var searched: Bool
+    @Published var showPostDetail: Bool = false
+    @Published var selectedPost: Post?
     
     let service = SearchService()
     
-    init(searchText:String) {
-        self.searchText = searchText
+    init(searchText:Binding<String>, searched: Binding<Bool>) {
+        self._searchText = searchText
+        self._searched = searched
         Task { try await searchFilterResults() }
     }
     
