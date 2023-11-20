@@ -134,21 +134,36 @@ struct PreviewPostView: View {
                         // body view
                         VStack {
                             VStack {
-                                // text field
-                                TextField("Add Title", text: $viewModel.captionTitle, axis: .horizontal)
-                                    .textInputAutocapitalization(.none)
-                                    .font(.subheadline)
-                                    .lineLimit(1)
+                                VStack {
+                                    // text field
+                                    TextField("Add Title", text: $viewModel.captionTitle, axis: .horizontal)
+                                        .textInputAutocapitalization(.none)
+                                        .font(.subheadline)
+                                        .lineLimit(1)
+                                }
+                                
+                                Divider()
+                                    .padding(4)
+
+                                VStack {
+                                    // text field
+                                    TextField("Add Text", text: $viewModel.caption, axis: .vertical)
+                                        .textInputAutocapitalization(.none)
+                                        .font(.subheadline)
+                                        .frame(minHeight: 70, alignment:.topLeading)
+                                }
+                                
+                                Divider()
+                                    .padding(4)
                             }
                             
-                            Divider()
-                                .padding(4)
-
-                            VStack {
-                                // text field
-                                TextField("Add Text", text: $viewModel.caption, axis: .vertical)
-                                    .textInputAutocapitalization(.none)
-                                    .font(.subheadline)
+                            HStack {
+                                let icon = Image(systemName: "tag")
+                                Text("\(icon) Tags")
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                
+                                Image(systemName: "chevron.right")
+                                    .font(.footnote)
                             }
                             
                             Divider()

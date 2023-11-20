@@ -63,7 +63,7 @@ struct SearchService {
         try await Firestore.firestore().collection("search").document(uid).delete()
     }
     
-    // search filter results
+    // search filter results (need to add tag + location)
     func searchFilterResults(searchText: String) async throws -> [Post] {
         let snapshot = try await Firestore.firestore().collection("posts").getDocuments()
         var posts = try snapshot.documents.compactMap({ try $0.data(as: Post.self) })
