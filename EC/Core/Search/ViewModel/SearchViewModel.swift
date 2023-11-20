@@ -27,8 +27,15 @@ class SearchViewModel: ObservableObject {
             let newAllSearchText: [String] = allSearchText + [searchText]
             try await service.uploadSearch(allSearchText: newAllSearchText)
         }else{
-            let newAllSearchText: [String] = allSearchText + [searchText]
-            try await service.updateSearch(allSearchText: newAllSearchText)
+            let foundSearch = allSearchText.contains(searchText)
+            if foundSearch {
+                let idx = allSearchText.firstIndex(of: searchText)
+                guard let idx = idx else {return}
+                try await service.foundSearch(allSearchText: allSearchText, idx: idx)
+            }else{
+                let newAllSearchText: [String] = allSearchText + [searchText]
+                try await service.updateSearch(allSearchText: newAllSearchText)
+            }
         }
     }
     

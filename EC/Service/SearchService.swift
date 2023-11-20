@@ -31,6 +31,18 @@ struct SearchService {
         try await userSearchRef.updateData(["content": allSearchText])
     }
     
+    // found search
+    func foundSearch(allSearchText: [String], idx: Int) async throws {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        let userSearchRef = Firestore.firestore().collection("search").document(uid)
+        
+        var allSearchText = allSearchText
+        let element = allSearchText.remove(at: idx)
+        allSearchText.insert(element, at: 0)
+
+        try await userSearchRef.updateData(["content": allSearchText])
+    }
+    
     // fetch all user search
     func fetchUserSearch(withUid uid: String) async throws -> Search {
         let snapshot = try await Firestore.firestore().collection("search").document(uid).getDocument()
