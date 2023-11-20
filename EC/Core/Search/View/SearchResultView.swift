@@ -65,7 +65,7 @@ struct SearchResultView: View {
             .padding(.horizontal)
             
             TabView(selection: $selectedFilter){
-                SearchResultAllView(scrollsize: $scrollsize)
+                SearchResultAllView(scrollsize: $scrollsize, searchText: searchText)
                     .tag(SearchFilter.all)
                 SearchResultUserView()
                     .tag(SearchFilter.users)

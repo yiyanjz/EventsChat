@@ -113,6 +113,7 @@ extension SearchView {
                                     Button {
                                         viewModel.searchText = "\(text)"
                                         viewModel.showResultView.toggle()
+                                        Task { try await viewModel.uploadSearch() }
                                     } label: {
                                         Text("\(text)")
                                             .ButtonStyleWhite()

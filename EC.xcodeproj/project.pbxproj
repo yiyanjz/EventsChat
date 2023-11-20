@@ -81,6 +81,7 @@
 		17E698A02B048048006799E2 /* LikeAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E6989F2B048048006799E2 /* LikeAnimation.swift */; };
 		17F4BC2B2B02F8940078A088 /* FollowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F4BC2A2B02F8940078A088 /* FollowViewModel.swift */; };
 		17F4BC2D2B030C730078A088 /* AllLikesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F4BC2C2B030C730078A088 /* AllLikesView.swift */; };
+		17F6EAA52B0AE6BE005C9D9F /* SearchResultViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F6EAA42B0AE6BE005C9D9F /* SearchResultViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -154,6 +155,7 @@
 		17E6989F2B048048006799E2 /* LikeAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeAnimation.swift; sourceTree = "<group>"; };
 		17F4BC2A2B02F8940078A088 /* FollowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowViewModel.swift; sourceTree = "<group>"; };
 		17F4BC2C2B030C730078A088 /* AllLikesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllLikesView.swift; sourceTree = "<group>"; };
+		17F6EAA42B0AE6BE005C9D9F /* SearchResultViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -516,6 +518,7 @@
 			isa = PBXGroup;
 			children = (
 				1748FBF02B06B094005B1DFF /* SearchViewModel.swift */,
+				17F6EAA42B0AE6BE005C9D9F /* SearchResultViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -700,6 +703,7 @@
 				177FB9E12AF473C0008C2175 /* LoginViewModel.swift in Sources */,
 				17D0F89C2AFB315D00AEFC41 /* UploadViewModel.swift in Sources */,
 				179664432AF5A079001CCED9 /* PreviewVideoView.swift in Sources */,
+				17F6EAA52B0AE6BE005C9D9F /* SearchResultViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

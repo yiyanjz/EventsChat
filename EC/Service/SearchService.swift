@@ -62,4 +62,26 @@ struct SearchService {
     func deleteHistory(withUid uid: String) async throws {
         try await Firestore.firestore().collection("search").document(uid).delete()
     }
+    
+    // search filter results
+    func searchFilterResults(searchText: String) async throws -> [Post] {
+        let snapshot = try await Firestore.firestore().collection("posts").getDocuments()
+        var posts = try snapshot.documents.compactMap({ try $0.data(as: Post.self) })
+        
+        var resultPost = [Post]()
+        
+        for i in 0..<posts.count {
+            let post = posts[i]
+            let searchTerm = post.title + post.caption
+            if searchTerm.contains(searchText) {
+                if let ownerId = post.ownerId {
+                    let postUser = try await UserService.fetchUser(withUid: ownerId)
+                    posts[i].user = postUser
+                    resultPost.append(posts[i])
+                }
+            }
+        }
+        
+        return resultPost
+    }
 }
