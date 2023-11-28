@@ -26,7 +26,7 @@ class FeedViewModel: ObservableObject {
     
     // listener for user infor changes
     func fetchCurrentPost() {
-        PostService.observePost() { [weak self] posts in
+        PostService.observePostsAdd() { [weak self] posts in
             posts.forEach { post in
                 var post = post
                 if let ownerId = post.ownerId {

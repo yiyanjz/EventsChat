@@ -24,7 +24,6 @@ struct ProfileView: View {
     private let gridItem: [GridItem] = [
         .init(.flexible(), spacing: 1),
         .init(.flexible(), spacing: 1),
-        .init(.flexible(), spacing: 1),
     ]
     
     var body: some View {
@@ -276,13 +275,16 @@ extension ProfileView {
     // footerView
     var footerView: some View {
         VStack {
-            LazyVGrid(columns: gridItem, spacing: 2) {
-                ForEach(0 ... 50, id:\.self) { index in
-                    Image("shin")
-                        .resizable()
-                        .scaledToFit()
+            ScrollView(showsIndicators: false) {
+                HStack(alignment:.top) {
+                    LazyVGrid(columns: gridItem, spacing: 16) {
+                        ForEach(viewModel.postFilter(forFilter: self.selectedFilter).sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
+                            PostView(post: post)
+                        }
+                    }
                 }
             }
         }
+        .padding(.horizontal, 4)
     }
 }

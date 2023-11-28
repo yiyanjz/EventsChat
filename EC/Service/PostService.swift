@@ -25,7 +25,7 @@ struct PostService {
     }
     
     // observe posts
-    static func observePost(completion: @escaping([Post]) -> Void) {
+    static func observePostsAdd(completion: @escaping([Post]) -> Void) {
         Firestore.firestore().collection("posts").addSnapshotListener { (querySnapshot, error) in
             guard let snapshot = querySnapshot else { return }
             var pendingPost = [Post]()
@@ -42,7 +42,7 @@ struct PostService {
     }
     
     // check for modify posts
-    static func observePost(completion: @escaping(Post) -> Void) {
+    static func observePostsModify(completion: @escaping(Post) -> Void) {
         Firestore.firestore().collection("posts").addSnapshotListener { (querySnapshot, error) in
             guard let snapshot = querySnapshot else { return }
 
@@ -50,6 +50,41 @@ struct PostService {
                 if documentChange.type == .modified {
                     guard let data = try? documentChange.document.data(as: Post.self) else {return}
                     completion(data)
+                }
+            }
+        }
+    }
+    
+    // check for liked posts
+    func observeLikedPost(forUid uid:String, completion: @escaping(Post) -> Void) {
+        Firestore.firestore().collection("users").document(uid).collection("user-likes").addSnapshotListener { (querySnapshot, error) in
+            guard let snapshot = querySnapshot else { return }
+            
+            snapshot.documentChanges.forEach { documentChange in
+                if documentChange.type == .added {
+                    let docID = documentChange.document.documentID
+                    Firestore.firestore().collection("posts").document(docID).getDocument { querySnapshot, _ in
+                        guard let snapshot = querySnapshot else { return }
+                        guard var post = try? snapshot.data(as: Post.self) else {return}
+                        if let ownerId = post.ownerId {
+                            UserService.fetchUserCompletion(withUid: ownerId) { postUser in
+                                post.user = postUser
+                                completion(post)
+                            }
+                        }
+                    }
+                } else if documentChange.type == .removed {
+                    let docID = documentChange.document.documentID
+                    Firestore.firestore().collection("posts").document(docID).getDocument { querySnapshot, _ in
+                        guard let snapshot = querySnapshot else { return }
+                        guard var post = try? snapshot.data(as: Post.self) else {return}
+                        if let ownerId = post.ownerId {
+                            UserService.fetchUserCompletion(withUid: ownerId) { postUser in
+                                post.user = postUser
+                                completion(post)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -139,6 +174,26 @@ struct PostService {
             guard let document = querySnapshot else {return}
             guard let data = try? document.data(as: Post.self) else {return}
             completion(data)
+        }
+    }
+    
+    // filter likes
+    func fetchLikedPosts(forUid uid:String, completion: @escaping([Post]) -> Void) {
+        var posts = [Post]()
+        
+        Firestore.firestore().collection("users").document(uid).collection("user-likes").getDocuments { snapshot, _ in
+            guard let documents = snapshot?.documents else {return}
+            
+            documents.forEach { doc in
+                let postId = doc.documentID
+                
+                Firestore.firestore().collection("posts").document(postId).getDocument { snapshot, _ in
+                    guard let post = try? snapshot?.data(as: Post.self) else {return}
+                    posts.append(post)
+                    
+                    completion(posts)
+                }
+            }
         }
     }
 }
