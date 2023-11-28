@@ -24,8 +24,10 @@ class ProfileViewModel: ObservableObject {
         fetchCurrentUser()
         fetchLikedPosts()
         fetchStaredPosts()
+        fetchAllPosts()
         observeLikedPost()
         observeStarPost()
+        observeAllPost()
     }
     
     func postFilter(forFilter filter: ProfileFilter) -> [Post] {
@@ -78,6 +80,17 @@ class ProfileViewModel: ObservableObject {
         }
     }
     
+    // filter posts
+    func fetchAllPosts() {
+        service.fetchPostActionInfo(forUid: user.id, collectionName: CollectionFilter.userPost.title) { [self] posts in
+            self.allPosts = posts
+            
+            for i in 0..<posts.count {
+                self.allPosts[i].user = self.user
+            }
+        }
+    }
+    
     // observe likes filter
     func observeLikedPost() {
         service.observePostsActionInfo(forUid: user.id, collectionName: CollectionFilter.userLiked.title) { post in
@@ -99,6 +112,13 @@ class ProfileViewModel: ObservableObject {
             } else if !postDidStar {
                 self.starPosts = self.starPosts.filter({ $0.id != post.id})
             }
+        }
+    }
+    
+    // observe post filter
+    func observeAllPost() {
+        service.observePostsActionInfo(forUid: user.id, collectionName: CollectionFilter.userPost.title) { post in
+            self.allPosts.append(post)
         }
     }
 }

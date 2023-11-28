@@ -38,6 +38,10 @@ class PreviewPostViewModel: ObservableObject {
         guard let encodedPost = try? Firestore.Encoder().encode(post) else {return}
         
         try await postRef.setData(encodedPost)
+        
+        // save post to user in firebase
+        let userPostRef = Firestore.firestore().collection("users").document(uid).collection("user-posts")
+        try await userPostRef.document(post.id).setData([:])
     }
 }
 

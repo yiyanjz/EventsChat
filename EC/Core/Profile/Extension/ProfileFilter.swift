@@ -38,7 +38,7 @@ enum CollectionFilter: Int, CaseIterable {
         case .userStared:
             return "user-stars"
         case .userPost:
-            return "posts"
+            return "user-posts"
         }
     }
 }
