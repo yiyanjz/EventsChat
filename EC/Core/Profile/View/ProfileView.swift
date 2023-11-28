@@ -64,7 +64,7 @@ struct ProfileView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        print("ProfileView: Shared Button Tapped")
+                        viewModel.showSharedCard.toggle()
                     } label: {
                         Image(systemName: "arrow.up.forward.circle")
                             .frame(width: 30, height: 30, alignment: .center)
@@ -73,8 +73,11 @@ struct ProfileView: View {
                     }
                 }
             }
+            .sheet(isPresented: $viewModel.showSharedCard) {
+                SharedView()
+                    .presentationDetents([.medium, .large])
+            }
         }
-
     }
 }
 
