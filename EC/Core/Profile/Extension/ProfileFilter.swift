@@ -25,3 +25,21 @@ enum ProfileFilter: Int, CaseIterable {
     }
 }
 
+// firebase collection filter
+enum CollectionFilter: Int, CaseIterable {
+    case userLiked
+    case userStared
+    case userPost
+    
+    var title: String {
+        switch self {
+        case .userLiked:
+            return "user-likes"
+        case .userStared:
+            return "user-stars"
+        case .userPost:
+            return "posts"
+        }
+    }
+}
+

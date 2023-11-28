@@ -23,7 +23,9 @@ class ProfileViewModel: ObservableObject {
         self.user = user
         fetchCurrentUser()
         fetchLikedPosts()
+        fetchStaredPosts()
         observeLikedPost()
+        observeStarPost()
     }
     
     func postFilter(forFilter filter: ProfileFilter) -> [Post] {
@@ -46,7 +48,7 @@ class ProfileViewModel: ObservableObject {
     
     // filter likes
     func fetchLikedPosts() {
-        service.fetchLikedPosts(forUid: user.id) { posts in
+        service.fetchPostActionInfo(forUid: user.id, collectionName: CollectionFilter.userLiked.title) { posts in
             self.likedPosts = posts
             
             for i in 0..<posts.count {
@@ -60,14 +62,42 @@ class ProfileViewModel: ObservableObject {
         }
     }
     
+    // filter stars
+    func fetchStaredPosts() {
+        service.fetchPostActionInfo(forUid: user.id, collectionName: CollectionFilter.userStared.title) { posts in
+            self.starPosts = posts
+            
+            for i in 0..<posts.count {
+                let post = posts[i]
+                if let ownerId = post.ownerId {
+                    UserService.fetchUserCompletion(withUid: ownerId) { postUser in
+                        self.starPosts[i].user = postUser
+                    }
+                }
+            }
+        }
+    }
+    
     // observe likes filter
     func observeLikedPost() {
-        service.observeLikedPost(forUid: user.id) { post in
+        service.observePostsActionInfo(forUid: user.id, collectionName: CollectionFilter.userLiked.title) { post in
             guard let postDidLike = post.didLike else {return}
             if postDidLike {
                 self.likedPosts.append(post)
             } else if !postDidLike{
                 self.likedPosts = self.likedPosts.filter({ $0.id != post.id})
+            }
+        }
+    }
+    
+    // observe star filter
+    func observeStarPost() {
+        service.observePostsActionInfo(forUid: user.id, collectionName: CollectionFilter.userStared.title) { post in
+            guard let postDidStar = post.didStar else {return}
+            if postDidStar {
+                self.starPosts.append(post)
+            } else if !postDidStar {
+                self.starPosts = self.starPosts.filter({ $0.id != post.id})
             }
         }
     }

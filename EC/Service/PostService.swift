@@ -55,41 +55,6 @@ struct PostService {
         }
     }
     
-    // check for liked posts
-    func observeLikedPost(forUid uid:String, completion: @escaping(Post) -> Void) {
-        Firestore.firestore().collection("users").document(uid).collection("user-likes").addSnapshotListener { (querySnapshot, error) in
-            guard let snapshot = querySnapshot else { return }
-            
-            snapshot.documentChanges.forEach { documentChange in
-                if documentChange.type == .added {
-                    let docID = documentChange.document.documentID
-                    Firestore.firestore().collection("posts").document(docID).getDocument { querySnapshot, _ in
-                        guard let snapshot = querySnapshot else { return }
-                        guard var post = try? snapshot.data(as: Post.self) else {return}
-                        if let ownerId = post.ownerId {
-                            UserService.fetchUserCompletion(withUid: ownerId) { postUser in
-                                post.user = postUser
-                                completion(post)
-                            }
-                        }
-                    }
-                } else if documentChange.type == .removed {
-                    let docID = documentChange.document.documentID
-                    Firestore.firestore().collection("posts").document(docID).getDocument { querySnapshot, _ in
-                        guard let snapshot = querySnapshot else { return }
-                        guard var post = try? snapshot.data(as: Post.self) else {return}
-                        if let ownerId = post.ownerId {
-                            UserService.fetchUserCompletion(withUid: ownerId) { postUser in
-                                post.user = postUser
-                                completion(post)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
     // like post
     func likePost(_ post: Post, completion: @escaping() -> Void) {
         guard let uid = Auth.auth().currentUser?.uid else {return}
@@ -177,11 +142,11 @@ struct PostService {
         }
     }
     
-    // filter likes
-    func fetchLikedPosts(forUid uid:String, completion: @escaping([Post]) -> Void) {
+    // filter likes / stars
+    func fetchPostActionInfo(forUid uid:String, collectionName name: String, completion: @escaping([Post]) -> Void) {
         var posts = [Post]()
         
-        Firestore.firestore().collection("users").document(uid).collection("user-likes").getDocuments { snapshot, _ in
+        Firestore.firestore().collection("users").document(uid).collection(name).getDocuments { snapshot, _ in
             guard let documents = snapshot?.documents else {return}
             
             documents.forEach { doc in
@@ -192,6 +157,41 @@ struct PostService {
                     posts.append(post)
                     
                     completion(posts)
+                }
+            }
+        }
+    }
+    
+    // check for liked posts / stars
+    func observePostsActionInfo(forUid uid:String, collectionName name: String, completion: @escaping(Post) -> Void) {
+        Firestore.firestore().collection("users").document(uid).collection(name).addSnapshotListener { (querySnapshot, error) in
+            guard let snapshot = querySnapshot else { return }
+            
+            snapshot.documentChanges.forEach { documentChange in
+                if documentChange.type == .added {
+                    let docID = documentChange.document.documentID
+                    Firestore.firestore().collection("posts").document(docID).getDocument { querySnapshot, _ in
+                        guard let snapshot = querySnapshot else { return }
+                        guard var post = try? snapshot.data(as: Post.self) else {return}
+                        if let ownerId = post.ownerId {
+                            UserService.fetchUserCompletion(withUid: ownerId) { postUser in
+                                post.user = postUser
+                                completion(post)
+                            }
+                        }
+                    }
+                } else if documentChange.type == .removed {
+                    let docID = documentChange.document.documentID
+                    Firestore.firestore().collection("posts").document(docID).getDocument { querySnapshot, _ in
+                        guard let snapshot = querySnapshot else { return }
+                        guard var post = try? snapshot.data(as: Post.self) else {return}
+                        if let ownerId = post.ownerId {
+                            UserService.fetchUserCompletion(withUid: ownerId) { postUser in
+                                post.user = postUser
+                                completion(post)
+                            }
+                        }
+                    }
                 }
             }
         }
