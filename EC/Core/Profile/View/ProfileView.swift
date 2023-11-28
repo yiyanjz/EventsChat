@@ -22,8 +22,8 @@ struct ProfileView: View {
     
     // grid Item Structure
     private let gridItem: [GridItem] = [
-        .init(.flexible(), spacing: 1),
-        .init(.flexible(), spacing: 1),
+        .init(.flexible(), spacing: 4),
+        .init(.flexible(), spacing: 4),
     ]
     
     var body: some View {
