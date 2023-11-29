@@ -18,6 +18,7 @@
 		1759604D2B04095B00203003 /* AllLikesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1759604C2B04095B00203003 /* AllLikesViewModel.swift */; };
 		1759604F2B04338C00203003 /* CommentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1759604E2B04338C00203003 /* CommentsView.swift */; };
 		175960512B043CA500203003 /* SharedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175960502B043CA500203003 /* SharedView.swift */; };
+		175C7A0C2B16EA1F00B6CD48 /* OtherUserProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175C7A0B2B16EA1F00B6CD48 /* OtherUserProfileViewModel.swift */; };
 		175FF6432B045F8600E342F3 /* PostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175FF6422B045F8600E342F3 /* PostViewModel.swift */; };
 		177FB9AE2AF46237008C2175 /* ECApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177FB9AD2AF46237008C2175 /* ECApp.swift */; };
 		177FB9B02AF46237008C2175 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177FB9AF2AF46237008C2175 /* ContentView.swift */; };
@@ -96,6 +97,7 @@
 		1759604C2B04095B00203003 /* AllLikesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllLikesViewModel.swift; sourceTree = "<group>"; };
 		1759604E2B04338C00203003 /* CommentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsView.swift; sourceTree = "<group>"; };
 		175960502B043CA500203003 /* SharedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedView.swift; sourceTree = "<group>"; };
+		175C7A0B2B16EA1F00B6CD48 /* OtherUserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherUserProfileViewModel.swift; sourceTree = "<group>"; };
 		175FF6422B045F8600E342F3 /* PostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
 		177FB9AA2AF46237008C2175 /* EC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		177FB9AD2AF46237008C2175 /* ECApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ECApp.swift; sourceTree = "<group>"; };
@@ -355,6 +357,7 @@
 			children = (
 				177FBA092AF47CCF008C2175 /* ProfileViewModel.swift */,
 				177FBA152AF4848A008C2175 /* EditProfileViewModel.swift */,
+				175C7A0B2B16EA1F00B6CD48 /* OtherUserProfileViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -653,6 +656,7 @@
 				177FB9D32AF46F73008C2175 /* ProfileView.swift in Sources */,
 				177FB9E32AF47410008C2175 /* LoginRegisterTextFieldModifer.swift in Sources */,
 				177FBA2C2AF4885E008C2175 /* PostView.swift in Sources */,
+				175C7A0C2B16EA1F00B6CD48 /* OtherUserProfileViewModel.swift in Sources */,
 				1759604D2B04095B00203003 /* AllLikesViewModel.swift in Sources */,
 				177FBA352AF48CA9008C2175 /* UploadView.swift in Sources */,
 				175960512B043CA500203003 /* SharedView.swift in Sources */,

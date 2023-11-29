@@ -18,6 +18,7 @@ class ProfileViewModel: ObservableObject {
     @Published var starPosts = [Post]()
     @Published var showSharedCard: Bool = false
     @Published var showPostDetails: Bool = false
+    @Published var selectedPost: Post?
     
     let service = PostService()
         

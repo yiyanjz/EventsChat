@@ -43,3 +43,17 @@ enum CollectionFilter: Int, CaseIterable {
     }
 }
 
+// profile filter section
+enum OtherProfileFilter: Int, CaseIterable {
+    case posts
+    case stars
+    
+    var title: String {
+        switch self {
+        case .posts:
+            return "Posts"
+        case .stars:
+            return "Stars"
+        }
+    }
+}

@@ -40,7 +40,7 @@ struct ProfileView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
+            VStack {
                 VStack {
                     ScrollView(showsIndicators: false) {
                         ZStack {
@@ -84,8 +84,9 @@ struct ProfileView: View {
                         .presentationDetents([.medium, .large])
                 }
                 .fullScreenCover(isPresented: $viewModel.showPostDetails) {
-                    OtherUserProfileView()
-                        .transition(.move(edge: .trailing))
+                    if let selectedPost = viewModel.selectedPost {
+                        PostDetailView(showPostDetail: $viewModel.showPostDetails, post: selectedPost)
+                    }
                 }
             }
         }
@@ -259,7 +260,7 @@ extension ProfileView {
                     .padding(.top, -40)
                 }
                 .offset(y: minY < 130 ? -(minY - 130) : 0)
-                .navigationTitle( minY < 450 ? viewModel.user.username : "")
+                .navigationTitle( minY < 400 ? viewModel.user.username : "")
             }
         }
     }
@@ -276,7 +277,7 @@ extension ProfileView {
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
         }
-        .frame(height: screenHeight*3)
+        .frame(minHeight: screenHeight, maxHeight: screenHeight*3)
     }
     
     // post view
@@ -288,6 +289,7 @@ extension ProfileView {
                 LazyVGrid(columns: gridItem, spacing: 16) {
                     ForEach(viewModel.allPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
                         Button {
+                            viewModel.selectedPost = post
                             viewModel.showPostDetails.toggle()
                         } label: {
                             PostView(post: post)
@@ -309,6 +311,7 @@ extension ProfileView {
                     ForEach(viewModel.likedPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
                         Button {
                             viewModel.showPostDetails.toggle()
+                            viewModel.selectedPost = post
                         } label: {
                             PostView(post: post)
                         }
@@ -329,6 +332,7 @@ extension ProfileView {
                     ForEach(viewModel.starPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
                         Button {
                             viewModel.showPostDetails.toggle()
+                            viewModel.selectedPost = post
                         } label: {
                             PostView(post: post)
                         }
