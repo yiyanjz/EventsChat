@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct SearchResultView: View {
     @State var scrollsize : CGFloat = 0
@@ -156,24 +157,25 @@ extension SearchResultView {
         VStack {
             ScrollView(showsIndicators: false){
                 VStack {
-                    ForEach(0..<10){ item in
+                    ForEach(viewModel.usersResult){ user in
                         HStack{
-                            Button {
-                                print("SearchResultUserView: other profile clicked")
+                            NavigationLink {
+                                OtherUserProfileView(user: user)
+                                    .navigationBarBackButtonHidden()
                             } label: {
-                                Image("shin")
+                                KFImage(URL(string: user.profileImageUrl ?? ""))
                                     .resizable()
                                     .frame(width: 40, height: 40)
                                     .clipShape(Circle())
                                     
                                 VStack(alignment:.leading,spacing: 0){
-                                    Text("Username")
+                                    Text(user.username)
                                         .font(.system(size: 15))
                                         .foregroundColor(colorScheme == .light ? .black : .white)
 
                                     HStack{
                                         Text("EC ID:")
-                                        Text("1999286616")
+                                        Text(user.id)
                                     }
                                     
                                     HStack{

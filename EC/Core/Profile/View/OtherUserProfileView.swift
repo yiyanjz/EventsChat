@@ -184,7 +184,7 @@ extension OtherUserProfileView {
 
                 // Edit Profile Button
                 Button {
-                    
+                    print("OtherUserProfileView: Follow Button Tapped")
                 } label: {
                     Text("Follow")
                         .font(.subheadline)
@@ -215,7 +215,7 @@ extension OtherUserProfileView {
                         }
                         
                         Button {
-                            print("ProfileView: New Story Button Tapped")
+                            print("OtherUserProfileView: New Story Button Tapped")
                         } label: {
                             Image(systemName: "plus.circle")
                                 .resizable()

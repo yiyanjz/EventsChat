@@ -84,4 +84,22 @@ struct SearchService {
         
         return resultPost
     }
+    
+    // search filter results (used user.username + user.fullname + user.email + user.bio)
+    func searchFilterUserResults(searchText: String) async throws -> [User] {
+        let snapshot = try await Firestore.firestore().collection("users").getDocuments()
+        var users = try snapshot.documents.compactMap({ try $0.data(as: User.self) })
+
+        var resultPost = [User]()
+        
+        for i in 0..<users.count {
+            let user = users[i]
+            let searchTerm = user.username + (user.fullname ?? "") + user.email + (user.bio ?? "")
+            if searchTerm.contains(searchText) {
+                resultPost.append(user)
+            }
+        }
+        
+        return resultPost
+    }
 }
