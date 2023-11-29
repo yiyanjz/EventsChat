@@ -96,8 +96,6 @@ extension FeedView {
                 
             }
             .padding(.horizontal)
-            
-            Divider()
         }
     }
     

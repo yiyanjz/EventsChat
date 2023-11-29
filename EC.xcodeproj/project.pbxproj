@@ -81,6 +81,7 @@
 		17F4BC2D2B030C730078A088 /* AllLikesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F4BC2C2B030C730078A088 /* AllLikesView.swift */; };
 		17F6EAA52B0AE6BE005C9D9F /* SearchResultViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F6EAA42B0AE6BE005C9D9F /* SearchResultViewModel.swift */; };
 		17F6EAA72B0B1FC8005C9D9F /* test3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F6EAA62B0B1FC8005C9D9F /* test3.swift */; };
+		17F8337A2B16C468009205FF /* OtherUserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F833792B16C468009205FF /* OtherUserProfileView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -154,6 +155,7 @@
 		17F4BC2C2B030C730078A088 /* AllLikesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllLikesView.swift; sourceTree = "<group>"; };
 		17F6EAA42B0AE6BE005C9D9F /* SearchResultViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultViewModel.swift; sourceTree = "<group>"; };
 		17F6EAA62B0B1FC8005C9D9F /* test3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = test3.swift; sourceTree = "<group>"; };
+		17F833792B16C468009205FF /* OtherUserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherUserProfileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -343,6 +345,7 @@
 				177FB9D22AF46F73008C2175 /* ProfileView.swift */,
 				177FBA112AF48439008C2175 /* EditProfileView.swift */,
 				177FBA132AF4845C008C2175 /* GenderView.swift */,
+				17F833792B16C468009205FF /* OtherUserProfileView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -682,6 +685,7 @@
 				17438C602AFC52EF007088F6 /* PostService.swift in Sources */,
 				17438C5E2AFC5189007088F6 /* DateExtension.swift in Sources */,
 				177FB9D92AF4701E008C2175 /* LoginView.swift in Sources */,
+				17F8337A2B16C468009205FF /* OtherUserProfileView.swift in Sources */,
 				175FF6432B045F8600E342F3 /* PostViewModel.swift in Sources */,
 				177FBA2A2AF48849008C2175 /* FollowView.swift in Sources */,
 				177FBA1C2AF485FA008C2175 /* SettingView.swift in Sources */,

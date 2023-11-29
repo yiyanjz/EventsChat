@@ -26,56 +26,63 @@ struct ProfileView: View {
         .init(.flexible(), spacing: 4),
     ]
     
+    func backgroundColor() -> Color{
+        var color = Color(uiColor: .systemBackground)
+        
+        if colorScheme == .light {
+            color = Color(uiColor: .white)
+        } else if colorScheme == .dark {
+            color = Color(uiColor: .black)
+        }
+        
+        return color
+    }
+    
     var body: some View {
         NavigationStack {
-            GeometryReader { _ in
-                ScrollView {
-                    VStack{
+            ZStack {
+                VStack {
+                    ScrollView(showsIndicators: false) {
                         ZStack {
                             backgroundView
                             
                             headerView
                         }
-                        
-                        ZStack {
-                            Color(uiColor: colorScheme == .light ? .white : .black)
-                                .zIndex(0)
-                            
+                        VStack {
                             footerTitleView
                                 .zIndex(2)
                             
-                            footerView
-                                .zIndex(1)
+                            footerFilterView
+                        }
+                    }
+                    .coordinateSpace(name: "SCROLL")
+                    .ignoresSafeArea()
+                }
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        NavigationLink(destination: SettingView().navigationBarBackButtonHidden(true)) {
+                            Image(systemName: "line.3.horizontal")
+                                .frame(width: 30, height: 30, alignment: .center)
+                                .cornerRadius(15)
+                                .foregroundColor(colorScheme == .light ? .black : .white)
+                        }
+                        .navigationBarBackButtonHidden(true)
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            viewModel.showSharedCard.toggle()
+                        } label: {
+                            Image(systemName: "arrow.up.forward.circle")
+                                .frame(width: 30, height: 30, alignment: .center)
+                                .cornerRadius(15)
+                                .foregroundColor(colorScheme == .light ? .black : .white )
                         }
                     }
                 }
-                .coordinateSpace(name: "SCROLL")
-                .ignoresSafeArea()
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    NavigationLink(destination: SettingView().navigationBarBackButtonHidden(true)) {
-                        Image(systemName: "line.3.horizontal")
-                            .frame(width: 30, height: 30, alignment: .center)
-                            .cornerRadius(15)
-                            .foregroundColor(colorScheme == .light ? .black : .white)
-                    }
-                    .navigationBarBackButtonHidden(true)
+                .sheet(isPresented: $viewModel.showSharedCard) {
+                    SharedView()
+                        .presentationDetents([.medium, .large])
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        viewModel.showSharedCard.toggle()
-                    } label: {
-                        Image(systemName: "arrow.up.forward.circle")
-                            .frame(width: 30, height: 30, alignment: .center)
-                            .cornerRadius(15)
-                            .foregroundColor(colorScheme == .light ? .black : .white )
-                    }
-                }
-            }
-            .sheet(isPresented: $viewModel.showSharedCard) {
-                SharedView()
-                    .presentationDetents([.medium, .large])
             }
         }
     }
@@ -92,8 +99,6 @@ extension ProfileView {
     // Background View
     var backgroundView: some View {
         VStack {
-            let height = screenHeight * 0.6
-
             GeometryReader { proxy in
                 let size = proxy.size
                 let minY = proxy.frame(in: .named("SCROLL")).minY
@@ -103,24 +108,16 @@ extension ProfileView {
                     .aspectRatio(contentMode: .fill)
                     .frame(width: size.width, height: size.height + (minY > 0 ? minY : 0))
                     .blur(radius: 10)
-                    .overlay( minY < -400 ? Color(uiColor: .systemBackground) : Color(uiColor: .gray).opacity(0.6))
+                    .overlay(Color(uiColor: .gray).opacity(0.6))
                     .clipped()
-                    .offset(y: -minY)
-                    .zIndex(1)
-                
-                Color(uiColor: .systemBackground)
-                    .frame(width: screenWidth, height: screenHeight)
-                    .offset(y: -minY)
+                    .offset(y: minY > 0 ? -minY : 0)
             }
-            .frame(height: height)
         }
     }
     
     // header view
     var headerView: some View {
         VStack {
-            let height = screenHeight * 0.6
-            
             VStack(spacing: 10) {
                 // ProfileImage + Name + InChatID
                 VStack {
@@ -213,7 +210,7 @@ extension ProfileView {
                     .padding(.vertical, 7)
                 }
             }
-            .frame(height: height)
+            .frame(height: screenHeight / 2)
             .padding(.top, 15)
             .fullScreenCover(isPresented: $showEditProfile) {
                 EditProfileView(user: viewModel.user)
@@ -263,25 +260,72 @@ extension ProfileView {
         }
     }
     
-    func backgroundColor() -> Color{
-        var color = Color(uiColor: .systemBackground)
-        
-        if colorScheme == .light {
-            color = Color(uiColor: .white)
-        } else if colorScheme == .dark {
-            color = Color(uiColor: .black)
+    var footerFilterView: some View {
+        VStack {
+            TabView(selection: $selectedFilter) {
+                allPostView
+                    .tag(ProfileFilter.posts)
+                allLikesView
+                    .tag(ProfileFilter.likes)
+                allStarsView
+                    .tag(ProfileFilter.stars)
+            }
+            .tabViewStyle(.page(indexDisplayMode: .never))
         }
-        
-        return color
+        .frame(height: screenHeight*3)
     }
     
-    // footerView
-    var footerView: some View {
+    // post view
+    var allPostView: some View {
         VStack {
-            ScrollView(showsIndicators: false) {
-                HStack(alignment:.top) {
-                    LazyVGrid(columns: gridItem, spacing: 16) {
-                        ForEach(viewModel.postFilter(forFilter: self.selectedFilter).sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
+            GeometryReader { proxy2 in
+                let minY = proxy2.frame(in: .named("SCROLL")).minY
+                
+                LazyVGrid(columns: gridItem, spacing: 16) {
+                    ForEach(viewModel.allPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
+                        NavigationLink {
+                            OtherUserProfileView()
+                        } label: {
+                            PostView(post: post)
+                        }
+                    }
+                }
+            }
+        }
+        .padding(.horizontal, 4)
+    }
+    
+    // likes view
+    var allLikesView: some View {
+        VStack {
+            GeometryReader { proxy2 in
+                let minY = proxy2.frame(in: .named("SCROLL")).minY
+                
+                LazyVGrid(columns: gridItem, spacing: 16) {
+                    ForEach(viewModel.likedPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
+                        NavigationLink {
+                            OtherUserProfileView()
+                        } label: {
+                            PostView(post: post)
+                        }
+                    }
+                }
+            }
+        }
+        .padding(.horizontal, 4)
+    }
+    
+    // stars view
+    var allStarsView: some View {
+        VStack {
+            GeometryReader { proxy2 in
+                let minY = proxy2.frame(in: .named("SCROLL")).minY
+                
+                LazyVGrid(columns: gridItem, spacing: 16) {
+                    ForEach(viewModel.starPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
+                        NavigationLink {
+                            OtherUserProfileView()
+                        } label: {
                             PostView(post: post)
                         }
                     }

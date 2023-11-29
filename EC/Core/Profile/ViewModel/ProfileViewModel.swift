@@ -31,17 +31,6 @@ class ProfileViewModel: ObservableObject {
         observeAllPost()
     }
     
-    func postFilter(forFilter filter: ProfileFilter) -> [Post] {
-        switch filter {
-        case .posts:
-            return allPosts
-        case .likes:
-            return likedPosts
-        case .stars:
-            return starPosts
-        }
-    }
-    
     // listener for user infor changes
     func fetchCurrentUser() {
         UserService.observeUser(withUid: user.id) { user in
