@@ -12,6 +12,7 @@ struct FeedView: View {
     let screenHeight = UIScreen.main.bounds.height
     @State private var selectedFilter: FeedFilter = .follow
     @StateObject var viewModel = FeedViewModel()
+    @Binding var showTabBar: Bool
 
     var body: some View {
         NavigationStack {
@@ -39,13 +40,18 @@ struct FeedView: View {
             .fullScreenCover(isPresented: $viewModel.showSearchView) {
                 SearchView()
             }
+            .onChange(of: viewModel.showPostDetail) { _ in
+                withAnimation(.easeInOut) {
+                    showTabBar.toggle()
+                }
+            }
         }
     }
 }
 
 struct FeedView_Previews: PreviewProvider {
     static var previews: some View {
-        FeedView()
+        FeedView(showTabBar: .constant(false))
     }
 }
 

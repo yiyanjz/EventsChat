@@ -9,7 +9,12 @@ import SwiftUI
 
 struct OtherUserProfileView: View {
     var body: some View {
-        Text("otherUser")
+        VStack {
+            Button {
+            } label: {
+                Text("otherUser")
+            }
+        }
     }
 }
 

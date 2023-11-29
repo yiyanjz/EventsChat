@@ -28,7 +28,7 @@ struct TabBarView: View {
     var body: some View {
         VStack{
             TabView(selection: $selectedFilted) {
-                FeedView()
+                FeedView(showTabBar: $showTabBar)
                     .tag(TabBarSelection.feed)
                 
                 Text("Events")

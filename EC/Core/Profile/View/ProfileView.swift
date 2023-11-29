@@ -83,6 +83,10 @@ struct ProfileView: View {
                     SharedView()
                         .presentationDetents([.medium, .large])
                 }
+                .fullScreenCover(isPresented: $viewModel.showPostDetails) {
+                    OtherUserProfileView()
+                        .transition(.move(edge: .trailing))
+                }
             }
         }
     }
@@ -279,12 +283,12 @@ extension ProfileView {
     var allPostView: some View {
         VStack {
             GeometryReader { proxy2 in
-                let minY = proxy2.frame(in: .named("SCROLL")).minY
+                let _ = proxy2.frame(in: .named("SCROLL")).minY
                 
                 LazyVGrid(columns: gridItem, spacing: 16) {
                     ForEach(viewModel.allPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
-                        NavigationLink {
-                            OtherUserProfileView()
+                        Button {
+                            viewModel.showPostDetails.toggle()
                         } label: {
                             PostView(post: post)
                         }
@@ -299,12 +303,12 @@ extension ProfileView {
     var allLikesView: some View {
         VStack {
             GeometryReader { proxy2 in
-                let minY = proxy2.frame(in: .named("SCROLL")).minY
+                let _ = proxy2.frame(in: .named("SCROLL")).minY
                 
                 LazyVGrid(columns: gridItem, spacing: 16) {
                     ForEach(viewModel.likedPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
-                        NavigationLink {
-                            OtherUserProfileView()
+                        Button {
+                            viewModel.showPostDetails.toggle()
                         } label: {
                             PostView(post: post)
                         }
@@ -319,12 +323,12 @@ extension ProfileView {
     var allStarsView: some View {
         VStack {
             GeometryReader { proxy2 in
-                let minY = proxy2.frame(in: .named("SCROLL")).minY
+                let _ = proxy2.frame(in: .named("SCROLL")).minY
                 
                 LazyVGrid(columns: gridItem, spacing: 16) {
                     ForEach(viewModel.starPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
-                        NavigationLink {
-                            OtherUserProfileView()
+                        Button {
+                            viewModel.showPostDetails.toggle()
                         } label: {
                             PostView(post: post)
                         }
