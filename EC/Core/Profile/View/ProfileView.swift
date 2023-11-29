@@ -52,6 +52,9 @@ struct ProfileView: View {
                             footerTitleView
                                 .zIndex(2)
                             
+                            Divider()
+                                .padding(8)
+                            
                             footerFilterView
                         }
                     }

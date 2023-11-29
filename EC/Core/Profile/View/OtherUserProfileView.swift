@@ -52,6 +52,9 @@ struct OtherUserProfileView: View {
                             footerTitleView
                                 .zIndex(2)
                             
+                            Divider()
+                                .padding(8)
+                            
                             footerFilterView
                         }
                     }
@@ -76,6 +79,11 @@ struct OtherUserProfileView: View {
                             .cornerRadius(15)
                             .foregroundColor(colorScheme == .light ? .black : .white )
                     }
+                }
+            }
+            .fullScreenCover(isPresented: $viewModel.showPostDetails) {
+                if let selectedPost = viewModel.selectedPost {
+                    PostDetailView(showPostDetail: $viewModel.showPostDetails, post: selectedPost)
                 }
             }
         }
@@ -282,7 +290,7 @@ extension OtherUserProfileView {
             TabView(selection: $selectedFilter) {
                 allPostView
                     .tag(OtherProfileFilter.posts)
-                Text("Secrets")
+                allStaredView
                     .tag(OtherProfileFilter.stars)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
@@ -297,8 +305,31 @@ extension OtherUserProfileView {
                 let _ = proxy2.frame(in: .named("SCROLL")).minY
                 
                 LazyVGrid(columns: gridItem, spacing: 16) {
-                    ForEach(Post.MOCK_POST.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
+                    ForEach(viewModel.allPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
                         Button {
+                            viewModel.showPostDetails.toggle()
+                            viewModel.selectedPost = post
+                        } label: {
+                            PostView(post: post)
+                        }
+                    }
+                }
+            }
+        }
+        .padding(.horizontal, 4)
+    }
+    
+    // stared view
+    var allStaredView: some View {
+        VStack {
+            GeometryReader { proxy2 in
+                let _ = proxy2.frame(in: .named("SCROLL")).minY
+                
+                LazyVGrid(columns: gridItem, spacing: 16) {
+                    ForEach(viewModel.staredPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
+                        Button {
+                            viewModel.showPostDetails.toggle()
+                            viewModel.selectedPost = post
                         } label: {
                             PostView(post: post)
                         }
