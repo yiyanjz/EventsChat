@@ -38,6 +38,15 @@ struct PostDetailView: View {
             SharedView()
                 .presentationDetents([.medium, .large])
         }
+        .fullScreenCover(isPresented: $viewModel.showUserProfile) {
+            if let user = viewModel.post.user, let currentUser = viewModel.currentUser {
+                if user.id == currentUser.id {
+                    ProfileView(user: currentUser, withBackButton: true)
+                }else {
+                    OtherUserProfileView(user: user)
+                }
+            }
+        }
     }
 }
 
@@ -63,10 +72,15 @@ extension PostDetailView {
             
             // Profile Image + Username
             if let user = viewModel.post.user {
-                CircularProfileImageView(user: user, size: .xsmall)
-                
-                Text(user.username)
-                    .font(.system(size: 14))
+                Button(action: {
+                    viewModel.showUserProfile.toggle()
+                }, label: {
+                    CircularProfileImageView(user: user, size: .xsmall)
+                    
+                    Text(user.username)
+                        .font(.system(size: 14))
+                })
+                .foregroundColor(colorScheme == .light ? .black : .white)
             }
             
             Spacer()

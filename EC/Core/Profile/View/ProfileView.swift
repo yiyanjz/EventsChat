@@ -14,10 +14,11 @@ struct ProfileView: View {
     @State private var selectedFilter: ProfileFilter = .posts
     @State private var showEditProfile = false
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dismiss) var dismiss
     @StateObject var viewModel: ProfileViewModel
     
-    init(user: User) {
-        self._viewModel = StateObject(wrappedValue: ProfileViewModel(user: user))
+    init(user: User, withBackButton: Bool) {
+        self._viewModel = StateObject(wrappedValue: ProfileViewModel(user: user, withBackButton: withBackButton))
     }
     
     // grid Item Structure
@@ -63,13 +64,24 @@ struct ProfileView: View {
                 }
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        NavigationLink(destination: SettingView().navigationBarBackButtonHidden(true)) {
-                            Image(systemName: "line.3.horizontal")
-                                .frame(width: 30, height: 30, alignment: .center)
-                                .cornerRadius(15)
-                                .foregroundColor(colorScheme == .light ? .black : .white)
+                        if viewModel.withBackButton {
+                            // Back Button
+                            Button{
+                                dismiss()
+                            }label: {
+                                Image(systemName: "chevron.backward")
+                                    .font(.system(size: 20))
+                            }
+                            .foregroundColor(colorScheme == .light ? .black : .white)
+                        }else {
+                            NavigationLink(destination: SettingView().navigationBarBackButtonHidden(true)) {
+                                Image(systemName: "line.3.horizontal")
+                                    .frame(width: 30, height: 30, alignment: .center)
+                                    .cornerRadius(15)
+                                    .foregroundColor(colorScheme == .light ? .black : .white)
+                            }
+                            .navigationBarBackButtonHidden(true)
                         }
-                        .navigationBarBackButtonHidden(true)
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
@@ -98,7 +110,7 @@ struct ProfileView: View {
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileView(user: User.MOCK_USERS[0])
+        ProfileView(user: User.MOCK_USERS[0], withBackButton: false)
     }
 }
 

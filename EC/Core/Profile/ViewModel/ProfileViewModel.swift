@@ -19,11 +19,13 @@ class ProfileViewModel: ObservableObject {
     @Published var showSharedCard: Bool = false
     @Published var showPostDetails: Bool = false
     @Published var selectedPost: Post?
+    @Published var withBackButton: Bool
     
     let service = PostService()
         
-    init(user: User) {
+    init(user: User, withBackButton: Bool) {
         self.user = user
+        self.withBackButton = withBackButton
         fetchCurrentUser()
         fetchLikedPosts()
         fetchStaredPosts()

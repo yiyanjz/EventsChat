@@ -13,12 +13,22 @@ class PostDetailViewModel: ObservableObject {
     @Published var post: Post
     private let service = PostService()
     @Published var showShared: Bool = false
+    @Published var showUserProfile: Bool = false
+    @Published var currentUser: User?
     
     init(post: Post) {
         self.post = post
         checkIfUserLikedPost()
         checkIfUserStarPost()
         fetchUpdatePost()
+        Task { try await fetchCurrentUser() }
+    }
+    
+    // listener for user infor changes
+    @MainActor
+    func fetchCurrentUser() async throws {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        self.currentUser = try await UserService.fetchUser(withUid: uid)
     }
     
     // like post

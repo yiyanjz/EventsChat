@@ -40,7 +40,7 @@ struct TabBarView: View {
                 Text("Message")
                     .tag(TabBarSelection.message)
                 
-                ProfileView(user: user)
+                ProfileView(user: user, withBackButton: false)
                     .tag(TabBarSelection.profile)
             }
             
