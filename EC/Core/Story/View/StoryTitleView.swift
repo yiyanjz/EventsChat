@@ -57,6 +57,8 @@ extension StoryTitleView {
             Spacer()
             
             Button {
+                Task { try await viewModel.uploadProfileStory() }
+                dismiss()
             } label: {
                 Text("Add")
             }

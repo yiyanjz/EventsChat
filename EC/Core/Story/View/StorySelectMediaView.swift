@@ -40,6 +40,13 @@ struct StorySelectMediaView: View {
                     viewModel.getImages()
                 }
             }
+            .fullScreenCover(isPresented: $viewModel.uploadProfileStory) {
+                StoryTitleView(selectedMedia: viewModel.selectedMedia)
+                    .NavigationHidden()
+                    .onDisappear {
+                        dismiss()
+                    }
+            }
         }
     }
 }
@@ -67,9 +74,8 @@ extension StorySelectMediaView {
             
             Spacer()
             
-            NavigationLink {
-                StoryTitleView(selectedMedia: viewModel.selectedMedia)
-                    .NavigationHidden()
+            Button {
+                viewModel.uploadProfileStory.toggle()
             } label: {
                 if viewModel.selectedMedia.count > 0 {
                     Text("Next \(viewModel.selectedMedia.count)")
