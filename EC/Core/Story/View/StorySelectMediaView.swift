@@ -41,10 +41,12 @@ struct StorySelectMediaView: View {
                 }
             }
             .fullScreenCover(isPresented: $viewModel.uploadProfileStory) {
-                StoryTitleView(selectedMedia: viewModel.selectedMedia)
+                StoryTitleView(selectedMedia: viewModel.selectedMedia, completStory: $viewModel.completStory)
                     .NavigationHidden()
                     .onDisappear {
-                        dismiss()
+                        if viewModel.completStory {
+                            dismiss()
+                        }
                     }
             }
         }

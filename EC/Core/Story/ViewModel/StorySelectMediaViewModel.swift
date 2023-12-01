@@ -19,6 +19,7 @@ class StorySelectMediaViewModel: ObservableObject {
     @Published var albumList: [ImageAlbumItem] = []
     @Published var selectAlbum : ImageAlbumItem = ImageAlbumItem(number: 0, fetchResult: PHFetchResult<PHAsset>.init())
     @Published var uploadProfileStory: Bool = false
+    @Published var completStory: Bool = false
     
     // get albums
     public func getAlbum(){

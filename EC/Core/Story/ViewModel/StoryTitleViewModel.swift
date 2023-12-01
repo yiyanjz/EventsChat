@@ -12,10 +12,12 @@ class StoryTitleViewModel: ObservableObject {
     @Published var selectedMedia: [LibrayPhotos]
     @Published var showEditCover: Bool = false
     @Published var selectedStoryCoverImage: LibrayPhotos?
+    @Binding var completStory: Bool
     
     let service = StoryService()
     
-    init(selectedMedia: [LibrayPhotos]) {
+    init(selectedMedia: [LibrayPhotos], completStory: Binding<Bool>) {
+        self._completStory = completStory
         self.selectedMedia = selectedMedia
         self.selectedStoryCoverImage = selectedMedia.first
     }

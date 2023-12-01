@@ -15,8 +15,8 @@ struct StoryTitleView: View {
     @Environment(\.dismiss) var dismiss
     @StateObject var viewModel: StoryTitleViewModel
     
-    init(selectedMedia: [LibrayPhotos]) {
-        self._viewModel = StateObject(wrappedValue:StoryTitleViewModel(selectedMedia: selectedMedia))
+    init(selectedMedia: [LibrayPhotos], completStory: Binding<Bool>) {
+        self._viewModel = StateObject(wrappedValue:StoryTitleViewModel(selectedMedia: selectedMedia, completStory: completStory))
     }
     
     var body: some View {
@@ -35,7 +35,7 @@ struct StoryTitleView: View {
 
 struct StoryTitleView_Previews: PreviewProvider {
     static var previews: some View {
-        StoryTitleView(selectedMedia: [LibrayPhotos(uiImage: UIImage(named: "shin")!)])
+        StoryTitleView(selectedMedia: [LibrayPhotos(uiImage: UIImage(named: "shin")!)], completStory: .constant(false))
     }
 }
 
@@ -59,6 +59,7 @@ extension StoryTitleView {
             Button {
                 Task { try await viewModel.uploadProfileStory() }
                 dismiss()
+                viewModel.completStory.toggle()
             } label: {
                 Text("Add")
             }
