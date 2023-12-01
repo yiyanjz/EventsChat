@@ -133,7 +133,6 @@ extension UploadView {
             } label: {
                 Image(systemName: "x.circle")
             }
-            .padding(.top, 8)
             .padding(.horizontal, 5)
             
             Spacer()
@@ -151,7 +150,6 @@ extension UploadView {
                     Text(viewModel.selectAlbum.title ?? "Recents")
                     
                     Image(systemName: viewModel.showMoreAblum ? "chevron.up":"chevron.down")
-                        .font(.footnote)
                 }
                 .frame(width: 100)
             }
@@ -163,10 +161,8 @@ extension UploadView {
             } label: {
                 if viewModel.selectedMedia.count > 0 {
                     Text("Next \(viewModel.selectedMedia.count)")
-                        .font(.footnote)
                 }else{
                     Text("Next")
-                        .font(.footnote)
                 }
             }
         }
@@ -210,7 +206,7 @@ extension UploadView {
                                             .frame(width: 30, height: 30)
                                             .padding(8)
                                     }
-                                    .offset(x: 38, y: -40)
+                                    .offset(x: 45, y: -45)
                                 )
                         }
                     }
@@ -255,7 +251,7 @@ extension UploadView {
                                             .frame(width: 30, height: 30)
                                             .padding(8)
                                     }
-                                    .offset(x: 38, y: -40)
+                                    .offset(x: 45, y: -45)
                                 )
                                 .overlay(
                                     Text(item.duration ?? "")
@@ -307,7 +303,7 @@ extension UploadView {
                                             .frame(width: 30, height: 30)
                                             .padding(8)
                                     }
-                                    .offset(x: 38, y: -40)
+                                    .offset(x: 45, y: -45)
                                 )
                                 .overlay(
                                     Text(item.duration ?? "")
@@ -348,7 +344,7 @@ extension UploadView {
                                             .frame(width: 30, height: 30)
                                             .padding(8)
                                     }
-                                    .offset(x: 38, y: -40)
+                                    .offset(x: 45, y: -45)
                                 )
                         }
                     }

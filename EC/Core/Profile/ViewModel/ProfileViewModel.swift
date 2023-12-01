@@ -20,6 +20,7 @@ class ProfileViewModel: ObservableObject {
     @Published var showPostDetails: Bool = false
     @Published var selectedPost: Post?
     @Published var withBackButton: Bool
+    @Published var showStoryView: Bool = false
     
     let service = PostService()
         

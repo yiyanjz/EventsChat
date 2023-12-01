@@ -103,6 +103,9 @@ struct ProfileView: View {
                         PostDetailView(showPostDetail: $viewModel.showPostDetails, post: selectedPost)
                     }
                 }
+                .fullScreenCover(isPresented: $viewModel.showStoryView) {
+                    StorySelectMediaView()
+                }
             }
         }
     }
@@ -215,7 +218,7 @@ extension ProfileView {
                         }
                         
                         Button {
-                            print("ProfileView: New Story Button Tapped")
+                            viewModel.showStoryView.toggle()
                         } label: {
                             Image(systemName: "plus.circle")
                                 .resizable()
@@ -301,7 +304,7 @@ extension ProfileView {
             GeometryReader { proxy2 in
                 let _ = proxy2.frame(in: .named("SCROLL")).minY
                 
-                LazyVGrid(columns: gridItem, spacing: 16) {
+                LazyVGrid(columns: gridItem, spacing: 4) {
                     ForEach(viewModel.allPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
                         Button {
                             viewModel.selectedPost = post
@@ -322,7 +325,7 @@ extension ProfileView {
             GeometryReader { proxy2 in
                 let _ = proxy2.frame(in: .named("SCROLL")).minY
                 
-                LazyVGrid(columns: gridItem, spacing: 16) {
+                LazyVGrid(columns: gridItem, spacing: 4) {
                     ForEach(viewModel.likedPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
                         Button {
                             viewModel.showPostDetails.toggle()
@@ -343,7 +346,7 @@ extension ProfileView {
             GeometryReader { proxy2 in
                 let _ = proxy2.frame(in: .named("SCROLL")).minY
                 
-                LazyVGrid(columns: gridItem, spacing: 16) {
+                LazyVGrid(columns: gridItem, spacing: 4) {
                     ForEach(viewModel.starPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
                         Button {
                             viewModel.showPostDetails.toggle()
