@@ -106,6 +106,12 @@ struct ProfileView: View {
                 .fullScreenCover(isPresented: $viewModel.showStoryView) {
                     StorySelectMediaView()
                 }
+                .fullScreenCover(isPresented: $viewModel.showProfileStory) {
+                    if let selectedProfileStory = viewModel.selectedProfileStory {
+                        let countTime = CountTimer(items: selectedProfileStory.selectedMedia.count, interval: 4.0)
+                        StoryView(media: selectedProfileStory, user: viewModel.user, countTimer: countTime)
+                    }
+                }
             }
         }
     }
@@ -204,16 +210,23 @@ extension ProfileView {
                     HStack {
                         ForEach(viewModel.profileStorys.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { story in
                             VStack {
-                                KFImage(URL(string: story.selectedCover))
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 55, height: 55)
-                                    .clipShape(Circle())
-                                
-                                Text(story.caption)
-                                    .font(.footnote)
-                                    .foregroundColor(colorScheme == .light ? .black : .white )
-                                    .frame(width: 70)
+                                Button {
+                                    viewModel.showProfileStory.toggle()
+                                    viewModel.selectedProfileStory = story
+                                } label: {
+                                    VStack {
+                                        KFImage(URL(string: story.selectedCover))
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 55, height: 55)
+                                            .clipShape(Circle())
+                                        
+                                        Text(story.caption)
+                                            .font(.footnote)
+                                            .foregroundColor(colorScheme == .light ? .black : .white )
+                                            .frame(width: 70)
+                                    }
+                                }
                             }
                         }
                         
