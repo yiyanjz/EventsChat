@@ -73,7 +73,7 @@ extension StoryTitleView {
                 viewModel.showEditCover.toggle()
             } label: {
                 VStack {
-                    if let firstImage = viewModel.selectedStoryCoverImage?.uiImage ?? viewModel.selectedMedia.first?.uiImage {
+                    if let firstImage = viewModel.selectedStoryCoverImage?.uiImage {
                         Image(uiImage: firstImage)
                             .resizable()
                             .frame(width: 200, height: 200)

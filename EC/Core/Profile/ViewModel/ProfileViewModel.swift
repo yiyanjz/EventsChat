@@ -21,6 +21,7 @@ class ProfileViewModel: ObservableObject {
     @Published var selectedPost: Post?
     @Published var withBackButton: Bool
     @Published var showStoryView: Bool = false
+    @Published var profileStorys = [Story]()
     
     let service = PostService()
         
@@ -34,6 +35,8 @@ class ProfileViewModel: ObservableObject {
         observeLikedPost()
         observeStarPost()
         observeAllPost()
+        observeAllStory()
+        Task { try await fetchAllStory()}
     }
     
     // listener for user infor changes
@@ -114,6 +117,19 @@ class ProfileViewModel: ObservableObject {
     func observeAllPost() {
         service.observePostsActionInfo(forUid: user.id, collectionName: CollectionFilter.userPost.title) { post in
             self.allPosts.append(post)
+        }
+    }
+    
+    // fetch all profile stories
+    @MainActor
+    func fetchAllStory() async throws{
+        self.profileStorys = try await StoryService.fetchProfileStorys(forUid: user.id)
+    }
+    
+    // observe for new storys
+    func observeAllStory() {
+        StoryService.observeStorysAdd(forUid: user.id) { story in
+            self.profileStorys.append(story)
         }
     }
 }

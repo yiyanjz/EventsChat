@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import Firebase
 
-struct Story:  Identifiable, Hashable, Encodable {
+struct Story:  Identifiable, Hashable, Encodable, Decodable {
     let id: String
     var caption: String
     var selectedMedia: [String]
     var selectedCover: String
+    var timestamp: Timestamp
 }

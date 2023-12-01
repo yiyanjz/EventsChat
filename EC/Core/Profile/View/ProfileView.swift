@@ -202,15 +202,15 @@ extension ProfileView {
                 // Story
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
-                        ForEach(0 ... 2, id: \.self) { story in
+                        ForEach(viewModel.profileStorys.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { story in
                             VStack {
-                                Image("shin")
+                                KFImage(URL(string: story.selectedCover))
                                     .resizable()
                                     .scaledToFill()
                                     .frame(width: 55, height: 55)
                                     .clipShape(Circle())
                                 
-                                Text("Description")
+                                Text(story.caption)
                                     .font(.footnote)
                                     .foregroundColor(colorScheme == .light ? .black : .white )
                                     .frame(width: 70)

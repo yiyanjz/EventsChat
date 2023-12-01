@@ -17,6 +17,7 @@ class StoryTitleViewModel: ObservableObject {
     
     init(selectedMedia: [LibrayPhotos]) {
         self.selectedMedia = selectedMedia
+        self.selectedStoryCoverImage = selectedMedia.first
     }
     
     func uploadProfileStory() async throws {
