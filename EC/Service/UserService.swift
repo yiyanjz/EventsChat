@@ -44,4 +44,91 @@ struct UserService {
         }
         return users
     }
+    
+    func followUser(followUserId otherUserId: String, completion: @escaping() -> Void) {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        let userFollowRef = Firestore.firestore().collection("users").document(uid).collection("user-follow")
+        let followingUserRef = Firestore.firestore().collection("users").document(otherUserId).collection("following-user")
+        
+        userFollowRef.document(otherUserId).setData([:])
+        followingUserRef.document(uid).setData([:])
+        
+        completion()
+    }
+    
+    func unfollowUser(followUserId otherUserId: String, completion: @escaping() -> Void) {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        let userFollowRef = Firestore.firestore().collection("users").document(uid).collection("user-follow")
+        let followingUserRef = Firestore.firestore().collection("users").document(otherUserId).collection("following-user")
+        
+        userFollowRef.document(otherUserId).delete()
+        followingUserRef.document(uid).delete()
+        
+        completion()
+    }
+    
+    // fectch user follow
+    func fetchUserFollow(withUid uid: String) async throws -> [User] {
+        let snapshot = try await Firestore.firestore().collection("users").document(uid).collection("user-follow").getDocuments()
+        let documents = snapshot.documents
+        
+        var followers = [User]()
+        
+        documents.forEach { doc in
+            let userId = doc.documentID
+            
+            Firestore.firestore().collection("users").document(userId).getDocument { snapshot, _ in
+                guard let follower = try? snapshot?.data(as: User.self) else {return}
+                followers.append(follower)
+                
+            }
+        }
+        
+        return followers
+    }
+    
+    // fectch following user
+    func fetchFollowingUser(withUid uid: String) async throws -> [User] {
+        let snapshot = try await Firestore.firestore().collection("users").document(uid).collection("following-user").getDocuments()
+        let documents = snapshot.documents
+        
+        var allFollowing = [User]()
+        
+        documents.forEach { doc in
+            let userId = doc.documentID
+            
+            Firestore.firestore().collection("users").document(userId).getDocument { snapshot, _ in
+                guard let following = try? snapshot?.data(as: User.self) else {return}
+                allFollowing.append(following)
+            }
+        }
+        
+        return allFollowing
+    }
+    
+    // observe follower
+    func observeFollowerOrFollowing(collectionName name: String, completion: @escaping(User) -> Void) {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        Firestore.firestore().collection("users").document(uid).collection(name).addSnapshotListener { (querySnapshot, error) in
+            guard let snapshot = querySnapshot else { return }
+            
+            snapshot.documentChanges.forEach { documentChange in
+                if documentChange.type == .added {
+                    let docID = documentChange.document.documentID
+                    Firestore.firestore().collection("users").document(docID).getDocument { querySnapshot, _ in
+                        guard let snapshot = querySnapshot else { return }
+                        guard var user = try? snapshot.data(as: User.self) else {return}
+                        completion(user)
+                    }
+                } else if documentChange.type == .removed {
+                    let docID = documentChange.document.documentID
+                    Firestore.firestore().collection("users").document(docID).getDocument { querySnapshot, _ in
+                        guard let snapshot = querySnapshot else { return }
+                        guard var user = try? snapshot.data(as: User.self) else {return}
+                        completion(user)
+                    }
+                }
+            }
+        }
+    }
 }

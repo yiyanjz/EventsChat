@@ -100,10 +100,10 @@ struct PostService {
     func starPost(_ post: Post, completion: @escaping() -> Void) {
         guard let uid = Auth.auth().currentUser?.uid else {return}
         
-        let userLikeRef = Firestore.firestore().collection("users").document(uid).collection("user-stars")
+        let userStarRef = Firestore.firestore().collection("users").document(uid).collection("user-stars")
         
         Firestore.firestore().collection("posts").document(post.id).updateData(["stars": post.stars + 1, "didStar": true]) { _ in
-            userLikeRef.document(post.id).setData([:]) { _ in
+            userStarRef.document(post.id).setData([:]) { _ in
                 completion()
             }
         }
@@ -114,10 +114,10 @@ struct PostService {
         guard let uid = Auth.auth().currentUser?.uid else {return}
         guard post.stars >= 0 else {return}
         
-        let userLikeRef = Firestore.firestore().collection("users").document(uid).collection("user-stars")
+        let userStarRef = Firestore.firestore().collection("users").document(uid).collection("user-stars")
         
         Firestore.firestore().collection("posts").document(post.id).updateData(["stars": post.stars - 1, "didStar": false]) { _ in
-            userLikeRef.document(post.id).delete() { _ in
+            userStarRef.document(post.id).delete() { _ in
                 completion()
             }
         }

@@ -17,6 +17,8 @@ class OtherUserProfileViewModel: ObservableObject {
     @Published var staredPosts = [Post]()
     @Published var showPostDetails: Bool = false
     @Published var selectedPost: Post?
+    @Published var userFollow = [User]()
+    @Published var followingUser = [User]()
     
     let service = PostService()
 
@@ -24,6 +26,11 @@ class OtherUserProfileViewModel: ObservableObject {
         self.user = user
         fetchallUsersPosts()
         fetchallUserStars()
+        observeUserFollow()
+        observeFollowingUser()
+        Task {
+            try await fetchFollowAndFollowing()
+        }
     }
     
     func fetchallUsersPosts() {
@@ -47,6 +54,43 @@ class OtherUserProfileViewModel: ObservableObject {
                         self.staredPosts[i].user = postUser
                     }
                 }
+            }
+        }
+    }
+    
+    func followUser(followUserId otherUserId: String) {
+        UserService().followUser(followUserId: otherUserId) {
+        }
+    }
+    
+    func unfollowUser(followUserId otherUserId: String) {
+        UserService().unfollowUser(followUserId: otherUserId) {
+        }
+    }
+    
+    @MainActor
+    func fetchFollowAndFollowing() async throws {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        self.userFollow = try await UserService().fetchUserFollow(withUid: uid)
+        self.followingUser = try await UserService().fetchFollowingUser(withUid: uid)
+    }
+    
+    func observeUserFollow() {
+        UserService().observeFollowerOrFollowing(collectionName: "user-follow") { user in
+            if self.userFollow.contains(user) {
+                self.userFollow = self.userFollow.filter({ $0 != user})
+            }else {
+                self.userFollow.append(user)
+            }
+        }
+    }
+    
+    func observeFollowingUser() {
+        UserService().observeFollowerOrFollowing(collectionName: "following-user") { user in
+            if self.followingUser.contains(user) {
+                self.followingUser = self.followingUser.filter({ $0 != user})
+            }else {
+                self.followingUser.append(user)
             }
         }
     }

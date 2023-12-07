@@ -192,9 +192,9 @@ extension OtherUserProfileView {
 
                 // Edit Profile Button
                 Button {
-                    print("OtherUserProfileView: Follow Button Tapped")
+                    viewModel.userFollow.contains(where: {$0.id == viewModel.user.id}) ? viewModel.unfollowUser(followUserId: viewModel.user.id) : viewModel.followUser(followUserId: viewModel.user.id)
                 } label: {
-                    Text("Follow")
+                    Text(viewModel.userFollow.contains(where: {$0.id == viewModel.user.id}) ? "Unfollow" : "Follow")
                         .font(.subheadline)
                         .fontWeight(.semibold)
                         .frame(width: screenWidth - 20, height: 30, alignment: .center)
