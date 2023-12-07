@@ -83,7 +83,14 @@ struct StoryView: View {
                     VStack(spacing: 5) {
                         Image(systemName: "square.grid.3x1.folder.fill.badge.plus")
                             .font(.system(size:20))
-                        Text("Create")
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.white, lineWidth: 1)
+                                    .frame(width: 30, height: 30)
+                            )
+                        
+                        Text("Add")
+                            .font(.system(size:15))
                     }
                 }
                 
@@ -94,7 +101,14 @@ struct StoryView: View {
                     VStack(spacing: 5) {
                         Image(systemName: "paperplane")
                             .font(.system(size:20))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.white, lineWidth: 1)
+                                    .frame(width: 30, height: 30)
+                            )
+                        
                         Text("Send")
+                            .font(.system(size:15))
                     }
                 }
                 
@@ -105,7 +119,14 @@ struct StoryView: View {
                     VStack(spacing: 5) {
                         Image(systemName: "pencil")
                             .font(.system(size:27))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.white, lineWidth: 1)
+                                    .frame(width: 30, height: 30)
+                            )
+                        
                         Text("Edit")
+                            .font(.system(size:15))
                     }
                 }
                 
@@ -116,7 +137,14 @@ struct StoryView: View {
                     VStack(spacing: 5) {
                         Image(systemName: "person")
                             .font(.system(size:27))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.white, lineWidth: 1)
+                                    .frame(width: 30, height: 30)
+                            )
+                        
                         Text("dismiss")
+                            .font(.system(size:15))
                     }
                 }
             }
