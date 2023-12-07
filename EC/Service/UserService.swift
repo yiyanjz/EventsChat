@@ -74,14 +74,13 @@ struct UserService {
         
         var followers = [User]()
         
-        documents.forEach { doc in
+        for i in 0..<documents.count {
+            let doc = documents[i]
             let userId = doc.documentID
             
-            Firestore.firestore().collection("users").document(userId).getDocument { snapshot, _ in
-                guard let follower = try? snapshot?.data(as: User.self) else {return}
-                followers.append(follower)
-                
-            }
+            let userSnapshot = try await Firestore.firestore().collection("users").document(userId).getDocument()
+            let follower = try userSnapshot.data(as: User.self)
+            followers.append(follower)
         }
         
         return followers
@@ -94,13 +93,13 @@ struct UserService {
         
         var allFollowing = [User]()
         
-        documents.forEach { doc in
+        for i in 0..<documents.count {
+            let doc = documents[i]
             let userId = doc.documentID
             
-            Firestore.firestore().collection("users").document(userId).getDocument { snapshot, _ in
-                guard let following = try? snapshot?.data(as: User.self) else {return}
-                allFollowing.append(following)
-            }
+            let userSnapshot = try await Firestore.firestore().collection("users").document(userId).getDocument()
+            let following = try userSnapshot.data(as: User.self)
+            allFollowing.append(following)
         }
         
         return allFollowing
@@ -117,14 +116,14 @@ struct UserService {
                     let docID = documentChange.document.documentID
                     Firestore.firestore().collection("users").document(docID).getDocument { querySnapshot, _ in
                         guard let snapshot = querySnapshot else { return }
-                        guard var user = try? snapshot.data(as: User.self) else {return}
+                        guard let user = try? snapshot.data(as: User.self) else {return}
                         completion(user)
                     }
                 } else if documentChange.type == .removed {
                     let docID = documentChange.document.documentID
                     Firestore.firestore().collection("users").document(docID).getDocument { querySnapshot, _ in
                         guard let snapshot = querySnapshot else { return }
-                        guard var user = try? snapshot.data(as: User.self) else {return}
+                        guard let user = try? snapshot.data(as: User.self) else {return}
                         completion(user)
                     }
                 }
