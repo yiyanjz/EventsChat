@@ -12,6 +12,7 @@ class ShareViewModel: ObservableObject {
     @Published var selectedUsers = [User]()
     @Published var searchUser: String = ""
     @Published var userFollowing = [User]()
+    @Published var showShareNewGoup: Bool = false
     
     init(){
         Task {

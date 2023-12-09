@@ -23,60 +23,81 @@ struct SharedView: View {
 
     var body: some View {
         VStack {
-            VStack {
-                // search bar
-                HStack{
-                    Image(systemName: "magnifyingglass")
-                    
-                    TextField("Search...", text: $viewModel.searchUser)
-                    
-                    Button {
-                        print("StoryView: New Group Chat")
-                    } label: {
-                        Image(systemName: "person.3")
-                            .foregroundColor(colorScheme == .light ? .black : .white)
-
-                    }
-
-                }
-                .padding(10)
-                .background(.gray.opacity(0.2),in: RoundedRectangle(cornerRadius: 20))
-                
-                // users
-                ScrollView(showsIndicators: false) {
-                    ForEach(searchResults(), id: \.self) { user in
-                        // users
-                        HStack {
-                            CircularProfileImageView(user: user, size: .small)
-                            
-                            VStack(alignment:.leading){
-                                Text(user.fullname ?? "")
-                                    .fontWeight(.bold)
-                                Text(user.username)
-                            }
-                            .font(.system(size: 15))
-                            
-                            Spacer()
-                            
-                            Button {
-                                viewModel.selectedUsers.contains(user)
-                                ? viewModel.selectedUsers.removeAll(where: {$0 == user})
-                                : viewModel.selectedUsers.append(user)
-                            } label: {
-                                Image(systemName: viewModel.selectedUsers.contains(user) ? "circle.fill" : "circle")
-                                    .resizable()
-                                    .frame(width: 30, height: 30, alignment: .center)
-                                    .foregroundColor(viewModel.selectedUsers.contains(user) ? Color(uiColor: .blue) : Color(uiColor: .gray))
-                            }
-                        }
-                        .padding(.top)
-                    }
-                }
-                Divider()
-            }
-            .padding()
-            .padding(.horizontal, 8)
+            headerSearchView
             
+            actionButtonView
+        }
+        .fullScreenCover(isPresented: $viewModel.showShareNewGoup) {
+            ShareNewGroupView()
+        }
+    }
+}
+
+struct SharedView_Previews: PreviewProvider {
+    static var previews: some View {
+        SharedView()
+    }
+}
+
+extension SharedView {
+    var headerSearchView: some View {
+        VStack {
+            // search bar
+            HStack{
+                Image(systemName: "magnifyingglass")
+                
+                TextField("Search...", text: $viewModel.searchUser)
+                
+                Button {
+                    viewModel.showShareNewGoup.toggle()
+                } label: {
+                    Image(systemName: "person.3")
+                        .foregroundColor(colorScheme == .light ? .black : .white)
+
+                }
+
+            }
+            .padding(10)
+            .background(.gray.opacity(0.2),in: RoundedRectangle(cornerRadius: 20))
+            
+            // users
+            ScrollView(showsIndicators: false) {
+                ForEach(searchResults(), id: \.self) { user in
+                    // users
+                    HStack {
+                        CircularProfileImageView(user: user, size: .small)
+                        
+                        VStack(alignment:.leading){
+                            Text(user.fullname ?? "")
+                                .fontWeight(.bold)
+                            Text(user.username)
+                        }
+                        .font(.system(size: 15))
+                        
+                        Spacer()
+                        
+                        Button {
+                            viewModel.selectedUsers.contains(user)
+                            ? viewModel.selectedUsers.removeAll(where: {$0 == user})
+                            : viewModel.selectedUsers.append(user)
+                        } label: {
+                            Image(systemName: viewModel.selectedUsers.contains(user) ? "circle.fill" : "circle")
+                                .resizable()
+                                .frame(width: 30, height: 30, alignment: .center)
+                                .foregroundColor(viewModel.selectedUsers.contains(user) ? Color(uiColor: .blue) : Color(uiColor: .gray))
+                        }
+                    }
+                    .padding(.top)
+                }
+            }
+            Divider()
+        }
+        .padding()
+        .padding(.horizontal, 8)
+    }
+    
+    var actionButtonView: some View {
+        HStack {
             if viewModel.selectedUsers.count == 0 {
                 // action buttons
                 HStack(spacing: 30) {
@@ -162,11 +183,5 @@ struct SharedView: View {
                 .frame(width:UIScreen.main.bounds.width, height: 50, alignment: .center)
             }
         }
-    }
-}
-
-struct SharedView_Previews: PreviewProvider {
-    static var previews: some View {
-        SharedView()
     }
 }
