@@ -12,6 +12,14 @@ struct SharedView: View {
     let screenHeight = UIScreen.main.bounds.height
     let screenWidth = UIScreen.main.bounds.width
     @StateObject var viewModel = ShareViewModel()
+    
+    func searchResults() -> [User]{
+        if viewModel.searchUser.isEmpty {
+            return viewModel.userFollowing
+        } else {
+            return viewModel.userFollowing.filter { $0.username.contains(viewModel.searchUser) }
+        }
+    }
 
     var body: some View {
         VStack {
@@ -36,7 +44,7 @@ struct SharedView: View {
                 
                 // users
                 ScrollView(showsIndicators: false) {
-                    ForEach(viewModel.userFollowing, id: \.self) { user in
+                    ForEach(searchResults(), id: \.self) { user in
                         // users
                         HStack {
                             CircularProfileImageView(user: user, size: .small)
