@@ -25,6 +25,8 @@
 		175960512B043CA500203003 /* SharedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175960502B043CA500203003 /* SharedView.swift */; };
 		175C7A0C2B16EA1F00B6CD48 /* OtherUserProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175C7A0B2B16EA1F00B6CD48 /* OtherUserProfileViewModel.swift */; };
 		175FF6432B045F8600E342F3 /* PostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175FF6422B045F8600E342F3 /* PostViewModel.swift */; };
+		177B18DC2B254388007081B3 /* CommentsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177B18DB2B254388007081B3 /* CommentsViewModel.swift */; };
+		177B18DE2B2545A3007081B3 /* CommentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177B18DD2B2545A3007081B3 /* CommentService.swift */; };
 		177FB9AE2AF46237008C2175 /* ECApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177FB9AD2AF46237008C2175 /* ECApp.swift */; };
 		177FB9B02AF46237008C2175 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177FB9AF2AF46237008C2175 /* ContentView.swift */; };
 		177FB9B22AF46238008C2175 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 177FB9B12AF46238008C2175 /* Assets.xcassets */; };
@@ -118,6 +120,8 @@
 		175960502B043CA500203003 /* SharedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedView.swift; sourceTree = "<group>"; };
 		175C7A0B2B16EA1F00B6CD48 /* OtherUserProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherUserProfileViewModel.swift; sourceTree = "<group>"; };
 		175FF6422B045F8600E342F3 /* PostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
+		177B18DB2B254388007081B3 /* CommentsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsViewModel.swift; sourceTree = "<group>"; };
+		177B18DD2B2545A3007081B3 /* CommentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentService.swift; sourceTree = "<group>"; };
 		177FB9AA2AF46237008C2175 /* EC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		177FB9AD2AF46237008C2175 /* ECApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ECApp.swift; sourceTree = "<group>"; };
 		177FB9AF2AF46237008C2175 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -302,6 +306,7 @@
 				17438C5F2AFC52EF007088F6 /* PostService.swift */,
 				1748FBF42B06BDBE005B1DFF /* SearchService.swift */,
 				178D64912B1815A3008F38FD /* StoryService.swift */,
+				177B18DD2B2545A3007081B3 /* CommentService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -641,6 +646,7 @@
 			children = (
 				17F6BCBF2B226E93004D46D0 /* ShareViewModel.swift */,
 				17A7E8A12B25364800B4701C /* ShareNewGroupViewModel.swift */,
+				177B18DB2B254388007081B3 /* CommentsViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -793,12 +799,14 @@
 				17F6EAA72B0B1FC8005C9D9F /* test3.swift in Sources */,
 				177FB9E72AF4754F008C2175 /* RegisterViewModel.swift in Sources */,
 				17438C602AFC52EF007088F6 /* PostService.swift in Sources */,
+				177B18DE2B2545A3007081B3 /* CommentService.swift in Sources */,
 				17438C5E2AFC5189007088F6 /* DateExtension.swift in Sources */,
 				177FB9D92AF4701E008C2175 /* LoginView.swift in Sources */,
 				17F8337A2B16C468009205FF /* OtherUserProfileView.swift in Sources */,
 				178D64902B1801FC008F38FD /* StoryView.swift in Sources */,
 				175FF6432B045F8600E342F3 /* PostViewModel.swift in Sources */,
 				177FBA2A2AF48849008C2175 /* FollowView.swift in Sources */,
+				177B18DC2B254388007081B3 /* CommentsViewModel.swift in Sources */,
 				177FBA1C2AF485FA008C2175 /* SettingView.swift in Sources */,
 				178D64922B1815A3008F38FD /* StoryService.swift in Sources */,
 				178BC96B2AF723C300330BBC /* test2.swift in Sources */,

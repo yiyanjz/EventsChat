@@ -45,7 +45,7 @@ struct FollowView: View {
         }
         .sheet(isPresented: $viewModel.showComments) {
             if let user = viewModel.post.user {
-                CommentsView(user: user)
+                CommentsView(user: user, post: viewModel.post)
                     .presentationDetents([.medium, .large])
             }
         }

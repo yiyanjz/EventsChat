@@ -17,6 +17,6 @@ struct Comment: Identifiable, Codable, Hashable {
     var comments: Int
     var timestamp: Timestamp
     var ownerId: String
+    var replies: [Comment]
     var didLike: Bool? = false
-    var replies: [Comment]?
 }
