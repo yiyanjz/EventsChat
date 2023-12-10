@@ -28,7 +28,7 @@ struct CommentsView: View {
             Divider()
             
             ForEach(viewModel.allComments.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}), id: \.self) { comment in
-                CommentsCell(comment: comment)
+                CommentsCell(comment: comment, replies: $viewModel.replies, replyTo: $viewModel.replyTo, replyComment: $viewModel.replyComment)
             }
             
             // Divider ----- View All Comment -------
@@ -55,16 +55,28 @@ struct CommentsView: View {
                 CircularProfileImageView(user: viewModel.user, size: .xsmall)
                 
                 // Comments
-                TextField("Say Something", text: $viewModel.comment)
+                TextField(viewModel.replyTo, text: $viewModel.comment)
                     .textInputAutocapitalization(.none)
                     .font(.subheadline)
                     .padding(10)
                     .background(Color(uiColor: .systemGray4))
                     .cornerRadius(20)
                     .onSubmit {
-                        Task {
-                            try await viewModel.UploadComments(withPostId:viewModel.post.id, caption:viewModel.comment)
-                            viewModel.comment = ""
+                        if viewModel.replies {
+                            Task {
+                                if let replyComment = viewModel.replyComment {
+                                    try await viewModel.uploadReplies(withComment:replyComment, caption:viewModel.comment)
+                                    viewModel.comment = ""
+                                    viewModel.replies.toggle()
+                                    viewModel.replyTo = "Say Something"
+                                    viewModel.replyComment = nil
+                                }
+                            }
+                        } else {
+                            Task {
+                                try await viewModel.UploadComments(withPostId:viewModel.post.id, caption:viewModel.comment)
+                                viewModel.comment = ""
+                            }
                         }
                     }
             }

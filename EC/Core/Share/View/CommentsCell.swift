@@ -11,8 +11,14 @@ import Firebase
 struct CommentsCell: View {
     @Environment(\.colorScheme) var colorScheme
     @StateObject var viewModel: CommentCellViewModel
+    @Binding var replies: Bool
+    @Binding var replyTo: String
+    @Binding var replyComment: Comment?
     
-    init(comment: Comment) {
+    init(comment: Comment, replies: Binding<Bool>, replyTo: Binding<String>, replyComment: Binding<Comment?>) {
+        self._replies = replies
+        self._replyTo = replyTo
+        self._replyComment = replyComment
         self._viewModel = StateObject(wrappedValue: CommentCellViewModel(comment: comment))
     }
 
@@ -27,6 +33,9 @@ struct CommentsCell: View {
                         
                         let date = viewModel.comment.timestamp.dateValue()
                         Text("\(date.calenderTimeSinceNow())")
+                            .fontWeight(.regular)
+                            .font(.system(size: 10))
+                            .foregroundColor(Color(uiColor: .label))
                         
                     }
                     .font(.system(size: 15))
@@ -36,7 +45,15 @@ struct CommentsCell: View {
                     
                     HStack {
                         Text("\(viewModel.comment.likes) likes")
-                        Text("Reply")
+                        
+                        Button {
+                            replies.toggle()
+                            replyTo = "@ \(viewModel.comment.user?.username ?? "")"
+                            replyComment = viewModel.comment
+                        } label: {
+                            Text("Reply")
+                        }
+
                     }
                     .padding(.top, 5)
                     .foregroundColor(.gray)
@@ -62,7 +79,7 @@ struct CommentsCell: View {
 
 struct CommentsCell_Previews: PreviewProvider {
     static var previews: some View {
-        let c = Comment(id: UUID().uuidString, caption: "sd", likes: 0, comments: 0, timestamp: Timestamp(), ownerId: "df", replies: [])
-        CommentsCell(comment: c)
+        let c = Comment(id: UUID().uuidString, caption: "sd", likes: 0, comments: 0, timestamp: Timestamp(), ownerId: "df")
+        CommentsCell(comment: c, replies: .constant(false), replyTo: .constant(""), replyComment: .constant(c))
     }
 }

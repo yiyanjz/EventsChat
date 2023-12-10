@@ -12,6 +12,9 @@ class CommentsViewModel: ObservableObject {
     @Published var user: User
     @Published var post: Post
     @Published var allComments = [Comment]()
+    @Published var replies: Bool = false
+    @Published var replyTo: String = "Say Something"
+    @Published var replyComment: Comment?
     
     init(user: User, post: Post) {
         self.user = user
@@ -40,5 +43,10 @@ class CommentsViewModel: ObservableObject {
                 self.allComments.insert(newComment, at: 0)
             }
         }
+    }
+    
+    // upload replies
+    func uploadReplies(withComment comment: Comment, caption: String) async throws {
+        try await CommentService().uploadCommentReply(commentId: comment.id, caption: caption)
     }
 }

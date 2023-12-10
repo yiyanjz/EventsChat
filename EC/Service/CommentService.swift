@@ -14,11 +14,23 @@ struct CommentService {
         let commentsRef = Firestore.firestore().collection("comments").document()
         let postCommentRef = Firestore.firestore().collection("posts").document(postId).collection("post-comments")
         
-        let comment = Comment(id: commentsRef.documentID, caption: caption, likes: 0, comments: 0, timestamp: Timestamp(), ownerId: uid, replies: [])
+        let comment = Comment(id: commentsRef.documentID, caption: caption, likes: 0, comments: 0, timestamp: Timestamp(), ownerId: uid)
         guard let encodedComment = try? Firestore.Encoder().encode(comment) else {return}
         
         try await commentsRef.setData(encodedComment)
         try await postCommentRef.document(commentsRef.documentID).setData([:])
+    }
+    
+    func uploadCommentReply(commentId: String, caption: String) async throws {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        let commentsRepliesRef = Firestore.firestore().collection("comment-replies").document()
+        let repliesRef = Firestore.firestore().collection("comments").document(commentId).collection("replies")
+        
+        let comment = Comment(id: commentsRepliesRef.documentID, caption: caption, likes: 0, comments: 0, timestamp: Timestamp(), ownerId: uid)
+        guard let encodedComment = try? Firestore.Encoder().encode(comment) else {return}
+        
+        try await commentsRepliesRef.setData(encodedComment)
+        try await repliesRef.document(commentsRepliesRef.documentID).setData([:])
     }
     
     func fetchAllPostComment(withPostId postId: String) async throws -> [Comment] {
@@ -108,5 +120,9 @@ struct CommentService {
             guard let data = try? document.data(as: Comment.self) else {return}
             completion(data)
         }
+    }
+    
+    func updateReplyComment() {
+        
     }
 }
