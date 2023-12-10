@@ -171,17 +171,6 @@ struct CommentService {
         }
     }
     
-    // prefill user comment like
-    func checkIfUserLikedComment(_ comment: Comment, completion: @escaping(Bool) -> Void) {
-        Firestore.firestore().collection("comments").document(comment.id).getDocument { snapshot, _ in
-            guard let snapshot = snapshot else {return}
-            guard let data = try? snapshot.data(as: Comment.self) else {return}
-            if let didLike = data.didLike {
-                completion(didLike)
-            }
-        }
-    }
-    
     // check for modify comments
     func observeCurrentComment(_ comment: Comment, completion: @escaping(Comment) -> Void) {
         Firestore.firestore().collection("comments").document(comment.id).addSnapshotListener { querySnapshot, error in

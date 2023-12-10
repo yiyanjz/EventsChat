@@ -12,7 +12,6 @@ class CommentCellViewModel: ObservableObject {
     
     init(comment: Comment) {
         self.comment = comment
-        checkIfUserLikedComment(comment: comment)
         fetchUpdateComment(comment: comment)
         fetchUpdateCommnetReplies(comment: comment)
         Task { try await fetchReplies(comment: comment)}
@@ -29,15 +28,6 @@ class CommentCellViewModel: ObservableObject {
     // unlike comment
     func unlikeComment(comment: Comment){
         CommentService().unlikeComment(withComment: comment) {}
-    }
-    
-    // check for prefilled likes
-    func checkIfUserLikedComment(comment: Comment) {
-        CommentService().checkIfUserLikedComment(comment) { didLike in
-            if didLike {
-                self.comment.didLike = true
-            }
-        }
     }
     
     // listener for modified changes
