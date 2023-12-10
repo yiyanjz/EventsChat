@@ -10,16 +10,13 @@ import Combine
 
 struct ShareNewGroupView: View {
     @Environment(\.dismiss) var dismiss
-    @State var groupName: String = ""
-    @State var searchUser: String = ""
-    @State var users: [String] = ["Justin", "Hannah", "Liqi"]
-    @State var shareTo = [String]()
+    @StateObject var viewModel = ShareNewGroupViewModel()
     
-    func searchResults() -> [String]{
-        if searchUser.isEmpty {
-            return users
+    func searchResults() -> [User]{
+        if viewModel.searchUser.isEmpty {
+            return viewModel.userFollowing
         } else {
-            return users.filter { $0.contains(searchUser) }
+            return viewModel.userFollowing.filter { $0.username.contains(viewModel.searchUser) }
         }
     }
 
@@ -81,7 +78,7 @@ extension ShareNewGroupView {
     
     var textFieldView: some View {
         VStack(spacing:20) {
-            TextField("Group Name", text: $groupName)
+            TextField("Group Name", text: $viewModel.groupName)
             
             Text("To")
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -89,24 +86,22 @@ extension ShareNewGroupView {
             HStack {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
-
-                        ForEach(shareTo, id:\.self) { user in
-                            Text(user)
-                                .frame(height: 25)
+                        ForEach(viewModel.shareTo, id:\.self) { user in
+                            Text(user.username)
                                 .padding(8)
                                 .background(
                                     RoundedRectangle(cornerRadius: 15).fill(.gray.opacity(0.1))
                                 )
                         }
                         
-                        TextField("search user", text: $searchUser)
+                        TextField("search user", text: $viewModel.searchUser)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(maxWidth: .infinity, minHeight: 40, alignment: .leading)
                 }
                 
                 Button {
-                    if shareTo.count > 0 {
-                        shareTo.removeLast()
+                    if viewModel.shareTo.count > 0 {
+                        viewModel.shareTo.removeLast()
                     }
                 } label: {
                     Image(systemName: "arrowshape.backward.fill")
@@ -123,14 +118,10 @@ extension ShareNewGroupView {
             
             ForEach(searchResults(), id:\.self) { user in
                 HStack {
-                    Image(systemName: "person.circle.fill")
-                        .resizable()
-                        .frame(width: 30, height: 30)
-                        .clipShape(Circle())
-                        .foregroundColor(Color(.systemGray4))
+                    CircularProfileImageView(user: user, size: .small)
                     
                     VStack(alignment:.leading){
-                        Text(user)
+                        Text(user.username)
                             .fontWeight(.bold)
                     }
                     .font(.system(size: 15))
@@ -138,14 +129,14 @@ extension ShareNewGroupView {
                     Spacer()
                     
                     Button {
-                        if !shareTo.contains(user) {
-                            shareTo.append(user)
-                            searchUser = ""
+                        if !viewModel.shareTo.contains(user) {
+                            viewModel.shareTo.append(user)
+                            viewModel.searchUser = ""
                         }else{
-                            shareTo.removeAll(where: {$0 == user})
+                            viewModel.shareTo.removeAll(where: {$0 == user})
                         }
                     } label: {
-                        Image(systemName: "circle")
+                        Image(systemName: viewModel.shareTo.contains(user) ? "circle.fill" : "circle")
                             .resizable()
                             .frame(width: 30, height: 30, alignment: .center)
                             .foregroundColor(Color(uiColor: .gray))
@@ -154,7 +145,7 @@ extension ShareNewGroupView {
                 .padding(.top)
             }
         }
-        .searchable(text: $searchUser)
+        .searchable(text: $viewModel.searchUser)
         .padding(.horizontal)
     }
 }
