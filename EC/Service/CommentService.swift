@@ -73,4 +73,40 @@ struct CommentService {
             }
         }
     }
+    
+    // like comment
+    func likeComment(withComment comment: Comment, completion: @escaping() -> Void) {
+        let commentRef = Firestore.firestore().collection("comments").document(comment.id)
+        commentRef.updateData(["likes": comment.likes + 1, "didLike": true]) { _ in
+            completion()
+        }
+    }
+    
+    // unlike comment
+    func unlikeComment(withComment comment: Comment, completion: @escaping() -> Void) {
+        let commentRef = Firestore.firestore().collection("comments").document(comment.id)
+        commentRef.updateData(["likes": comment.likes - 1, "didLike": false]) { _ in
+            completion()
+        }
+    }
+    
+    // prefill user comment like
+    func checkIfUserLikedComment(_ comment: Comment, completion: @escaping(Bool) -> Void) {
+        Firestore.firestore().collection("comments").document(comment.id).getDocument { snapshot, _ in
+            guard let snapshot = snapshot else {return}
+            guard let comment = try? snapshot.data(as: Comment.self) else {return}
+            if let didLike = comment.didLike {
+                completion(didLike)
+            }
+        }
+    }
+    
+    // check for modify comments
+    func observeCurrentComment(_ comment: Comment, completion: @escaping(Comment) -> Void) {
+        Firestore.firestore().collection("comments").document(comment.id).addSnapshotListener { querySnapshot, error in
+            guard let document = querySnapshot else {return}
+            guard let data = try? document.data(as: Comment.self) else {return}
+            completion(data)
+        }
+    }
 }

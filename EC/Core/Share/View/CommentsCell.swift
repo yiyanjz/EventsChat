@@ -9,29 +9,33 @@ import SwiftUI
 import Firebase
 
 struct CommentsCell: View {
-    @State var comment: Comment
     @Environment(\.colorScheme) var colorScheme
+    @StateObject var viewModel: CommentCellViewModel
+    
+    init(comment: Comment) {
+        self._viewModel = StateObject(wrappedValue: CommentCellViewModel(comment: comment))
+    }
 
     var body: some View {
         HStack {
-            if let user = comment.user {
+            if let user = viewModel.comment.user {
                 CircularProfileImageView(user: user, size: .xsmall)
                 
                 VStack(alignment:.leading,spacing: 2){
                     HStack{
-                        Text(comment.user?.username ?? "")
+                        Text(viewModel.comment.user?.username ?? "")
                         
-                        let date = comment.timestamp.dateValue()
+                        let date = viewModel.comment.timestamp.dateValue()
                         Text("\(date.calenderTimeSinceNow())")
                         
                     }
                     .font(.system(size: 15))
                     .fontWeight(.bold)
                     
-                    Text(comment.caption)
+                    Text(viewModel.comment.caption)
                     
                     HStack {
-                        Text("\(comment.likes) likes")
+                        Text("\(viewModel.comment.likes) likes")
                         Text("Reply")
                     }
                     .padding(.top, 5)
@@ -42,12 +46,12 @@ struct CommentsCell: View {
             Spacer()
             
             Button {
-                print("CommentsView: Heart Button Clicked")
+                viewModel.comment.didLike ?? false ? viewModel.unlikeComment(comment: viewModel.comment) : viewModel.likeComment(comment: viewModel.comment)
             } label: {
-                Image(systemName: "heart")
+                Image(systemName: viewModel.comment.didLike ?? false ? "heart.fill" : "heart")
                     .frame(width: 30, height: 30, alignment: .center)
                     .cornerRadius(15)
-                    .foregroundColor(colorScheme == .light ? .black : .white)
+                    .foregroundColor(viewModel.comment.didLike ?? false ? .red : colorScheme == .light ? .black : .white)
             }
             
         }
