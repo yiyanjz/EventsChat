@@ -27,7 +27,7 @@ struct CommentsView: View {
             
             Divider()
             
-            ForEach(viewModel.allComments, id: \.self) { comment in
+            ForEach(viewModel.allComments.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}), id: \.self) { comment in
                 CommentsCell(comment: comment)
             }
             

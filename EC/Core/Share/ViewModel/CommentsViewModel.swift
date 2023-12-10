@@ -17,6 +17,9 @@ class CommentsViewModel: ObservableObject {
         self.user = user
         self.post = post
         Task { try await fetchAllPostComment(withPostId:post.id) }
+        DispatchQueue.main.async {
+            self.observeComments(withPostId: post.id)
+        }
     }
     
     func UploadComments(withPostId postId: String, caption: String) async throws {
@@ -26,5 +29,16 @@ class CommentsViewModel: ObservableObject {
     @MainActor
     func fetchAllPostComment(withPostId postId: String) async throws {
         self.allComments = try await CommentService().fetchAllPostComment(withPostId: postId)
+    }
+    
+    func observeComments(withPostId postId: String) {
+        CommentService().observeComments(withPostId: postId) { comment in
+            let ownerId = comment.ownerId
+            UserService.fetchUserCompletion(withUid: ownerId) { user in
+                var newComment = comment
+                newComment.user = user
+                self.allComments.insert(newComment, at: 0)
+            }
+        }
     }
 }

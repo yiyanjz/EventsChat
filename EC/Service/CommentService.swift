@@ -49,4 +49,28 @@ struct CommentService {
         
         return allPostComments
     }
+    
+    func observeComments(withPostId postId: String, completion: @escaping(Comment) -> Void) {
+        let collectionName = "post-comments"
+        Firestore.firestore().collection("posts").document(postId).collection(collectionName).addSnapshotListener { (querySnapshot, error) in
+            guard let snapshot = querySnapshot else { return }
+            snapshot.documentChanges.forEach { documentChange in
+                if documentChange.type == .added {
+                    let docID = documentChange.document.documentID
+                    Firestore.firestore().collection("comments").document(docID).getDocument { querySnapshot, _ in
+                        guard let snapshot = querySnapshot else { return }
+                        guard let comment = try? snapshot.data(as: Comment.self) else {return}
+                        completion(comment)
+                    }
+                } else if documentChange.type == .removed {
+                    let docID = documentChange.document.documentID
+                    Firestore.firestore().collection("comments").document(docID).getDocument { querySnapshot, _ in
+                        guard let snapshot = querySnapshot else { return }
+                        guard let comment = try? snapshot.data(as: Comment.self) else {return}
+                        completion(comment)
+                    }
+                }
+            }
+        }
+    }
 }
