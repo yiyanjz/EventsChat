@@ -6,34 +6,37 @@
 //
 
 import SwiftUI
+import Firebase
 
 struct CommentsCell: View {
+    @State var comment: Comment
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
         HStack {
-            Image(systemName: "person.circle.fill")
-                .resizable()
-                .frame(width: 40, height: 40)
-                .clipShape(Circle())
-                .foregroundColor(Color(.systemGray4))
-            
-            VStack(alignment:.leading,spacing: 2){
-                HStack{
-                    Text("username")
-                    Text("2h")
-                }
-                .font(.system(size: 15))
-                .fontWeight(.bold)
+            if let user = comment.user {
+                CircularProfileImageView(user: user, size: .xsmall)
                 
-                Text("SDFSDFSDFSDFSDF")
-
-                HStack {
-                    Text("33 likes")
-                    Text("Reply")
+                VStack(alignment:.leading,spacing: 2){
+                    HStack{
+                        Text(comment.user?.username ?? "")
+                        
+                        let date = comment.timestamp.dateValue()
+                        Text("\(date.calenderTimeSinceNow())")
+                        
+                    }
+                    .font(.system(size: 15))
+                    .fontWeight(.bold)
+                    
+                    Text(comment.caption)
+                    
+                    HStack {
+                        Text("\(comment.likes) likes")
+                        Text("Reply")
+                    }
+                    .padding(.top, 5)
+                    .foregroundColor(.gray)
                 }
-                .padding(.top, 5)
-                .foregroundColor(.gray)
             }
             
             Spacer()
@@ -55,6 +58,7 @@ struct CommentsCell: View {
 
 struct CommentsCell_Previews: PreviewProvider {
     static var previews: some View {
-        CommentsCell()
+        let c = Comment(id: UUID().uuidString, caption: "sd", likes: 0, comments: 0, timestamp: Timestamp(), ownerId: "df", replies: [])
+        CommentsCell(comment: c)
     }
 }

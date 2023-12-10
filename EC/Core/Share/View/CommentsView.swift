@@ -27,9 +27,9 @@ struct CommentsView: View {
             
             Divider()
             
-            CommentsCell()
-            
-            CommentsCell()
+            ForEach(viewModel.allComments, id: \.self) { comment in
+                CommentsCell(comment: comment)
+            }
             
             // Divider ----- View All Comment -------
             HStack {
@@ -52,11 +52,7 @@ struct CommentsView: View {
             
             HStack {
                 // Profile Image
-                Image(systemName: "person.circle.fill")
-                    .resizable()
-                    .frame(width: 30, height: 30)
-                    .clipShape(Circle())
-                    .foregroundColor(Color(.systemGray4))
+                CircularProfileImageView(user: viewModel.user, size: .xsmall)
                 
                 // Comments
                 TextField("Say Something", text: $viewModel.comment)
@@ -66,8 +62,10 @@ struct CommentsView: View {
                     .background(Color(uiColor: .systemGray4))
                     .cornerRadius(20)
                     .onSubmit {
-                        Task { try await viewModel.UploadComments(withPostId:viewModel.post.id, caption:viewModel.comment) }
-                        viewModel.comment = ""
+                        Task {
+                            try await viewModel.UploadComments(withPostId:viewModel.post.id, caption:viewModel.comment)
+                            viewModel.comment = ""
+                        }
                     }
             }
             .padding(.horizontal)

@@ -19,4 +19,5 @@ struct Comment: Identifiable, Codable, Hashable {
     var ownerId: String
     var replies: [Comment]
     var didLike: Bool? = false
+    var user: User?
 }

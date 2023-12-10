@@ -239,10 +239,6 @@ extension PostDetailView {
                         .cornerRadius(20)
                 }
                 .padding(.horizontal)
-                
-                ForEach(0..<3) { _ in
-                    CommentsCell()
-                }
             }
         }
     }
