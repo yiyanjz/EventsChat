@@ -42,7 +42,7 @@ class SearchResultViewModel: ObservableObject {
     @MainActor
     func searchFilterUserResults() async throws {
         guard let uid = Auth.auth().currentUser?.uid else {return}
-        var userResult = try await service.searchFilterUserResults(searchText: searchText)
+        let userResult = try await service.searchFilterUserResults(searchText: searchText)
         self.usersResult = userResult.filter({$0.id != uid})
     }
     
