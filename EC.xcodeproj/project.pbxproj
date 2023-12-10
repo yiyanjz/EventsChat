@@ -210,6 +210,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		177B18E12B267168007081B3 /* Comment */ = {
+			isa = PBXGroup;
+			children = (
+				177B18E32B267177007081B3 /* View */,
+				177B18E22B267173007081B3 /* ViewModel */,
+			);
+			path = Comment;
+			sourceTree = "<group>";
+		};
+		177B18E22B267173007081B3 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				177B18DB2B254388007081B3 /* CommentsViewModel.swift */,
+				177B18DF2B2561B3007081B3 /* CommentCellViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		177B18E32B267177007081B3 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				17B710D02B047F88003BFF67 /* CommentsCell.swift */,
+				1759604E2B04338C00203003 /* CommentsView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		177FB9A12AF46237008C2175 = {
 			isa = PBXGroup;
 			children = (
@@ -262,6 +289,7 @@
 			isa = PBXGroup;
 			children = (
 				177FB9C22AF462E6008C2175 /* Authentication */,
+				177B18E12B267168007081B3 /* Comment */,
 				177FB9C32AF462FA008C2175 /* Feed */,
 				177FB9C42AF46304008C2175 /* Profile */,
 				177FB9C12AF462D5008C2175 /* Root */,
@@ -646,8 +674,6 @@
 		17D4A4562B25186B00F12267 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				177B18DB2B254388007081B3 /* CommentsViewModel.swift */,
-				177B18DF2B2561B3007081B3 /* CommentCellViewModel.swift */,
 				17F6BCBF2B226E93004D46D0 /* ShareViewModel.swift */,
 				17A7E8A12B25364800B4701C /* ShareNewGroupViewModel.swift */,
 			);
@@ -657,8 +683,6 @@
 		17D4A4572B25187400F12267 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				17B710D02B047F88003BFF67 /* CommentsCell.swift */,
-				1759604E2B04338C00203003 /* CommentsView.swift */,
 				175960502B043CA500203003 /* SharedView.swift */,
 				17A7E89F2B2526B600B4701C /* ShareNewGroupView.swift */,
 			);
