@@ -121,26 +121,6 @@ extension SharedView {
                         }
                     }
                     
-                    // Copy Link
-                    Button {
-                        print("StoryView: Copy Link button clicked")
-                    } label: {
-                        VStack(spacing: 5) {
-                            Image(systemName: "link.badge.plus")
-                                .font(.system(size:25))
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(Color.black, lineWidth: 1)
-                                        .frame(width: 50, height: 50)
-                                )
-                            
-                            Spacer()
-                            
-                            Text("Copy Link")
-                                .font(.system(size:15))
-                        }
-                    }
-                    
                     // Share
                     Button {
                         print("StoryView: Share button clicked")

@@ -66,7 +66,7 @@ extension ShareNewGroupView {
                 Button {
                     dismiss()
                 } label: {
-                    Text("Done")
+                    Text("Create")
                         .font(.subheadline)
                         .fontWeight(.bold)
                 }

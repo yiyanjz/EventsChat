@@ -24,19 +24,6 @@ struct Post: Identifiable, Codable, Hashable {
     var userLiked: [String]? = []
 }
 
-// Comment Temp Model
-struct Comment: Identifiable, Codable, Hashable {
-    let id: String
-    var caption: String
-    var likes: Int
-    var comments: Int
-    var timestamp: Timestamp
-    var ownerId: String
-    var replies: [Comment]
-    var user: User?
-    var didLike: Bool? = false
-}
-
 
 // dummy data
 extension Post {
