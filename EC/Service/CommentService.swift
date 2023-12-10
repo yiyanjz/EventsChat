@@ -14,7 +14,7 @@ struct CommentService {
         let commentsRef = Firestore.firestore().collection("comments").document()
         let postCommentRef = Firestore.firestore().collection("posts").document(postId).collection("post-comments")
         
-        let comment = Comment(id: commentsRef.documentID, caption: caption, likes: 0, comments: 0, timestamp: Timestamp(), ownerId: uid)
+        let comment = Comment(id: commentsRef.documentID, caption: caption, likes: 0, comments: 0, timestamp: Timestamp(), ownerId: uid, replies: [])
         guard let encodedComment = try? Firestore.Encoder().encode(comment) else {return}
         
         try await commentsRef.setData(encodedComment)
@@ -62,6 +62,35 @@ struct CommentService {
         return allPostComments
     }
     
+    func fetchAllCommentReplies(commentId: String) async throws -> [Comment] {
+        let snapshot = try await Firestore.firestore().collection("comments").document(commentId).collection("replies").getDocuments()
+        let documents = snapshot.documents
+
+        var allReplies = [Comment]()
+        
+        // update replies info
+        for i in 0..<documents.count {
+            let doc = documents[i]
+            let replyId = doc.documentID
+            
+            let replySnapshot = try await Firestore.firestore().collection("comment-replies").document(replyId).getDocument()
+            let reply = try replySnapshot.data(as: Comment.self)
+            allReplies.append(reply)
+        }
+        
+        // update user info
+        for i in 0..<allReplies.count {
+            let allDoc = allReplies[i]
+            let userId = allDoc.ownerId
+            
+            let userSnapshot = try await Firestore.firestore().collection("users").document(userId).getDocument()
+            let userData = try userSnapshot.data(as: User.self)
+            allReplies[i].user = userData
+        }
+        
+        return allReplies
+    }
+    
     func observeComments(withPostId postId: String, completion: @escaping(Comment) -> Void) {
         let collectionName = "post-comments"
         Firestore.firestore().collection("posts").document(postId).collection(collectionName).addSnapshotListener { (querySnapshot, error) in
@@ -86,10 +115,42 @@ struct CommentService {
         }
     }
     
+    func observeReplies(withCommentId commentId: String, completion: @escaping(Comment) -> Void) {
+        let collectionName = "replies"
+        Firestore.firestore().collection("comments").document(commentId).collection(collectionName).addSnapshotListener { (querySnapshot, error) in
+            guard let snapshot = querySnapshot else { return }
+            snapshot.documentChanges.forEach { documentChange in
+                if documentChange.type == .added {
+                    let docID = documentChange.document.documentID
+                    Firestore.firestore().collection("comment-replies").document(docID).getDocument { querySnapshot, _ in
+                        guard let snapshot = querySnapshot else { return }
+                        guard let data = try? snapshot.data(as: Comment.self) else {return}
+                        completion(data)
+                    }
+                } else if documentChange.type == .removed {
+                    let docID = documentChange.document.documentID
+                    Firestore.firestore().collection("comment-replies").document(docID).getDocument { querySnapshot, _ in
+                        guard let snapshot = querySnapshot else { return }
+                        guard let comment = try? snapshot.data(as: Comment.self) else {return}
+                        completion(comment)
+                    }
+                }
+            }
+        }
+    }
+    
     // like comment
     func likeComment(withComment comment: Comment, completion: @escaping() -> Void) {
         let commentRef = Firestore.firestore().collection("comments").document(comment.id)
         commentRef.updateData(["likes": comment.likes + 1, "didLike": true]) { _ in
+            completion()
+        }
+    }
+    
+    // like reply
+    func likeReply(withReply reply: Comment, completion: @escaping() -> Void) {
+        let replyRef = Firestore.firestore().collection("comment-replies").document(reply.id)
+        replyRef.updateData(["likes": reply.likes + 1, "didLike": true]) { _ in
             completion()
         }
     }
@@ -102,12 +163,20 @@ struct CommentService {
         }
     }
     
+    // unlike reply
+    func unlikeReply(withReply reply: Comment, completion: @escaping() -> Void) {
+        let replyRef = Firestore.firestore().collection("comment-replies").document(reply.id)
+        replyRef.updateData(["likes": reply.likes - 1, "didLike": false]) { _ in
+            completion()
+        }
+    }
+    
     // prefill user comment like
     func checkIfUserLikedComment(_ comment: Comment, completion: @escaping(Bool) -> Void) {
         Firestore.firestore().collection("comments").document(comment.id).getDocument { snapshot, _ in
             guard let snapshot = snapshot else {return}
-            guard let comment = try? snapshot.data(as: Comment.self) else {return}
-            if let didLike = comment.didLike {
+            guard let data = try? snapshot.data(as: Comment.self) else {return}
+            if let didLike = data.didLike {
                 completion(didLike)
             }
         }
@@ -122,7 +191,15 @@ struct CommentService {
         }
     }
     
-    func updateReplyComment() {
-        
+    func observeCurrentReplies(withCommentId commentId: String, completion: @escaping(Comment) -> Void) {
+        Firestore.firestore().collection("comment-replies").addSnapshotListener { querySnapshot, error in
+            guard let snapshot = querySnapshot else { return }
+            snapshot.documentChanges.forEach { documentChange in
+                if documentChange.type == .modified {
+                    guard let data = try? documentChange.document.data(as: Comment.self) else {return}
+                    completion(data)
+                }
+            }
+        }
     }
 }
