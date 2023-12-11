@@ -190,7 +190,7 @@ extension OtherUserProfileView {
                 }
                 .padding(.top,10)
 
-                // Edit Profile Button
+                // Follow Button
                 Button {
                     viewModel.userFollow.contains(where: {$0.id == viewModel.user.id}) ? viewModel.unfollowUser(followUserId: viewModel.user.id) : viewModel.followUser(followUserId: viewModel.user.id)
                 } label: {
