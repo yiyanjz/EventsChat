@@ -18,7 +18,6 @@ class OtherUserProfileViewModel: ObservableObject {
     @Published var showPostDetails: Bool = false
     @Published var selectedPost: Post?
     @Published var userFollow = [User]()
-//    @Published var followingUser = [User]()
     
     let service = PostService()
 
@@ -27,9 +26,10 @@ class OtherUserProfileViewModel: ObservableObject {
         fetchallUsersPosts()
         fetchallUserStars()
         observeUserFollow()
-//        observeFollowingUser()
+        fetchUpdateGrabUserPostsAndFollowingUser()
         Task {
             try await fetchFollowAndFollowing()
+            try await grabUserPostsAndFollowingUser()
         }
     }
     
@@ -72,7 +72,6 @@ class OtherUserProfileViewModel: ObservableObject {
     func fetchFollowAndFollowing() async throws {
         guard let uid = Auth.auth().currentUser?.uid else {return}
         self.userFollow = try await UserService().fetchUserFollow(withUid: uid)
-//        self.followingUser = try await UserService().fetchFollowingUser(withUid: uid)
     }
     
     func observeUserFollow() {
@@ -85,13 +84,31 @@ class OtherUserProfileViewModel: ObservableObject {
         }
     }
     
-//    func observeFollowingUser() {
-//        UserService().observeFollowerOrFollowing(collectionName: "following-user") { user in
-//            if self.followingUser.contains(user) {
-//                self.followingUser = self.followingUser.filter({ $0 != user})
-//            }else {
-//                self.followingUser.append(user)
-//            }
-//        }
-//    }
+    // grab user posts + following user
+    @MainActor
+    func grabUserPostsAndFollowingUser() async throws{
+        let postCount = try await UserService().grabUserPosts(withUid: user.id)
+        let followingUserCount = try await UserService().grabFollowingUser(withUid: user.id)
+        let userFollow = try await UserService().grabUserFollow(withUid: user.id)
+        let userLikes = try await UserService().grabUserLikes(withUid: user.id)
+        user.posts = postCount
+        user.followering = followingUserCount
+        user.followers = userFollow
+        user.likes = userLikes
+    }
+    
+    func fetchUpdateGrabUserPostsAndFollowingUser() {
+        UserService().fetchUpdateUserPosts(withUid: user.id) { postCount in
+            self.user.posts = postCount
+        }
+        UserService().fetchUpdateFollowingUser(withUid: user.id) { followingUserCount in
+            self.user.followering = followingUserCount
+        }
+        UserService().fetchUpdateUserFollow(withUid: user.id) { userFollow in
+            self.user.followers = userFollow
+        }
+        UserService().fetchUpdateUserLikes(withUid: user.id) { userLikes in
+            self.user.likes = userLikes
+        }
+    }
 }

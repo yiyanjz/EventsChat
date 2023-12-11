@@ -143,6 +143,18 @@ struct UserService {
         return snapshot.count
     }
     
+    // grab user follow
+    func grabUserFollow(withUid uid: String) async throws -> Int{
+        let snapshot = try await Firestore.firestore().collection("users").document(uid).collection("user-follow").getDocuments()
+        return snapshot.count
+    }
+    
+    // grab user likes
+    func grabUserLikes(withUid uid: String) async throws -> Int {
+        let snapshot = try await Firestore.firestore().collection("users").document(uid).collection("user-likes").getDocuments()
+        return snapshot.count
+    }
+    
     // observe user post
     func fetchUpdateUserPosts(withUid uid: String, completion: @escaping(Int) -> Void) {
         Firestore.firestore().collection("users").document(uid).collection("user-posts").addSnapshotListener { querySnapshot, error in
@@ -154,6 +166,22 @@ struct UserService {
     // observe following user
     func fetchUpdateFollowingUser(withUid uid: String, completion: @escaping(Int) -> Void) {
         Firestore.firestore().collection("users").document(uid).collection("following-user").addSnapshotListener { querySnapshot, error in
+            guard let snapshot = querySnapshot else { return }
+            completion(snapshot.count)
+        }
+    }
+    
+    // observe user follow
+    func fetchUpdateUserFollow(withUid uid: String, completion: @escaping(Int) -> Void){
+        Firestore.firestore().collection("users").document(uid).collection("user-follow").addSnapshotListener { querySnapshot, error in
+            guard let snapshot = querySnapshot else { return }
+            completion(snapshot.count)
+        }
+    }
+    
+    // observe user likes
+    func fetchUpdateUserLikes(withUid uid: String, completion: @escaping(Int) -> Void) {
+        Firestore.firestore().collection("users").document(uid).collection("user-likes").addSnapshotListener { querySnapshot, error in
             guard let snapshot = querySnapshot else { return }
             completion(snapshot.count)
         }

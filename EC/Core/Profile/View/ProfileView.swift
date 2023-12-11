@@ -184,10 +184,10 @@ extension ProfileView {
                 
                 // Follower + Following + Likes
                 HStack(alignment:.center, spacing: screenWidth / 12) {
-                    ProfileViewUserStats(value: 1, title: "Posts")
-                    ProfileViewUserStats(value: 10, title: "Following")
-                    ProfileViewUserStats(value: 100, title: "Followers")
-                    ProfileViewUserStats(value: 1000, title: "Likes")
+                    ProfileViewUserStats(value: viewModel.user.posts ?? 0, title: "Posts")
+                    ProfileViewUserStats(value: viewModel.user.followering ?? 0, title: "Following")
+                    ProfileViewUserStats(value: viewModel.user.followers ?? 0, title: "Followers")
+                    ProfileViewUserStats(value: viewModel.user.likes ?? 0, title: "Likes")
                 }
                 .padding(.top,10)
 
