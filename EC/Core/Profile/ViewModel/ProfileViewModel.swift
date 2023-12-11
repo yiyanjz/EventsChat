@@ -153,8 +153,8 @@ class ProfileViewModel: ObservableObject {
         let userFollow = try await UserService().grabUserFollow(withUid: user.id)
         let userLikes = try await UserService().grabUserLikes(withUid: user.id)
         user.posts = postCount
-        user.followering = followingUserCount
-        user.followers = userFollow
+        user.followering = userFollow
+        user.followers = followingUserCount
         user.likes = userLikes
     }
     
@@ -162,11 +162,11 @@ class ProfileViewModel: ObservableObject {
         UserService().fetchUpdateUserPosts(withUid: user.id) { postCount in
             self.user.posts = postCount
         }
-        UserService().fetchUpdateFollowingUser(withUid: user.id) { followingUserCount in
-            self.user.followering = followingUserCount
-        }
-        UserService().fetchUpdateUserFollow(withUid: user.id) { userFollow in
+        UserService().fetchUpdateFollowingUser(withUid: user.id) { userFollow in
             self.user.followers = userFollow
+        }
+        UserService().fetchUpdateUserFollow(withUid: user.id) { followingUserCount in
+            self.user.followering = followingUserCount
         }
         UserService().fetchUpdateUserLikes(withUid: user.id) { userLikes in
             self.user.likes = userLikes

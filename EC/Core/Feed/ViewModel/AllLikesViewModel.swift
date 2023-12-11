@@ -19,6 +19,7 @@ class AllLikesViewModel: ObservableObject {
         Task {
             try await fectchLikedUsers()
             try await grabUserPostsAndFollowingUser()
+            try await fetchFollowAndFollowing()
         }
     }
     

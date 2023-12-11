@@ -87,9 +87,9 @@ extension PostDetailView {
             
             // follow Button
             Button{
-                print("PostDetailView: Follow button clicked")
+                viewModel.userFollow.contains(where: {$0 == viewModel.post.user}) ? viewModel.unfollowUser(followUserId: viewModel.post.user?.id ?? "") : viewModel.followUser(followUserId: viewModel.post.user?.id ?? "")
             }label: {
-                Text("Follow")
+                Text(viewModel.userFollow.contains(where: {$0 == viewModel.post.user}) ? "Unfollow" : "Follow")
                     .foregroundColor(.red)
                     .padding(.vertical,5)
                     .padding(.horizontal,18)
