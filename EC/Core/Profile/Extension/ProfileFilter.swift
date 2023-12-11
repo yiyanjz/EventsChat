@@ -57,3 +57,18 @@ enum OtherProfileFilter: Int, CaseIterable {
         }
     }
 }
+
+// profile info filter
+enum ProfileInfoFilter: Int, CaseIterable {
+    case following
+    case follower
+    
+    var title: String {
+        switch self {
+        case .following:
+            return "Following"
+        case .follower:
+            return "Follower"
+        }
+    }
+}

@@ -28,6 +28,8 @@
 		177B18DC2B254388007081B3 /* CommentsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177B18DB2B254388007081B3 /* CommentsViewModel.swift */; };
 		177B18DE2B2545A3007081B3 /* CommentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177B18DD2B2545A3007081B3 /* CommentService.swift */; };
 		177B18E02B2561B3007081B3 /* CommentCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177B18DF2B2561B3007081B3 /* CommentCellViewModel.swift */; };
+		177B18E52B26F7C8007081B3 /* ProfileInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177B18E42B26F7C8007081B3 /* ProfileInfoView.swift */; };
+		177B18E72B26FF94007081B3 /* ProfileInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177B18E62B26FF94007081B3 /* ProfileInfoViewModel.swift */; };
 		177FB9AE2AF46237008C2175 /* ECApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177FB9AD2AF46237008C2175 /* ECApp.swift */; };
 		177FB9B02AF46237008C2175 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177FB9AF2AF46237008C2175 /* ContentView.swift */; };
 		177FB9B22AF46238008C2175 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 177FB9B12AF46238008C2175 /* Assets.xcassets */; };
@@ -124,6 +126,8 @@
 		177B18DB2B254388007081B3 /* CommentsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsViewModel.swift; sourceTree = "<group>"; };
 		177B18DD2B2545A3007081B3 /* CommentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentService.swift; sourceTree = "<group>"; };
 		177B18DF2B2561B3007081B3 /* CommentCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCellViewModel.swift; sourceTree = "<group>"; };
+		177B18E42B26F7C8007081B3 /* ProfileInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileInfoView.swift; sourceTree = "<group>"; };
+		177B18E62B26FF94007081B3 /* ProfileInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileInfoViewModel.swift; sourceTree = "<group>"; };
 		177FB9AA2AF46237008C2175 /* EC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		177FB9AD2AF46237008C2175 /* ECApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ECApp.swift; sourceTree = "<group>"; };
 		177FB9AF2AF46237008C2175 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -413,6 +417,7 @@
 			isa = PBXGroup;
 			children = (
 				177FB9D22AF46F73008C2175 /* ProfileView.swift */,
+				177B18E42B26F7C8007081B3 /* ProfileInfoView.swift */,
 				177FBA112AF48439008C2175 /* EditProfileView.swift */,
 				177FBA132AF4845C008C2175 /* GenderView.swift */,
 				17F833792B16C468009205FF /* OtherUserProfileView.swift */,
@@ -426,6 +431,7 @@
 				177FBA092AF47CCF008C2175 /* ProfileViewModel.swift */,
 				177FBA152AF4848A008C2175 /* EditProfileViewModel.swift */,
 				175C7A0B2B16EA1F00B6CD48 /* OtherUserProfileViewModel.swift */,
+				177B18E62B26FF94007081B3 /* ProfileInfoViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -771,6 +777,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				177B18E52B26F7C8007081B3 /* ProfileInfoView.swift in Sources */,
 				1782EA522AF70AB6006867FD /* VideoUploader.swift in Sources */,
 				177FBA242AF487E9008C2175 /* FeedFilter.swift in Sources */,
 				1782EA542AF72352006867FD /* test.swift in Sources */,
@@ -810,6 +817,7 @@
 				17F6BCC02B226E93004D46D0 /* ShareViewModel.swift in Sources */,
 				177FBA0C2AF47D09008C2175 /* CircularProfileImageView.swift in Sources */,
 				177FB9FA2AF47899008C2175 /* User.swift in Sources */,
+				177B18E72B26FF94007081B3 /* ProfileInfoViewModel.swift in Sources */,
 				179664412AF59645001CCED9 /* PreviewImageView.swift in Sources */,
 				17B710D12B047F88003BFF67 /* CommentsCell.swift in Sources */,
 				177FB9F82AF4786A008C2175 /* AuthService.swift in Sources */,
