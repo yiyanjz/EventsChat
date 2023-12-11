@@ -46,7 +46,7 @@ struct AllLikesView: View {
                                         Divider()
                                             .frame(height:10)
                                         
-                                        Text("Followers-8w")
+                                        Text("Followers-")
                                     }
                                 }
                                 .font(.system(size: 12))
@@ -56,9 +56,9 @@ struct AllLikesView: View {
                             Spacer()
                             
                             Button{
-                                print("SearchResultUserView: Follow button clicked")
+                                viewModel.userFollow.contains(where: {$0.id == user.id}) ? viewModel.unfollowUser(followUserId: user.id) : viewModel.followUser(followUserId: user.id)
                             }label: {
-                                Text("Follow")
+                                Text(viewModel.userFollow.contains(where: {$0.id == user.id}) ? "Unfollow" : "Follow")
                                     .foregroundColor(.red)
                                     .padding(.vertical,5)
                                     .padding(.horizontal,18)

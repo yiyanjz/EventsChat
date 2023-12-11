@@ -18,7 +18,7 @@ class OtherUserProfileViewModel: ObservableObject {
     @Published var showPostDetails: Bool = false
     @Published var selectedPost: Post?
     @Published var userFollow = [User]()
-    @Published var followingUser = [User]()
+//    @Published var followingUser = [User]()
     
     let service = PostService()
 
@@ -27,7 +27,7 @@ class OtherUserProfileViewModel: ObservableObject {
         fetchallUsersPosts()
         fetchallUserStars()
         observeUserFollow()
-        observeFollowingUser()
+//        observeFollowingUser()
         Task {
             try await fetchFollowAndFollowing()
         }
@@ -72,7 +72,7 @@ class OtherUserProfileViewModel: ObservableObject {
     func fetchFollowAndFollowing() async throws {
         guard let uid = Auth.auth().currentUser?.uid else {return}
         self.userFollow = try await UserService().fetchUserFollow(withUid: uid)
-        self.followingUser = try await UserService().fetchFollowingUser(withUid: uid)
+//        self.followingUser = try await UserService().fetchFollowingUser(withUid: uid)
     }
     
     func observeUserFollow() {
@@ -85,13 +85,13 @@ class OtherUserProfileViewModel: ObservableObject {
         }
     }
     
-    func observeFollowingUser() {
-        UserService().observeFollowerOrFollowing(collectionName: "following-user") { user in
-            if self.followingUser.contains(user) {
-                self.followingUser = self.followingUser.filter({ $0 != user})
-            }else {
-                self.followingUser.append(user)
-            }
-        }
-    }
+//    func observeFollowingUser() {
+//        UserService().observeFollowerOrFollowing(collectionName: "following-user") { user in
+//            if self.followingUser.contains(user) {
+//                self.followingUser = self.followingUser.filter({ $0 != user})
+//            }else {
+//                self.followingUser.append(user)
+//            }
+//        }
+//    }
 }
