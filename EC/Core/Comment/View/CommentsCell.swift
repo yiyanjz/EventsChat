@@ -77,9 +77,13 @@ struct CommentsCell: View {
             .padding()
             
             // replies
-            if viewModel.comment.replies?.count ?? 0 > 0 {
+            if viewModel.showMoreReplies {
                 replyView
                     .padding(.leading, 45)
+            } else {
+                if viewModel.replyCount > 0 {
+                    moreCommentView
+                }
             }
         }
     }
@@ -140,5 +144,25 @@ extension CommentsCell {
                 .padding()
             }
         }
+    }
+    
+    var moreCommentView: some View {
+        // Divider ----- View (count) Comment -------
+        HStack {
+            Rectangle()
+                .frame(width: (UIScreen.main.bounds.width / 2) - 100, height: 0.5)
+            
+            Button {
+                viewModel.showMoreReplies.toggle()
+            } label: {
+                Text("View \(viewModel.replyCount) More")
+                    .font(.footnote)
+                    .fontWeight(.semibold)
+            }
+            
+            Rectangle()
+                .frame(width: (UIScreen.main.bounds.width / 2) - 100, height: 0.5)
+        }
+        .foregroundColor(.gray)
     }
 }

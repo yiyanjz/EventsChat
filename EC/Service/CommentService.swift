@@ -191,4 +191,11 @@ struct CommentService {
             }
         }
     }
+    
+    func grabReplyAmount(_ comment: Comment, completion: @escaping(Int) -> Void) {
+        Firestore.firestore().collection("comments").document(comment.id).collection("replies").getDocuments { querySnapshot, _ in
+            guard let snapshot = querySnapshot else { return }
+            completion(snapshot.count)
+        }
+    }
 }

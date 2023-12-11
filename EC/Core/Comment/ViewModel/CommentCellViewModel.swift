@@ -9,11 +9,14 @@ import SwiftUI
 
 class CommentCellViewModel: ObservableObject {
     @Published var comment: Comment
+    @Published var showMoreReplies: Bool = false
+    @Published var replyCount: Int = 0
     
     init(comment: Comment) {
         self.comment = comment
         fetchUpdateComment(comment: comment)
         fetchUpdateCommnetReplies(comment: comment)
+        grabReplyAmount(comment: comment)
         Task { try await fetchReplies(comment: comment)}
         DispatchQueue.main.async {
             self.observeReplies(withCommentId: comment.id)
@@ -78,6 +81,13 @@ class CommentCellViewModel: ObservableObject {
                     self.comment.replies?[i].user = temp_user
                 }
             }
+        }
+    }
+    
+    // grab count
+    func grabReplyAmount(comment: Comment) {
+        CommentService().grabReplyAmount(comment) { count in
+            self.replyCount = count
         }
     }
 }

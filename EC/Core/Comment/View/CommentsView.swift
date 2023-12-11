@@ -15,7 +15,7 @@ struct CommentsView: View {
     }
     
     var body: some View {
-        ScrollView {
+        VStack {
             // Comments
             VStack {
                 Text("Comments")
@@ -25,30 +25,13 @@ struct CommentsView: View {
             .foregroundColor(Color(uiColor: .darkGray))
             .padding(.vertical, 9)
             
-            Divider()
-            
-            ForEach(viewModel.allComments.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}), id: \.self) { comment in
-                CommentsCell(comment: comment, replies: $viewModel.replies, replyTo: $viewModel.replyTo, replyComment: $viewModel.replyComment)
-            }
-            
-            // Divider ----- View All Comment -------
-            HStack {
-                Rectangle()
-                    .frame(width: (UIScreen.main.bounds.width / 2) - 100, height: 0.5)
+            ScrollView {
+                Divider()
                 
-                Button {
-                    print("CommentsView: View More Comment Button Clicked")
-                } label: {
-                    Text("View More Comment")
-                        .font(.footnote)
-                        .fontWeight(.semibold)
+                ForEach(viewModel.allComments.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}), id: \.self) { comment in
+                    CommentsCell(comment: comment, replies: $viewModel.replies, replyTo: $viewModel.replyTo, replyComment: $viewModel.replyComment)
                 }
-
-                Rectangle()
-                    .frame(width: (UIScreen.main.bounds.width / 2) - 100, height: 0.5)
             }
-            .foregroundColor(.gray)
-            
             
             HStack {
                 // Profile Image
