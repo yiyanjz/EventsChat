@@ -198,4 +198,11 @@ struct CommentService {
             completion(snapshot.count)
         }
     }
+    
+    func fetchUpdateGrapReplyAmount(comment: Comment, completion: @escaping(Int) -> Void) {
+        Firestore.firestore().collection("comments").document(comment.id).collection("replies").addSnapshotListener { querySnapshot, error in
+            guard let snapshot = querySnapshot else { return }
+            completion(snapshot.count)
+        }
+    }
 }

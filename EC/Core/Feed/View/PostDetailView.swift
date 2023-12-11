@@ -215,30 +215,9 @@ extension PostDetailView {
                 
                 Divider()
                 
-                // Comments
-                VStack {
-                    Text("\(viewModel.post.comments) comments")
+                if let user = viewModel.post.user {
+                    CommentsView(user: user, post: viewModel.post)
                 }
-                .font(.system(size: 15))
-                .fontWeight(.bold)
-                .foregroundColor(Color(uiColor: .darkGray))
-                .padding(.vertical, 9)
-                
-                HStack {
-                    // Profile Image
-                    if let user = viewModel.post.user {
-                        CircularProfileImageView(user: user, size: .xsmall)
-                    }
-                    
-                    // Comments
-                    TextField("Say Something", text: $viewModel.comment)
-                        .textInputAutocapitalization(.none)
-                        .font(.subheadline)
-                        .padding(10)
-                        .background(Color(uiColor: .systemGray4))
-                        .cornerRadius(20)
-                }
-                .padding(.horizontal)
             }
         }
     }

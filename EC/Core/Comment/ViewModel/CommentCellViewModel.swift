@@ -17,6 +17,7 @@ class CommentCellViewModel: ObservableObject {
         fetchUpdateComment(comment: comment)
         fetchUpdateCommnetReplies(comment: comment)
         grabReplyAmount(comment: comment)
+        fetchUpdateGrapReplyAmount(comment: comment)
         Task { try await fetchReplies(comment: comment)}
         DispatchQueue.main.async {
             self.observeReplies(withCommentId: comment.id)
@@ -87,6 +88,12 @@ class CommentCellViewModel: ObservableObject {
     // grab count
     func grabReplyAmount(comment: Comment) {
         CommentService().grabReplyAmount(comment) { count in
+            self.replyCount = count
+        }
+    }
+    
+    func fetchUpdateGrapReplyAmount(comment: Comment) {
+        CommentService().fetchUpdateGrapReplyAmount(comment: comment) { count in
             self.replyCount = count
         }
     }

@@ -18,7 +18,7 @@ struct CommentsView: View {
         VStack {
             // Comments
             VStack {
-                Text("Comments")
+                Text("\(viewModel.allComments.count) Comments")
             }
             .font(.system(size: 15))
             .fontWeight(.bold)
