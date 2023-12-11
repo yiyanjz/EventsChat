@@ -53,11 +53,13 @@ class ProfileViewModel: ObservableObject {
         service.fetchPostActionInfo(forUid: user.id, collectionName: CollectionFilter.userLiked.title) { posts in
             self.likedPosts = posts
             
-            for i in 0..<posts.count {
-                let post = posts[i]
-                if let ownerId = post.ownerId {
-                    UserService.fetchUserCompletion(withUid: ownerId) { postUser in
-                        self.likedPosts[i].user = postUser
+            if self.likedPosts.count > 0 {
+                for i in 0..<self.likedPosts.count {
+                    let post = self.likedPosts[i]
+                    if let ownerId = post.ownerId {
+                        UserService.fetchUserCompletion(withUid: ownerId) { postUser in
+                            self.likedPosts[i].user = postUser
+                        }
                     }
                 }
             }
@@ -69,11 +71,13 @@ class ProfileViewModel: ObservableObject {
         service.fetchPostActionInfo(forUid: user.id, collectionName: CollectionFilter.userStared.title) { posts in
             self.starPosts = posts
             
-            for i in 0..<posts.count {
-                let post = posts[i]
-                if let ownerId = post.ownerId {
-                    UserService.fetchUserCompletion(withUid: ownerId) { postUser in
-                        self.starPosts[i].user = postUser
+            if self.starPosts.count > 0 {
+                for i in 0..<self.starPosts.count {
+                    let post = self.starPosts[i]
+                    if let ownerId = post.ownerId {
+                        UserService.fetchUserCompletion(withUid: ownerId) { postUser in
+                            self.starPosts[i].user = postUser
+                        }
                     }
                 }
             }
@@ -85,8 +89,10 @@ class ProfileViewModel: ObservableObject {
         service.fetchPostActionInfo(forUid: user.id, collectionName: CollectionFilter.userPost.title) { [self] posts in
             self.allPosts = posts
             
-            for i in 0..<posts.count {
-                self.allPosts[i].user = self.user
+            if self.allPosts.count > 0 {
+                for i in 0..<self.allPosts.count {
+                    self.allPosts[i].user = self.user
+                }
             }
         }
     }

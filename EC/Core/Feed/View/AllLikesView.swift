@@ -41,12 +41,12 @@ struct AllLikesView: View {
                                     }
                                     
                                     HStack{
-                                        Text("Posts-18882")
+                                        Text("Posts-\(user.posts ?? 0)")
                                         
                                         Divider()
                                             .frame(height:10)
                                         
-                                        Text("Followers-")
+                                        Text("Followers-\(user.followering ?? 0)")
                                     }
                                 }
                                 .font(.system(size: 12))
@@ -57,6 +57,7 @@ struct AllLikesView: View {
                             
                             Button{
                                 viewModel.userFollow.contains(where: {$0.id == user.id}) ? viewModel.unfollowUser(followUserId: user.id) : viewModel.followUser(followUserId: user.id)
+                                viewModel.fetchUpdateGrabUserPostsAndFollowingUser()
                             }label: {
                                 Text(viewModel.userFollow.contains(where: {$0.id == user.id}) ? "Unfollow" : "Follow")
                                     .foregroundColor(.red)

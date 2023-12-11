@@ -130,4 +130,32 @@ struct UserService {
             }
         }
     }
+    
+    // grab posts
+    func grabUserPosts(withUid uid: String) async throws -> Int{
+        let snapshot = try await Firestore.firestore().collection("users").document(uid).collection("user-posts").getDocuments()
+        return snapshot.count
+    }
+    
+    // grab following user
+    func grabFollowingUser(withUid uid: String) async throws -> Int{
+        let snapshot = try await Firestore.firestore().collection("users").document(uid).collection("following-user").getDocuments()
+        return snapshot.count
+    }
+    
+    // observe user post
+    func fetchUpdateUserPosts(withUid uid: String, completion: @escaping(Int) -> Void) {
+        Firestore.firestore().collection("users").document(uid).collection("user-posts").addSnapshotListener { querySnapshot, error in
+            guard let snapshot = querySnapshot else { return }
+            completion(snapshot.count)
+        }
+    }
+    
+    // observe following user
+    func fetchUpdateFollowingUser(withUid uid: String, completion: @escaping(Int) -> Void) {
+        Firestore.firestore().collection("users").document(uid).collection("following-user").addSnapshotListener { querySnapshot, error in
+            guard let snapshot = querySnapshot else { return }
+            completion(snapshot.count)
+        }
+    }
 }

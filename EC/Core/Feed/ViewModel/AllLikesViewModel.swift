@@ -16,7 +16,10 @@ class AllLikesViewModel: ObservableObject {
     init(likedList: [String]) {
         self.likedList = likedList
         observeUserFollow()
-        Task { try await fectchLikedUsers() }
+        Task {
+            try await fectchLikedUsers()
+            try await grabUserPostsAndFollowingUser()
+        }
     }
     
     @MainActor
@@ -50,6 +53,34 @@ class AllLikesViewModel: ObservableObject {
                 self.userFollow = self.userFollow.filter({ $0 != user})
             }else {
                 self.userFollow.append(user)
+            }
+        }
+    }
+    
+    // grab user posts + following user
+    @MainActor
+    func grabUserPostsAndFollowingUser() async throws{
+        if let allLikedUser = self.likedListUsers {
+            for i in 0..<allLikedUser.count {
+                let user = allLikedUser[i]
+                let postCount = try await UserService().grabUserPosts(withUid: user.id)
+                let followingUserCount = try await UserService().grabFollowingUser(withUid: user.id)
+                self.likedListUsers?[i].posts = postCount
+                self.likedListUsers?[i].followering = followingUserCount
+            }
+        }
+    }
+    
+    func fetchUpdateGrabUserPostsAndFollowingUser() {
+        if let allLikedUser = self.likedListUsers {
+            for i in 0..<allLikedUser.count {
+                let user = allLikedUser[i]
+                UserService().fetchUpdateUserPosts(withUid: user.id) { postCount in
+                    self.likedListUsers?[i].posts = postCount
+                }
+                UserService().fetchUpdateFollowingUser(withUid: user.id) { followingUserCount in
+                    self.likedListUsers?[i].followering = followingUserCount
+                }
             }
         }
     }

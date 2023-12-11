@@ -17,6 +17,10 @@ struct User: Identifiable, Codable, Hashable {
     var link: String?
     var gender: String?
     var backgroundImageUrl: String?
+    var likes: Int?
+    var followers: Int?
+    var followering: Int?
+    var posts: Int?
 }
 
 // dummy data

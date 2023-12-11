@@ -27,6 +27,7 @@ class SearchResultViewModel: ObservableObject {
             try await searchFilterResults()
             try await searchFilterUserResults()
             try await fetchFollowAndFollowing()
+            try await grabUserPostsAndFollowingUser()
         }
         observeUserFollow()
         observeFollowingUser()
@@ -79,6 +80,30 @@ class SearchResultViewModel: ObservableObject {
                 self.followingUser = self.followingUser.filter({ $0 != user})
             }else {
                 self.followingUser.append(user)
+            }
+        }
+    }
+    
+    // grab user posts + following user
+    @MainActor
+    func grabUserPostsAndFollowingUser() async throws{
+        for i in 0..<usersResult.count {
+            let user = usersResult[i]
+            let postCount = try await UserService().grabUserPosts(withUid: user.id)
+            let followingUserCount = try await UserService().grabFollowingUser(withUid: user.id)
+            usersResult[i].posts = postCount
+            usersResult[i].followering = followingUserCount
+        }
+    }
+    
+    func fetchUpdateGrabUserPostsAndFollowingUser() {
+        for i in 0..<usersResult.count {
+            let user = usersResult[i]
+            UserService().fetchUpdateUserPosts(withUid: user.id) { postCount in
+                self.usersResult[i].posts = postCount
+            }
+            UserService().fetchUpdateFollowingUser(withUid: user.id) { followingUserCount in
+                self.usersResult[i].followering = followingUserCount
             }
         }
     }
