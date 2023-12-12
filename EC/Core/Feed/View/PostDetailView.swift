@@ -89,20 +89,22 @@ extension PostDetailView {
             Spacer()
             
             // follow Button
-            Button{
-                viewModel.userFollow.contains(where: {$0 == viewModel.post.user}) ? viewModel.unfollowUser(followUserId: viewModel.post.user?.id ?? "") : viewModel.followUser(followUserId: viewModel.post.user?.id ?? "")
-            }label: {
-                Text(viewModel.userFollow.contains(where: {$0 == viewModel.post.user}) ? "Unfollow" : "Follow")
-                    .foregroundColor(.red)
-                    .padding(.vertical,5)
-                    .padding(.horizontal,18)
-                    .padding(1)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color(uiColor: .red), lineWidth: 1)
-                    )
+            if let currentUser = viewModel.currentUser, currentUser != viewModel.post.user {
+                Button{
+                    viewModel.userFollow.contains(where: {$0 == viewModel.post.user}) ? viewModel.unfollowUser(followUserId: viewModel.post.user?.id ?? "") : viewModel.followUser(followUserId: viewModel.post.user?.id ?? "")
+                }label: {
+                    Text(viewModel.userFollow.contains(where: {$0 == viewModel.post.user}) ? "Unfollow" : "Follow")
+                        .foregroundColor(.red)
+                        .padding(.vertical,5)
+                        .padding(.horizontal,18)
+                        .padding(1)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color(uiColor: .red), lineWidth: 1)
+                        )
+                }
+                .font(.system(size: 12))
             }
-            .font(.system(size: 12))
             
             // Shared Button
             Button{
