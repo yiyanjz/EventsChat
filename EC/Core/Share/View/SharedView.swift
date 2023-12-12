@@ -143,7 +143,7 @@ extension SharedView {
                     }
                     
                     // Delete Post
-                    if let post = post {
+                    if let post = post, viewModel.currentUser == post.user {
                         Button {
                             Task { try await viewModel.deletePost(post: post)}
                         } label: {

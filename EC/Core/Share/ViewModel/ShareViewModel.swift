@@ -13,10 +13,12 @@ class ShareViewModel: ObservableObject {
     @Published var searchUser: String = ""
     @Published var userFollowing = [User]()
     @Published var showShareNewGoup: Bool = false
+    @Published var currentUser: User?
     
     init(){
         Task {
             try await getUserFollow()
+            try await getCurrentUser()
         }
     }
         
@@ -29,5 +31,11 @@ class ShareViewModel: ObservableObject {
     func deletePost(post: Post) async throws{
         try await CommentService().deletePost(post: post)
         try await CommentService().deleteUserActionInfo(post: post)
+    }
+    
+    @MainActor
+    func getCurrentUser() async throws {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        self.currentUser = try await UserService.fetchUser(withUid: uid)
     }
 }
