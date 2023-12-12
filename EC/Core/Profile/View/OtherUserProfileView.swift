@@ -73,6 +73,7 @@ struct OtherUserProfileView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
+                        viewModel.showSharedView.toggle()
                     } label: {
                         Image(systemName: "arrow.up.forward.circle")
                             .frame(width: 30, height: 30, alignment: .center)
@@ -86,6 +87,10 @@ struct OtherUserProfileView: View {
                     PostDetailView(showPostDetail: $viewModel.showPostDetails, post: selectedPost)
                 }
             }
+            .sheet(isPresented: $viewModel.showSharedView) {
+                SharedView()
+                    .presentationDetents([.medium, .large])
+            }
         }
     }
 }
@@ -97,33 +102,6 @@ struct OtherUserProfileView_Previews: PreviewProvider {
 }
 
 extension OtherUserProfileView {
-    // header view
-    var headerView: some View {
-        // header
-        HStack{
-            // Back Button
-            Button{
-                dismiss()
-            }label: {
-                Image(systemName: "chevron.backward")
-                    .font(.system(size: 20))
-            }
-            .foregroundColor(colorScheme == .light ? .black : .white)
-            
-            Spacer()
-            
-            // Shared Button
-            Button{
-            }label: {
-                Image(systemName: "square.and.arrow.up")
-                    .frame(width: 30, height: 30, alignment: .center)
-                    .cornerRadius(15)
-                    .foregroundColor(colorScheme == .light ? .black : .white)
-            }
-        }
-        .padding(.horizontal)
-    }
-    
     // Background View
     var backgroundView: some View {
         VStack {
@@ -143,7 +121,7 @@ extension OtherUserProfileView {
         }
     }
     
-    // header view
+    // profile view
     var profileView: some View {
         VStack {
             VStack(spacing: 10) {

@@ -14,12 +14,14 @@ class FollowViewModel: ObservableObject {
     @Published var showAllLikes: Bool = false
     @Published var showComments: Bool = false
     @Published var showShared: Bool = false
+    @Published var currentUser: User?
     
     init(post: Post) {
         self.post = post
         checkIfUserLikedPost()
         checkIfUserStarPost()
         fetchUpdatePost()
+        Task { try await grabCurrentUser() }
     }
     
     // like post
@@ -67,5 +69,11 @@ class FollowViewModel: ObservableObject {
                 self.post.didStar = true
             }
         }
+    }
+    
+    @MainActor
+    func grabCurrentUser() async throws {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        self.currentUser = try await UserService.fetchUser(withUid: uid)
     }
 }

@@ -66,22 +66,34 @@ extension FollowView {
     var headerView: some View {
         HStack {
             if let postUser = viewModel.post.user{
-                CircularProfileImageView(user: postUser, size: .xsmall)
-                
-                VStack(alignment: .leading) {
-                    Text(postUser.username)
-                        .fontWeight(.bold)
-                        .font(.system(size: 15))
+                NavigationLink {
+                    if let user = viewModel.post.user, let currentUser = viewModel.currentUser {
+                        if user.id == currentUser.id {
+                            ProfileView(user: currentUser, withBackButton: true)
+                                .navigationBarBackButtonHidden()
+                        }else {
+                            OtherUserProfileView(user: user)
+                                .navigationBarBackButtonHidden()
+                        }
+                    }
+                } label: {
+                    CircularProfileImageView(user: postUser, size: .xsmall)
                     
-                    let date = viewModel.post.timestamp.dateValue()
-                    Text("\(date.calenderTimeSinceNow())")
-                        .fontWeight(.regular)
-                        .font(.system(size: 10))
-                        .foregroundColor(Color(uiColor: .label))
+                    VStack(alignment: .leading) {
+                        Text(postUser.username)
+                            .fontWeight(.bold)
+                            .font(.system(size: 15))
+                            .foregroundColor(colorScheme == .light ? .black : .white)
+                        
+                        let date = viewModel.post.timestamp.dateValue()
+                        Text("\(date.calenderTimeSinceNow())")
+                            .fontWeight(.regular)
+                            .font(.system(size: 10))
+                            .foregroundColor(Color(uiColor: .label))
+                    }
+                    
+                    Spacer()
                 }
-                .padding(.leading, 10)
-                
-                Spacer()
                 
                 Button{
                     viewModel.showShared.toggle()
