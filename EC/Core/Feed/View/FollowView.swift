@@ -208,7 +208,7 @@ extension FollowView {
         VStack(spacing: 8){
             HStack{
                 let icon = Image(systemName: "text.bubble")
-                Text("\(icon): \(viewModel.post.caption)")
+                Text("\(icon): \(viewModel.post.title)")
                     .font(.system(size: 15))
                     .lineLimit(1)
 

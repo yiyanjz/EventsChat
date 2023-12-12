@@ -150,7 +150,7 @@ extension FeedView {
                 
                 // posts
                 LazyVStack {
-                    ForEach(viewModel.posts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}), id: \.self) { post in
+                    ForEach(viewModel.followersPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}), id: \.self) { post in
                         FollowView(post: post)
                             .background(Color(uiColor: .systemBackground).brightness(0.1))
                             .cornerRadius(15)

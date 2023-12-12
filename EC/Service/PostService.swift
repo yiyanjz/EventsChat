@@ -210,4 +210,98 @@ struct PostService {
             }
         }
     }
+    
+    // fetch followers posts
+    func fetchFollowerPosts() async throws -> [Post] {
+        guard let uid = Auth.auth().currentUser?.uid else {return []}
+        let userSnapshot = try await Firestore.firestore().collection("users").document(uid).collection("user-follow").getDocuments().documents
+        
+        var followersPost = [Post]()
+        
+        // add user followers posts
+        if userSnapshot.count > 0 {
+            for i in 0..<userSnapshot.count {
+                let userId = userSnapshot[i].documentID
+                let otherUserSnapshot = try await Firestore.firestore().collection("users").document(userId).collection("user-posts").getDocuments().documents
+                if otherUserSnapshot.count > 0 {
+                    for i in 0..<otherUserSnapshot.count {
+                        let postId = otherUserSnapshot[i].documentID
+                        let postSnapshot = try await Firestore.firestore().collection("posts").document(postId).getDocument()
+                        let post = try postSnapshot.data(as: Post.self)
+                        followersPost.append(post)
+                    }
+                }
+            }
+        }
+        
+        // add users posts
+        let userPostSnapshot = try await Firestore.firestore().collection("users").document(uid).collection("user-posts").getDocuments().documents
+        if userPostSnapshot.count > 0 {
+            for i in 0..<userPostSnapshot.count {
+                var postId = userPostSnapshot[i].documentID
+                let postSnapshot = try await Firestore.firestore().collection("posts").document(postId).getDocument()
+                let post = try postSnapshot.data(as: Post.self)
+                followersPost.append(post)
+            }
+        }
+        
+        // add user
+        for i in 0..<followersPost.count {
+            let post = followersPost[i]
+            if let ownerId = post.ownerId {
+                let postUser = try await UserService.fetchUser(withUid: ownerId)
+                followersPost[i].user = postUser
+            }
+        }
+        
+        return followersPost
+    }
+    
+    // observe user follow
+    func observeUserFollow(completion: @escaping(Post) -> Void) {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        Firestore.firestore().collection("users").document(uid).collection("user-follow").addSnapshotListener { (querySnapshot, error) in
+            guard let snapshot = querySnapshot else { return }
+            snapshot.documentChanges.forEach { documentChange in
+                if documentChange.type == .added {
+                    let userId = documentChange.document.documentID
+                    Firestore.firestore().collection("users").document(userId).collection("user-posts").getDocuments { snapshot, _ in
+                        guard let otherUserDocuments = snapshot?.documents else {return}
+                        otherUserDocuments.forEach { doc in
+                            let postId = doc.documentID
+                            Firestore.firestore().collection("posts").document(postId).getDocument { postSnapshot, _ in
+                                guard let post = try? postSnapshot?.data(as: Post.self) else {return}
+                                
+                                completion(post)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // observe user unfollow
+    func observeUserFollowRemoved(completion: @escaping(Post) -> Void) {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        Firestore.firestore().collection("users").document(uid).collection("user-follow").addSnapshotListener { (querySnapshot, error) in
+            guard let snapshot = querySnapshot else { return }
+            snapshot.documentChanges.forEach { documentChange in
+                if documentChange.type == .removed {
+                    let userId = documentChange.document.documentID
+                    Firestore.firestore().collection("users").document(userId).collection("user-posts").getDocuments { snapshot, _ in
+                        guard let otherUserDocuments = snapshot?.documents else {return}
+                        otherUserDocuments.forEach { doc in
+                            let postId = doc.documentID
+                            Firestore.firestore().collection("posts").document(postId).getDocument { postSnapshot, _ in
+                                guard let post = try? postSnapshot?.data(as: Post.self) else {return}
+                                
+                                completion(post)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
