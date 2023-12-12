@@ -252,4 +252,24 @@ struct CommentService {
         try await repliesInCommentRef.delete()
         try await commentRepliesRef.delete()
     }
+    
+    // delete post
+    func deletePost(post: Post) async throws {
+        let postSnapshot = try await Firestore.firestore().collection("posts").document(post.id).collection("post-comments").getDocuments()
+        let documents = postSnapshot.documents
+        
+        if documents.count > 0 {
+            for i in 0..<documents.count {
+                let doc = documents[i]
+                let grabCommentSnapshot = try await Firestore.firestore().collection("comments").document(doc.documentID).getDocument()
+                let postRef = Firestore.firestore().collection("posts").document(post.id)
+                let grabComment = try grabCommentSnapshot.data(as: Comment.self)
+                try await deleteComment(comment: grabComment, post: post)
+                try await postRef.delete()
+            }
+        } else {
+            let postRef = Firestore.firestore().collection("posts").document(post.id)
+            try await postRef.delete()
+        }
+    }
 }

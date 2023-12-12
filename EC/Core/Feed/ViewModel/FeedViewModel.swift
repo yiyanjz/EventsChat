@@ -16,7 +16,8 @@ class FeedViewModel: ObservableObject {
     
     init(){
         Task { try await fetchPost() }
-        fetchCurrentPost()
+        observePostAdded()
+        observePostRemoved()
     }
     
     @MainActor
@@ -25,7 +26,7 @@ class FeedViewModel: ObservableObject {
     }
     
     // listener for user infor changes
-    func fetchCurrentPost() {
+    func observePostAdded() {
         PostService.observePostsAdd() { [weak self] posts in
             posts.forEach { post in
                 var post = post
@@ -36,6 +37,12 @@ class FeedViewModel: ObservableObject {
                     }
                 }
             }
+        }
+    }
+    
+    func observePostRemoved() {
+        PostService.observePostsRemoved { post in
+            self.posts = self.posts.filter({ $0.id != post.id})
         }
     }
 }

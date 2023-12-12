@@ -55,6 +55,20 @@ struct PostService {
         }
     }
     
+    // check for remove posts
+    static func observePostsRemoved(completion: @escaping(Post) -> Void) {
+        Firestore.firestore().collection("posts").addSnapshotListener { (querySnapshot, error) in
+            guard let snapshot = querySnapshot else { return }
+
+            snapshot.documentChanges.forEach { documentChange in
+                if documentChange.type == .removed {
+                    guard let data = try? documentChange.document.data(as: Post.self) else {return}
+                    completion(data)
+                }
+            }
+        }
+    }
+    
     // like post
     func likePost(_ post: Post, completion: @escaping() -> Void) {
         guard let uid = Auth.auth().currentUser?.uid else {return}

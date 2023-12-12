@@ -35,7 +35,7 @@ struct PostDetailView: View {
             bodyView
         }
         .sheet(isPresented: $viewModel.showShared) {
-            SharedView()
+            SharedView(post: viewModel.post)
                 .presentationDetents([.medium, .large])
         }
         .fullScreenCover(isPresented: $viewModel.showUserProfile) {

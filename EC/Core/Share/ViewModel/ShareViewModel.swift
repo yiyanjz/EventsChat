@@ -25,4 +25,8 @@ class ShareViewModel: ObservableObject {
         guard let uid = Auth.auth().currentUser?.uid else {return}
         self.userFollowing = try await UserService().fetchUserFollow(withUid: uid)
     }
+    
+    func deletePost(post: Post) async throws{
+        try await CommentService().deletePost(post: post)
+    }
 }

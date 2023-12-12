@@ -50,7 +50,7 @@ struct FollowView: View {
             }
         }
         .sheet(isPresented: $viewModel.showShared) {
-            SharedView()
+            SharedView(post: viewModel.post)
                 .presentationDetents([.medium, .large])
         }
     }

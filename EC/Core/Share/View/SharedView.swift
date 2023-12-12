@@ -12,6 +12,7 @@ struct SharedView: View {
     let screenHeight = UIScreen.main.bounds.height
     let screenWidth = UIScreen.main.bounds.width
     @StateObject var viewModel = ShareViewModel()
+    @State var post: Post?
     
     func searchResults() -> [User]{
         if viewModel.searchUser.isEmpty {
@@ -35,7 +36,7 @@ struct SharedView: View {
 
 struct SharedView_Previews: PreviewProvider {
     static var previews: some View {
-        SharedView()
+        SharedView(post: Post.MOCK_POST[0])
     }
 }
 
@@ -142,22 +143,24 @@ extension SharedView {
                     }
                     
                     // Delete Post
-                    Button {
-                        print("StoryView: Delete button clicked")
-                    } label: {
-                        VStack(spacing: 5) {
-                            Image(systemName: "trash.slash")
-                                .font(.system(size:30))
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(Color.black, lineWidth: 1)
-                                        .frame(width: 50, height: 50)
-                                )
-                            
-                            Spacer()
-                            
-                            Text("Delete Post")
-                                .font(.system(size:15))
+                    if let post = post {
+                        Button {
+                            Task { try await viewModel.deletePost(post: post)}
+                        } label: {
+                            VStack(spacing: 5) {
+                                Image(systemName: "trash.slash")
+                                    .font(.system(size:30))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(Color.black, lineWidth: 1)
+                                            .frame(width: 50, height: 50)
+                                    )
+                                
+                                Spacer()
+                                
+                                Text("Delete Post")
+                                    .font(.system(size:15))
+                            }
                         }
                     }
                 }
