@@ -29,13 +29,15 @@ struct CommentsView: View {
                 Divider()
                 
                 ForEach(viewModel.allComments.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}), id: \.self) { comment in
-                    CommentsCell(comment: comment, replies: $viewModel.replies, replyTo: $viewModel.replyTo, replyComment: $viewModel.replyComment)
+                    CommentsCell(comment: comment, replies: $viewModel.replies, replyTo: $viewModel.replyTo, replyComment: $viewModel.replyComment, post: viewModel.post)
                 }
             }
             
             HStack {
                 // Profile Image
-                CircularProfileImageView(user: viewModel.user, size: .xsmall)
+                if let currentUser = viewModel.currentUser {
+                    CircularProfileImageView(user: currentUser, size: .xsmall)
+                }
                 
                 // Comments
                 TextField(viewModel.replyTo, text: $viewModel.comment)

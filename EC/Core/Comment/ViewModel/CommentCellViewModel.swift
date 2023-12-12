@@ -11,13 +11,19 @@ class CommentCellViewModel: ObservableObject {
     @Published var comment: Comment
     @Published var showMoreReplies: Bool = false
     @Published var replyCount: Int = 0
+    @Published var showCommentInfo: Bool = false
+    @Published var showReplyInfo: Bool = false
+    @Published var post: Post
+    @Published var selectedReply: Comment?
     
-    init(comment: Comment) {
+    init(comment: Comment, post: Post) {
         self.comment = comment
+        self.post = post
         fetchUpdateComment(comment: comment)
         fetchUpdateCommnetReplies(comment: comment)
         grabReplyAmount(comment: comment)
         fetchUpdateGrapReplyAmount(comment: comment)
+        observeRepliesRemove(withCommentId: comment.id)
         Task { try await fetchReplies(comment: comment)}
         DispatchQueue.main.async {
             self.observeReplies(withCommentId: comment.id)
@@ -61,6 +67,12 @@ class CommentCellViewModel: ObservableObject {
         }
     }
     
+    func observeRepliesRemove(withCommentId commentId: String) {
+        CommentService().observeRepliesRemove(withCommentId: commentId) { comment in
+            self.comment.replies = self.comment.replies?.filter({ $0.id != comment.id})
+        }
+    }
+    
     // like reply
     func likeReply(reply: Comment){
         CommentService().likeReply(withReply: reply) {}
@@ -96,5 +108,15 @@ class CommentCellViewModel: ObservableObject {
         CommentService().fetchUpdateGrapReplyAmount(comment: comment) { count in
             self.replyCount = count
         }
+    }
+    
+    // delete comment
+    func deleteComment(comment: Comment, post: Post) async throws {
+        try await CommentService().deleteComment(comment: comment, post: post)
+    }
+    
+    // delete replies
+    func deleteReply(comment: Comment, reply: Comment) async throws {
+        try await CommentService().deleteReply(comment: comment, reply: reply)
     }
 }

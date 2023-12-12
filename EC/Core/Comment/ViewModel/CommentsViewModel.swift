@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Firebase
 
 class CommentsViewModel: ObservableObject {
     @Published var comment: String = ""
@@ -15,13 +16,18 @@ class CommentsViewModel: ObservableObject {
     @Published var replies: Bool = false
     @Published var replyTo: String = "Say Something"
     @Published var replyComment: Comment?
+    @Published var currentUser: User?
     
     init(user: User, post: Post) {
         self.user = user
         self.post = post
-        Task { try await fetchAllPostComment(withPostId:post.id) }
+        Task {
+            try await fetchAllPostComment(withPostId:post.id)
+            try await grabCurrentUser()
+        }
         DispatchQueue.main.async {
             self.observeComments(withPostId: post.id)
+            self.observeCommentsRemoved(withPostId: post.id)
         }
     }
     
@@ -45,8 +51,20 @@ class CommentsViewModel: ObservableObject {
         }
     }
     
+    func observeCommentsRemoved(withPostId postId: String) {
+        CommentService().observeCommentsRemoved(withPostId: postId) { comment in
+            self.allComments = self.allComments.filter({ $0.id != comment.id})
+        }
+    }
+    
     // upload replies
     func uploadReplies(withComment comment: Comment, caption: String) async throws {
         try await CommentService().uploadCommentReply(commentId: comment.id, caption: caption)
+    }
+    
+    @MainActor
+    func grabCurrentUser() async throws {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        self.currentUser = try await UserService.fetchUser(withUid: uid)
     }
 }

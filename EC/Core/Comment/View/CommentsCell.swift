@@ -15,11 +15,11 @@ struct CommentsCell: View {
     @Binding var replyTo: String
     @Binding var replyComment: Comment?
     
-    init(comment: Comment, replies: Binding<Bool>, replyTo: Binding<String>, replyComment: Binding<Comment?>) {
+    init(comment: Comment, replies: Binding<Bool>, replyTo: Binding<String>, replyComment: Binding<Comment?>, post: Post) {
         self._replies = replies
         self._replyTo = replyTo
         self._replyComment = replyComment
-        self._viewModel = StateObject(wrappedValue: CommentCellViewModel(comment: comment))
+        self._viewModel = StateObject(wrappedValue: CommentCellViewModel(comment: comment, post: post))
     }
 
     var body: some View {
@@ -86,13 +86,31 @@ struct CommentsCell: View {
                 }
             }
         }
+        .onLongPressGesture(perform: {
+            viewModel.showCommentInfo.toggle()
+        })
+        .confirmationDialog("", isPresented: $viewModel.showCommentInfo) {
+            Button("Copy") {
+                UIPasteboard.general.string = viewModel.comment.caption
+            }
+            
+            if let uid = Auth.auth().currentUser?.uid, viewModel.comment.user?.id == uid {
+                Button("Delete") {
+                    Task { try await viewModel.deleteComment(comment:viewModel.comment, post: viewModel.post)}
+                }
+            }else {
+                Button("Report") {
+                    print("Reported")
+                }
+            }
+        }
     }
 }
 
 struct CommentsCell_Previews: PreviewProvider {
     static var previews: some View {
         let c = Comment(id: UUID().uuidString, caption: "sd", likes: 0, comments: 0, timestamp: Timestamp(), ownerId: "df", replies: [])
-        CommentsCell(comment: c, replies: .constant(false), replyTo: .constant(""), replyComment: .constant(c))
+        CommentsCell(comment: c, replies: .constant(false), replyTo: .constant(""), replyComment: .constant(c), post: Post.MOCK_POST[0])
     }
 }
 
@@ -142,6 +160,25 @@ extension CommentsCell {
                 }
                 .font(.system(size: 12))
                 .padding()
+                .onLongPressGesture(perform: {
+                    viewModel.showReplyInfo.toggle()
+                    viewModel.selectedReply = reply
+                })
+            }
+        }
+        .confirmationDialog("", isPresented: $viewModel.showReplyInfo) {
+            Button("Copy") {
+                UIPasteboard.general.string = viewModel.selectedReply?.caption
+            }
+            
+            if let uid = Auth.auth().currentUser?.uid, let selectedReply = viewModel.selectedReply, viewModel.comment.user?.id == uid {
+                Button("Delete") {
+                    Task { try await viewModel.deleteReply(comment:viewModel.comment, reply:selectedReply)}
+                }
+            }else {
+                Button("Report") {
+                    print("Reported")
+                }
             }
         }
     }

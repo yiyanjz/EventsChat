@@ -103,7 +103,17 @@ struct CommentService {
                         guard let comment = try? snapshot.data(as: Comment.self) else {return}
                         completion(comment)
                     }
-                } else if documentChange.type == .removed {
+                }
+            }
+        }
+    }
+    
+    func observeCommentsRemoved(withPostId postId: String, completion: @escaping(Comment) -> Void) {
+        let collectionName = "post-comments"
+        Firestore.firestore().collection("posts").document(postId).collection(collectionName).addSnapshotListener { (querySnapshot, error) in
+            guard let snapshot = querySnapshot else { return }
+            snapshot.documentChanges.forEach { documentChange in
+                if documentChange.type == .removed {
                     let docID = documentChange.document.documentID
                     Firestore.firestore().collection("comments").document(docID).getDocument { querySnapshot, _ in
                         guard let snapshot = querySnapshot else { return }
@@ -127,7 +137,17 @@ struct CommentService {
                         guard let data = try? snapshot.data(as: Comment.self) else {return}
                         completion(data)
                     }
-                } else if documentChange.type == .removed {
+                }
+            }
+        }
+    }
+    
+    func observeRepliesRemove(withCommentId commentId: String, completion: @escaping(Comment) -> Void) {
+        let collectionName = "replies"
+        Firestore.firestore().collection("comments").document(commentId).collection(collectionName).addSnapshotListener { (querySnapshot, error) in
+            guard let snapshot = querySnapshot else { return }
+            snapshot.documentChanges.forEach { documentChange in
+                if documentChange.type == .removed {
                     let docID = documentChange.document.documentID
                     Firestore.firestore().collection("comment-replies").document(docID).getDocument { querySnapshot, _ in
                         guard let snapshot = querySnapshot else { return }
@@ -204,5 +224,32 @@ struct CommentService {
             guard let snapshot = querySnapshot else { return }
             completion(snapshot.count)
         }
+    }
+    
+    // delete Comment
+    func deleteComment(comment: Comment, post: Post) async throws {
+        let postCommentRef = Firestore.firestore().collection("posts").document(post.id).collection("post-comments").document(comment.id)
+        let commentRef = Firestore.firestore().collection("comments").document(comment.id)
+        let snapshot = try await Firestore.firestore().collection("comments").document(comment.id).collection("replies").getDocuments()
+        let documents = snapshot.documents
+        
+        for i in 0..<documents.count {
+            let doc = documents[i]
+            let repliesRef = Firestore.firestore().collection("comments").document(comment.id).collection("replies").document(doc.documentID)
+            let commentRepliesRef = Firestore.firestore().collection("comment-replies").document(doc.documentID)
+            try await commentRepliesRef.delete()
+            try await repliesRef.delete()
+        }
+        
+        try await postCommentRef.delete()
+        try await commentRef.delete()
+    }
+    
+    // delete replies
+    func deleteReply(comment: Comment, reply: Comment) async throws {
+        let repliesInCommentRef = Firestore.firestore().collection("comments").document(comment.id).collection("replies").document(reply.id)
+        let commentRepliesRef = Firestore.firestore().collection("comment-replies").document(reply.id)
+        try await repliesInCommentRef.delete()
+        try await commentRepliesRef.delete()
     }
 }
