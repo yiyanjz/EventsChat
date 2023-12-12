@@ -13,6 +13,12 @@ struct FeedView: View {
     @State private var selectedFilter: FeedFilter = .follow
     @StateObject var viewModel = FeedViewModel()
     @Binding var showTabBar: Bool
+    
+    // grid Item Structure
+    private let gridItem: [GridItem] = [
+        .init(.flexible(), spacing: 4),
+        .init(.flexible(), spacing: 4),
+    ]
 
     var body: some View {
         NavigationStack {
@@ -158,31 +164,15 @@ extension FeedView {
         VStack {
             ScrollView(showsIndicators: false) {
                 HStack(alignment:.top) {
-                    LazyVStack {
-                        ForEach(Array(viewModel.posts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}).enumerated()), id: \.offset) { index,post in
-                            if index % 2 == 0 {
-                                PostView(post: post)
-                                    .onTapGesture {
-                                        withAnimation(.linear(duration: 0.5)) {
-                                            viewModel.selectedPost = post
-                                            viewModel.showPostDetail.toggle()
-                                        }
+                    LazyVGrid(columns: gridItem, spacing: 4) {
+                        ForEach(viewModel.posts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
+                            PostView(post: post)
+                                .onTapGesture {
+                                    withAnimation(.linear(duration: 0.5)) {
+                                        viewModel.selectedPost = post
+                                        viewModel.showPostDetail.toggle()
                                     }
-                            }
-                        }
-                    }
-                    
-                    LazyVStack {
-                        ForEach(Array(viewModel.posts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}).enumerated()), id: \.offset) { index,post in
-                            if index % 2 != 0 {
-                                PostView(post: post)
-                                    .onTapGesture {
-                                        withAnimation(.linear(duration: 0.5)) {
-                                            viewModel.selectedPost = post
-                                            viewModel.showPostDetail.toggle()
-                                        }
-                                    }
-                            }
+                                }
                         }
                     }
                 }
