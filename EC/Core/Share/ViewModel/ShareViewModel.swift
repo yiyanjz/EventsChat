@@ -28,5 +28,6 @@ class ShareViewModel: ObservableObject {
     
     func deletePost(post: Post) async throws{
         try await CommentService().deletePost(post: post)
+        try await CommentService().deleteUserActionInfo(post: post)
     }
 }

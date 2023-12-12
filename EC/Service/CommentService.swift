@@ -272,4 +272,76 @@ struct CommentService {
             try await postRef.delete()
         }
     }
+    
+    func deleteUserActionInfo(post: Post) async throws{
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        guard let userLiked = post.userLiked else {return}
+        
+        if userLiked.contains(uid) {
+            // if user liked post
+            for i in 0..<userLiked.count {
+                let userId = userLiked[i]
+                let userPostSnapshot = try await Firestore.firestore().collection("users").document(userId).collection("user-posts").getDocuments()
+                let foundPost = userPostSnapshot.documents.filter({ $0.documentID == post.id})
+                let userLikesSnapshot = try await Firestore.firestore().collection("users").document(userId).collection("user-likes").getDocuments()
+                let foundLiked = userLikesSnapshot.documents.filter({ $0.documentID == post.id })
+                let userStarsSnapshot = try await Firestore.firestore().collection("users").document(userId).collection("user-stars").getDocuments()
+                let foundStars = userStarsSnapshot.documents.filter({ $0.documentID == post.id })
+                
+                if foundPost.count > 0 {
+                    for i in 0..<foundPost.count {
+                        let foundPostId = foundPost[i].documentID
+                        try await Firestore.firestore().collection("users").document(userId).collection("user-posts").document(foundPostId).delete()
+                    }
+                }
+                
+                if foundLiked.count > 0 {
+                    for i in 0..<foundLiked.count {
+                        let foundLikeId = foundLiked[i].documentID
+                        try await Firestore.firestore().collection("users").document(userId).collection("user-likes").document(foundLikeId).delete()
+                    }
+                }
+                
+                if foundStars.count > 0 {
+                    for i in 0..<foundStars.count {
+                        let foundStars = foundStars[i].documentID
+                        try await Firestore.firestore().collection("users").document(userId).collection("user-stars").document(foundStars).delete()
+                    }
+                }
+            }
+        } else {
+            // if user did not like post
+            let userPostSnapshot = try await Firestore.firestore().collection("users").document(uid).collection("user-posts").getDocuments()
+            let foundPost = userPostSnapshot.documents.filter({ $0.documentID == post.id})
+            
+            if foundPost.count > 0 {
+                for i in 0..<foundPost.count {
+                    let foundPostId = foundPost[i].documentID
+                    try await Firestore.firestore().collection("users").document(uid).collection("user-posts").document(foundPostId).delete()
+                }
+            }
+            
+            for i in 0..<userLiked.count {
+                let userId = userLiked[i]
+                let userLikesSnapshot = try await Firestore.firestore().collection("users").document(userId).collection("user-likes").getDocuments()
+                let foundLiked = userLikesSnapshot.documents.filter({ $0.documentID == post.id })
+                let userStarsSnapshot = try await Firestore.firestore().collection("users").document(userId).collection("user-stars").getDocuments()
+                let foundStars = userStarsSnapshot.documents.filter({ $0.documentID == post.id })
+                
+                if foundLiked.count > 0 {
+                    for i in 0..<foundLiked.count {
+                        let foundLikeId = foundLiked[i].documentID
+                        try await Firestore.firestore().collection("users").document(userId).collection("user-likes").document(foundLikeId).delete()
+                    }
+                }
+                
+                if foundStars.count > 0 {
+                    for i in 0..<foundStars.count {
+                        let foundStars = foundStars[i].documentID
+                        try await Firestore.firestore().collection("users").document(userId).collection("user-stars").document(foundStars).delete()
+                    }
+                }
+            }
+        }
+    }
 }
