@@ -238,7 +238,7 @@ struct PostService {
         let userPostSnapshot = try await Firestore.firestore().collection("users").document(uid).collection("user-posts").getDocuments().documents
         if userPostSnapshot.count > 0 {
             for i in 0..<userPostSnapshot.count {
-                var postId = userPostSnapshot[i].documentID
+                let postId = userPostSnapshot[i].documentID
                 let postSnapshot = try await Firestore.firestore().collection("posts").document(postId).getDocument()
                 let post = try postSnapshot.data(as: Post.self)
                 followersPost.append(post)
