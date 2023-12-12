@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SharedView: View {
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dismiss) var dismiss
     let screenHeight = UIScreen.main.bounds.height
     let screenWidth = UIScreen.main.bounds.width
     @StateObject var viewModel = ShareViewModel()
@@ -145,7 +146,10 @@ extension SharedView {
                     // Delete Post
                     if let post = post, viewModel.currentUser == post.user {
                         Button {
-                            Task { try await viewModel.deletePost(post: post)}
+                            Task {
+                                try await viewModel.deletePost(post: post)
+                                dismiss()
+                            }
                         } label: {
                             VStack(spacing: 5) {
                                 Image(systemName: "trash.slash")

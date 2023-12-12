@@ -37,6 +37,9 @@ struct PostDetailView: View {
         .sheet(isPresented: $viewModel.showShared) {
             SharedView(post: viewModel.post)
                 .presentationDetents([.medium, .large])
+                .onDisappear {
+                    showPostDetail.toggle()
+                }
         }
         .fullScreenCover(isPresented: $viewModel.showUserProfile) {
             if let user = viewModel.post.user, let currentUser = viewModel.currentUser {
