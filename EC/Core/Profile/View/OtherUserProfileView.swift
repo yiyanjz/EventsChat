@@ -288,7 +288,7 @@ extension OtherUserProfileView {
                             viewModel.showPostDetails.toggle()
                             viewModel.selectedPost = post
                         } label: {
-                            PostView(post: post)
+                            PostView(post: post, likeFilter: true)
                         }
                     }
                 }
@@ -309,7 +309,7 @@ extension OtherUserProfileView {
                             viewModel.showPostDetails.toggle()
                             viewModel.selectedPost = post
                         } label: {
-                            PostView(post: post)
+                            PostView(post: post, likeFilter: true)
                         }
                     }
                 }

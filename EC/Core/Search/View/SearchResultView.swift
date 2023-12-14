@@ -124,7 +124,7 @@ extension SearchResultView {
                     LazyVStack {
                         ForEach(Array(viewModel.postsResult.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}).enumerated()), id: \.offset) { index,post in
                             if index % 2 == 0 {
-                                PostView(post: post)
+                                PostView(post: post, likeFilter: true)
                                     .onTapGesture {
                                         withAnimation(.linear(duration: 0.5)) {
                                             viewModel.selectedPost = post
@@ -137,7 +137,7 @@ extension SearchResultView {
                     LazyVStack {
                         ForEach(Array(viewModel.postsResult.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}).enumerated()), id: \.offset) { index,post in
                             if index % 2 != 0 {
-                                PostView(post: post)
+                                PostView(post: post, likeFilter: true)
                                     .onTapGesture {
                                         withAnimation(.linear(duration: 0.5)) {
                                             viewModel.selectedPost = post

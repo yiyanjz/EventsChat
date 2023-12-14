@@ -166,7 +166,7 @@ extension FeedView {
                 HStack(alignment:.top) {
                     LazyVGrid(columns: gridItem, spacing: 4) {
                         ForEach(viewModel.posts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
-                            PostView(post: post)
+                            PostView(post: post, likeFilter: true)
                                 .onTapGesture {
                                     withAnimation(.linear(duration: 0.5)) {
                                         viewModel.selectedPost = post

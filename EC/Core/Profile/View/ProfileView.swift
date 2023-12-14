@@ -330,7 +330,7 @@ extension ProfileView {
                             viewModel.selectedPost = post
                             viewModel.showPostDetails.toggle()
                         } label: {
-                            PostView(post: post)
+                            PostView(post: post, likeFilter: true)
                         }
                     }
                 }
@@ -351,7 +351,7 @@ extension ProfileView {
                             viewModel.showPostDetails.toggle()
                             viewModel.selectedPost = post
                         } label: {
-                            PostView(post: post)
+                            PostView(post: post, likeFilter: true)
                         }
                     }
                 }
@@ -372,7 +372,7 @@ extension ProfileView {
                             viewModel.showPostDetails.toggle()
                             viewModel.selectedPost = post
                         } label: {
-                            PostView(post: post)
+                            PostView(post: post, likeFilter: false)
                         }
                     }
                 }

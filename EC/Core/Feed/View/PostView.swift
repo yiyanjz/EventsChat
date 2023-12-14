@@ -28,8 +28,8 @@ struct PostView: View {
         }
     }
     
-    init(post: Post) {
-        self._viewModel = StateObject(wrappedValue: PostViewModel(post: post))
+    init(post: Post, likeFilter: Bool) {
+        self._viewModel = StateObject(wrappedValue: PostViewModel(post: post, likeFilter: likeFilter))
     }
     
     var body: some View {
@@ -60,20 +60,36 @@ struct PostView: View {
                         
                         Spacer()
                         
-                        // likes
-                        Button{
-                            withAnimation(.spring()) {
-                                checkUserLikedPost() ? viewModel.unlikePost() : viewModel.likePost()
+                        // if profile likes or profile star
+                        if viewModel.likeFilter {
+                            Button{
+                                withAnimation(.spring()) {
+                                    checkUserLikedPost() ? viewModel.unlikePost() : viewModel.likePost()
+                                }
+                            }label: {
+                                Image(systemName: checkUserLikedPost() ? "heart.fill" : "heart")
+                                    .frame(width: 30, height: 30, alignment: .center)
+                                    .cornerRadius(15)
+                                    .foregroundColor(checkUserLikedPost() ? .red : colorScheme == .light ? .black : .white)
                             }
-                        }label: {
-                            Image(systemName: checkUserLikedPost() ? "heart.fill" : "heart")
-                                .frame(width: 30, height: 30, alignment: .center)
-                                .cornerRadius(15)
-                                .foregroundColor(checkUserLikedPost() ? .red : colorScheme == .light ? .black : .white)
-                        }
 
-                        Text("\(viewModel.post.likes)")
-                            .font(.system(size: 12))
+                            Text("\(viewModel.post.likes)")
+                                .font(.system(size: 12))
+                        } else {
+                            Button{
+                                withAnimation(.spring()) {
+                                    checkUserStarPost() ? viewModel.unstarPost() : viewModel.starPost()
+                                }
+                            }label: {
+                                Image(systemName: checkUserStarPost() ? "star.fill" : "star")
+                                    .frame(width: 30, height: 30, alignment: .center)
+                                    .cornerRadius(15)
+                                    .foregroundColor(checkUserStarPost() ? .yellow : colorScheme == .light ? .black : .white)
+                            }
+
+                            Text("\(viewModel.post.stars)")
+                                .font(.system(size: 12))
+                        }
                     }
                 }
                 .font(.footnote)
@@ -93,6 +109,6 @@ struct PostView: View {
 
 struct PostView_Previews: PreviewProvider {
     static var previews: some View {
-        PostView(post: Post.MOCK_POST[1])
+        PostView(post: Post.MOCK_POST[1], likeFilter: false)
     }
 }

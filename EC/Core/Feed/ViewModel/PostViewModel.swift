@@ -12,9 +12,11 @@ class PostViewModel: ObservableObject {
     private let service = PostService()
     @Published var post: Post
     @Published var currentUser: User?
+    @Published var likeFilter: Bool
 
-    init(post: Post) {
+    init(post: Post, likeFilter: Bool) {
         self.post = post
+        self.likeFilter = likeFilter
         fetchUpdatePost()
         Task { try await fetchCurrentUser() }
     }
@@ -27,6 +29,16 @@ class PostViewModel: ObservableObject {
     // unlike post
     func unlikePost(){
         service.unlikePost(post){}
+    }
+    
+    // star post
+    func starPost() {
+        service.starPost(post){}
+    }
+    
+    // unstar post
+    func unstarPost() {
+        service.unstarPost(post) {}
     }
     
     // listener for modified changes
