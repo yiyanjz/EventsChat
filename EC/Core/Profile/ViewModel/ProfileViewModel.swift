@@ -39,6 +39,7 @@ class ProfileViewModel: ObservableObject {
         observeStarPost()
         observeAllPost()
         observeAllStory()
+        observePostRemoved()
         fetchUpdateGrabUserPostsAndFollowingUser()
         Task {
             try await fetchAllStory()
@@ -171,6 +172,13 @@ class ProfileViewModel: ObservableObject {
         }
         UserService().fetchUpdateUserLikes(withUid: user.id) { userLikes in
             self.user.likes = userLikes
+        }
+    }
+    
+    // observePostRemoved
+    func observePostRemoved() {
+        PostService.observePostsRemoved { post in
+            self.allPosts = self.allPosts.filter({ $0.id != post.id})
         }
     }
 }
