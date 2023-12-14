@@ -154,7 +154,7 @@ extension FollowView {
                     }
                 }
                 .onTapGesture(count: 2) { location in
-                    if checkUserLikedPost() {
+                    if checkUserLikedPost() == false{
                         viewModel.likePost()
                     }
                     TapAction()
