@@ -18,8 +18,6 @@ class FollowViewModel: ObservableObject {
     
     init(post: Post) {
         self.post = post
-        checkIfUserLikedPost()
-        checkIfUserStarPost()
         fetchUpdatePost()
         Task { try await grabCurrentUser() }
     }
@@ -32,15 +30,6 @@ class FollowViewModel: ObservableObject {
     // unlike post
     func unlikePost(){
         service.unlikePost(post){}
-    }
-    
-    // check for prefilled likes
-    func checkIfUserLikedPost() {
-        service.checkIfUserLikedPost(post) { didLike in
-            if didLike {
-                self.post.didLike = true
-            }
-        }
     }
     
     // listener for modified changes
@@ -60,15 +49,6 @@ class FollowViewModel: ObservableObject {
     // unstar post
     func unstarPost() {
         service.unstarPost(post) {}
-    }
-    
-    // check for prefilled stars
-    func checkIfUserStarPost() {
-        service.checkIfUserStaredPost(post) { didStar in
-            if didStar {
-                self.post.didStar = true
-            }
-        }
     }
     
     @MainActor

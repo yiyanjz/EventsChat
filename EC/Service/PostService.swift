@@ -100,23 +100,15 @@ struct PostService {
         }
     }
     
-    // prefill user liked post
-    func checkIfUserLikedPost(_ post: Post, completion: @escaping(Bool) -> Void) {
-        guard let uid = Auth.auth().currentUser?.uid else {return}
-        
-        Firestore.firestore().collection("users").document(uid).collection("user-likes").document(post.id).getDocument { snapshot, _ in
-            guard let snapshot = snapshot else {return}
-            completion(snapshot.exists)
-        }
-    }
-    
     // star post
     func starPost(_ post: Post, completion: @escaping() -> Void) {
         guard let uid = Auth.auth().currentUser?.uid else {return}
         
         let userStarRef = Firestore.firestore().collection("users").document(uid).collection("user-stars")
+        guard let userStar = post.userStared else {return}
+        let newUserStared = userStar + [uid]
         
-        Firestore.firestore().collection("posts").document(post.id).updateData(["stars": post.stars + 1, "didStar": true]) { _ in
+        Firestore.firestore().collection("posts").document(post.id).updateData(["stars": post.stars + 1, "userStared": newUserStared, "didStar": true]) { _ in
             userStarRef.document(post.id).setData([:]) { _ in
                 completion()
             }
@@ -129,21 +121,13 @@ struct PostService {
         guard post.stars >= 0 else {return}
         
         let userStarRef = Firestore.firestore().collection("users").document(uid).collection("user-stars")
+        guard let userStar = post.userStared else {return}
+        let newUserStared = userStar.filter({ $0 != uid })
         
-        Firestore.firestore().collection("posts").document(post.id).updateData(["stars": post.stars - 1, "didStar": false]) { _ in
+        Firestore.firestore().collection("posts").document(post.id).updateData(["stars": post.stars - 1, "userStared": newUserStared, "didStar": false]) { _ in
             userStarRef.document(post.id).delete() { _ in
                 completion()
             }
-        }
-    }
-    
-    // prefill user star post
-    func checkIfUserStaredPost(_ post: Post, completion: @escaping(Bool) -> Void) {
-        guard let uid = Auth.auth().currentUser?.uid else {return}
-        
-        Firestore.firestore().collection("users").document(uid).collection("user-stars").document(post.id).getDocument { snapshot, _ in
-            guard let snapshot = snapshot else {return}
-            completion(snapshot.exists)
         }
     }
     

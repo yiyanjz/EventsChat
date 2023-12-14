@@ -11,11 +11,12 @@ import Firebase
 class PostViewModel: ObservableObject {
     private let service = PostService()
     @Published var post: Post
+    @Published var currentUser: User?
 
     init(post: Post) {
         self.post = post
-        checkIfUserLikedPost()
         fetchUpdatePost()
+        Task { try await fetchCurrentUser() }
     }
     
     // like post
@@ -28,15 +29,6 @@ class PostViewModel: ObservableObject {
         service.unlikePost(post){}
     }
     
-    // check for prefilled likes
-    func checkIfUserLikedPost() {
-        service.checkIfUserLikedPost(post) { didLike in
-            if didLike {
-                self.post.didLike = true
-            }
-        }
-    }
-    
     // listener for modified changes
     func fetchUpdatePost(){
         service.observeCurrentPost(withPostID: post.id) { post in
@@ -44,5 +36,12 @@ class PostViewModel: ObservableObject {
             self.post = post
             self.post.user = temp_user
         }
+    }
+    
+    // listener for user infor changes
+    @MainActor
+    func fetchCurrentUser() async throws {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        self.currentUser = try await UserService.fetchUser(withUid: uid)
     }
 }

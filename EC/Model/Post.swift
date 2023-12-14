@@ -22,6 +22,7 @@ struct Post: Identifiable, Codable, Hashable {
     var didLike: Bool? = false
     var didStar: Bool? = false
     var userLiked: [String]? = []
+    var userStared: [String]? = []
 }
 
 

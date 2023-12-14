@@ -26,6 +26,22 @@ struct FollowView: View {
         self._viewModel = StateObject(wrappedValue: FollowViewModel(post: post))
     }
     
+    func checkUserLikedPost() -> Bool {
+        if let userLiked = viewModel.post.userLiked, let currentUser = viewModel.currentUser, userLiked.contains("\(currentUser.id)") {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func checkUserStarPost() -> Bool {
+        if let userStared = viewModel.post.userStared, let currentUser = viewModel.currentUser, userStared.contains("\(currentUser.id)") {
+            return true
+        } else {
+            return false
+        }
+    }
+    
     var body: some View {
         VStack {
             headerView
@@ -138,7 +154,7 @@ extension FollowView {
                     }
                 }
                 .onTapGesture(count: 2) { location in
-                    if viewModel.post.didLike == false {
+                    if checkUserLikedPost() {
                         viewModel.likePost()
                     }
                     TapAction()
@@ -156,13 +172,13 @@ extension FollowView {
             // likes
             Button{
                 withAnimation(.spring()) {
-                    viewModel.post.didLike ?? false ? viewModel.unlikePost() : viewModel.likePost()
+                    checkUserLikedPost() ? viewModel.unlikePost() : viewModel.likePost()
                 }
             }label: {
-                Image(systemName: viewModel.post.didLike ?? false ? "heart.fill" : "heart")
+                Image(systemName: checkUserLikedPost() ? "heart.fill" : "heart")
                     .frame(width: 30, height: 30, alignment: .center)
                     .cornerRadius(15)
-                    .foregroundColor(viewModel.post.didLike ?? false ? .red : colorScheme == .light ? .black : .white)
+                    .foregroundColor(checkUserLikedPost() ? .red : colorScheme == .light ? .black : .white)
             }
             
             // all likes
@@ -190,13 +206,13 @@ extension FollowView {
             // star
             Button{
                 withAnimation(.spring()) {
-                    viewModel.post.didStar ?? false ? viewModel.unstarPost() : viewModel.starPost()
+                    checkUserStarPost() ? viewModel.unstarPost() : viewModel.starPost()
                 }
             }label: {
-                Image(systemName: viewModel.post.didStar ?? false ? "star.fill" : "star")
+                Image(systemName: checkUserStarPost() ? "star.fill" : "star")
                     .frame(width: 30, height: 30, alignment: .center)
                     .cornerRadius(15)
-                    .foregroundColor(viewModel.post.didStar ?? false ? .yellow : colorScheme == .light ? .black : .white)
+                    .foregroundColor(checkUserStarPost() ? .yellow : colorScheme == .light ? .black : .white)
                     .offset(y: -1)
             }
         }
