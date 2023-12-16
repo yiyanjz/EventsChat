@@ -70,7 +70,7 @@ struct ProfileView: View {
         NavigationStack {
             VStack {
                 VStack {
-                    ScrollView(showsIndicators: false) {
+                    ScrollView(showsIndicators: true) {
                         ZStack {
                             backgroundView
                             
@@ -342,13 +342,15 @@ extension ProfileView {
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
         }
-        .frame(minHeight: screenHeight, maxHeight: screenHeight*3)
+        .frame(minHeight: screenHeight*3)
     }
     
     // post view
     var allPostView: some View {
         VStack {
-            ScrollView(showsIndicators: false) {
+            GeometryReader { proxy in
+                let minY = proxy.frame(in: .named("SCROLL")).minY
+                
                 HStack(alignment:.top) {
                     LazyVStack {
                         ForEach(getEvenPosts()) { post in
@@ -381,7 +383,9 @@ extension ProfileView {
     // likes view
     var allLikesView: some View {
         VStack {
-            ScrollView(showsIndicators: false) {
+            GeometryReader { proxy in
+                let minY = proxy.frame(in: .named("SCROLL")).minY
+                
                 HStack(alignment:.top) {
                     LazyVStack {
                         ForEach(getEvenLikedPosts()) { post in
@@ -414,7 +418,9 @@ extension ProfileView {
     // stars view
     var allStarsView: some View {
         VStack {
-            ScrollView(showsIndicators: false) {
+            GeometryReader { proxy in
+                let minY = proxy.frame(in: .named("SCROLL")).minY
+
                 HStack(alignment:.top) {
                     LazyVStack {
                         ForEach(getEvenStaredPosts()) { post in
