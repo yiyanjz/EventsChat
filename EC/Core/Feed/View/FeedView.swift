@@ -14,11 +14,15 @@ struct FeedView: View {
     @StateObject var viewModel = FeedViewModel()
     @Binding var showTabBar: Bool
     
-    // grid Item Structure
-    private let gridItem: [GridItem] = [
-        .init(.flexible(), spacing: 4),
-        .init(.flexible(), spacing: 4),
-    ]
+    func getEvenPosts() -> [Post]{
+        let sortedPosts = viewModel.posts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})
+        return stride(from: 0, to: sortedPosts.count, by: 2).map { sortedPosts[$0] }
+    }
+    
+    func getOddPosts() -> [Post]{
+        let sortedPosts = viewModel.posts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})
+        return stride(from: 1, to: sortedPosts.count, by: 2).map { sortedPosts[$0] }
+    }
 
     var body: some View {
         NavigationStack {
@@ -164,8 +168,19 @@ extension FeedView {
         VStack {
             ScrollView(showsIndicators: false) {
                 HStack(alignment:.top) {
-                    LazyVGrid(columns: gridItem, spacing: 4) {
-                        ForEach(viewModel.posts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
+                    LazyVStack {
+                        ForEach(getEvenPosts()) { post in
+                            PostView(post: post, likeFilter: true)
+                                .onTapGesture {
+                                    withAnimation(.linear(duration: 0.5)) {
+                                        viewModel.selectedPost = post
+                                        viewModel.showPostDetail.toggle()
+                                    }
+                                }
+                        }
+                    }
+                    LazyVStack {
+                        ForEach(getOddPosts()) { post in
                             PostView(post: post, likeFilter: true)
                                 .onTapGesture {
                                     withAnimation(.linear(duration: 0.5)) {

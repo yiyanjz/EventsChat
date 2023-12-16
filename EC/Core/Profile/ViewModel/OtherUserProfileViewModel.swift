@@ -24,36 +24,40 @@ class OtherUserProfileViewModel: ObservableObject {
 
     init(user: User) {
         self.user = user
-        fetchallUsersPosts()
-        fetchallUserStars()
         observeUserFollow()
         fetchUpdateGrabUserPostsAndFollowingUser()
         Task {
             try await fetchFollowAndFollowing()
             try await grabUserPostsAndFollowingUser()
+            try await fetchallUsersPosts(user: user)
         }
     }
     
-    func fetchallUsersPosts() {
-        service.fetchPostActionInfo(forUid: user.id, collectionName: CollectionFilter.userPost.title) { [self] posts in
-            self.allPosts = posts
-            
-            for i in 0..<posts.count {
-                self.allPosts[i].user = self.user
+    @MainActor
+    // fetch all posts
+    func fetchallUsersPosts(user: User) async throws {
+        let posts = try await service.fetchPostActionInfo(forUid: user.id, collectionName: CollectionFilter.userPost.title)
+        self.allPosts = posts
+        
+        if self.allPosts.count > 0 {
+            for i in 0..<self.allPosts.count {
+                self.allPosts[i].user = user
             }
         }
     }
     
-    func fetchallUserStars() {
-        service.fetchPostActionInfo(forUid: user.id, collectionName: CollectionFilter.userStared.title) { [self] posts in
-            self.staredPosts = posts
-            
-            for i in 0..<posts.count {
-                let post = posts[i]
-                if let ownerId = post.ownerId {
-                    UserService.fetchUserCompletion(withUid: ownerId) { postUser in
-                        self.staredPosts[i].user = postUser
-                    }
+    @MainActor
+    // fetch all stared posts
+    func fetchStaredPosts(user: User) async throws {
+        let posts = try await service.fetchPostActionInfo(forUid: user.id, collectionName: CollectionFilter.userStared.title)
+        self.staredPosts = posts
+        
+        if self.staredPosts.count > 0 {
+            for i in 0..<self.staredPosts.count {
+                let post = self.staredPosts[i]
+                if let ownwerID = post.ownerId {
+                    let postUser = try await UserService.fetchUser(withUid: ownwerID)
+                    self.staredPosts[i].user = postUser
                 }
             }
         }

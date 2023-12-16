@@ -141,23 +141,22 @@ struct PostService {
     }
     
     // filter likes / stars
-    func fetchPostActionInfo(forUid uid:String, collectionName name: String, completion: @escaping([Post]) -> Void) {
+    func fetchPostActionInfo(forUid uid:String, collectionName name: String) async throws -> [Post] {
+        let snapshot = try await Firestore.firestore().collection("users").document(uid).collection(name).getDocuments()
+        let documents = snapshot.documents
+        
         var posts = [Post]()
         
-        Firestore.firestore().collection("users").document(uid).collection(name).getDocuments { snapshot, _ in
-            guard let documents = snapshot?.documents else {return}
+        for i in 0..<documents.count {
+            let doc = documents[i]
+            let postId = doc.documentID
             
-            documents.forEach { doc in
-                let postId = doc.documentID
-                
-                Firestore.firestore().collection("posts").document(postId).getDocument { snapshot, _ in
-                    guard let post = try? snapshot?.data(as: Post.self) else {return}
-                    posts.append(post)
-                    
-                    completion(posts)
-                }
-            }
+            let postSnapshot = try await Firestore.firestore().collection("posts").document(postId).getDocument()
+            let post = try postSnapshot.data(as: Post.self)
+            posts.append(post)
         }
+        
+        return posts
     }
     
     // check for liked posts / stars

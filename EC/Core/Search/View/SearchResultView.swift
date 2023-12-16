@@ -20,6 +20,16 @@ struct SearchResultView: View {
     init(searchText: Binding<String>, searched: Binding<Bool>){
         self._viewModel = StateObject(wrappedValue: SearchResultViewModel(searchText: searchText, searched: searched))
     }
+    
+    func getEvenPosts() -> [Post]{
+        let sortedPosts = viewModel.postsResult.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})
+        return stride(from: 0, to: sortedPosts.count, by: 2).map { sortedPosts[$0] }
+    }
+    
+    func getOddPosts() -> [Post]{
+        let sortedPosts = viewModel.postsResult.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})
+        return stride(from: 1, to: sortedPosts.count, by: 2).map { sortedPosts[$0] }
+    }
 
     var body: some View {
         NavigationStack {
@@ -122,29 +132,25 @@ extension SearchResultView {
             ScrollView(showsIndicators: false) {
                 HStack(alignment:.top) {
                     LazyVStack {
-                        ForEach(Array(viewModel.postsResult.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}).enumerated()), id: \.offset) { index,post in
-                            if index % 2 == 0 {
-                                PostView(post: post, likeFilter: true)
-                                    .onTapGesture {
-                                        withAnimation(.linear(duration: 0.5)) {
-                                            viewModel.selectedPost = post
-                                            viewModel.showPostDetail.toggle()
-                                        }
+                        ForEach(getEvenPosts()) { post in
+                            PostView(post: post, likeFilter: true)
+                                .onTapGesture {
+                                    withAnimation(.linear(duration: 0.5)) {
+                                        viewModel.selectedPost = post
+                                        viewModel.showPostDetail.toggle()
                                     }
-                            }
+                                }
                         }
                     }
                     LazyVStack {
-                        ForEach(Array(viewModel.postsResult.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}).enumerated()), id: \.offset) { index,post in
-                            if index % 2 != 0 {
-                                PostView(post: post, likeFilter: true)
-                                    .onTapGesture {
-                                        withAnimation(.linear(duration: 0.5)) {
-                                            viewModel.selectedPost = post
-                                            viewModel.showPostDetail.toggle()
-                                        }
+                        ForEach(getOddPosts()) { post in
+                            PostView(post: post, likeFilter: true)
+                                .onTapGesture {
+                                    withAnimation(.linear(duration: 0.5)) {
+                                        viewModel.selectedPost = post
+                                        viewModel.showPostDetail.toggle()
                                     }
-                            }
+                                }
                         }
                     }
                 }

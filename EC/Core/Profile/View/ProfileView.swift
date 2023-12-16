@@ -21,11 +21,38 @@ struct ProfileView: View {
         self._viewModel = StateObject(wrappedValue: ProfileViewModel(user: user, withBackButton: withBackButton))
     }
     
-    // grid Item Structure
-    private let gridItem: [GridItem] = [
-        .init(.flexible(), spacing: 4),
-        .init(.flexible(), spacing: 4),
-    ]
+    // get posts
+    func getEvenPosts() -> [Post]{
+        let sortedPosts = viewModel.allPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})
+        return stride(from: 0, to: sortedPosts.count, by: 2).map { sortedPosts[$0] }
+    }
+    
+    func getOddPosts() -> [Post]{
+        let sortedPosts = viewModel.allPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})
+        return stride(from: 1, to: sortedPosts.count, by: 2).map { sortedPosts[$0] }
+    }
+    
+    // get liked posts
+    func getEvenLikedPosts() -> [Post]{
+        let sortedPosts = viewModel.likedPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})
+        return stride(from: 0, to: sortedPosts.count, by: 2).map { sortedPosts[$0] }
+    }
+    
+    func getOddLikedPosts() -> [Post]{
+        let sortedPosts = viewModel.likedPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})
+        return stride(from: 1, to: sortedPosts.count, by: 2).map { sortedPosts[$0] }
+    }
+    
+    // get stared posts
+    func getEvenStaredPosts() -> [Post]{
+        let sortedPosts = viewModel.starPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})
+        return stride(from: 0, to: sortedPosts.count, by: 2).map { sortedPosts[$0] }
+    }
+    
+    func getOddStaredPosts() -> [Post]{
+        let sortedPosts = viewModel.starPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})
+        return stride(from: 1, to: sortedPosts.count, by: 2).map { sortedPosts[$0] }
+    }
     
     func backgroundColor() -> Color{
         var color = Color(uiColor: .systemBackground)
@@ -321,16 +348,28 @@ extension ProfileView {
     // post view
     var allPostView: some View {
         VStack {
-            GeometryReader { proxy2 in
-                let _ = proxy2.frame(in: .named("SCROLL")).minY
-                
-                LazyVGrid(columns: gridItem, spacing: 4) {
-                    ForEach(viewModel.allPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
-                        Button {
-                            viewModel.selectedPost = post
-                            viewModel.showPostDetails.toggle()
-                        } label: {
+            ScrollView(showsIndicators: false) {
+                HStack(alignment:.top) {
+                    LazyVStack {
+                        ForEach(getEvenPosts()) { post in
                             PostView(post: post, likeFilter: true)
+                                .onTapGesture {
+                                    withAnimation(.linear(duration: 0.5)) {
+                                        viewModel.selectedPost = post
+                                        viewModel.showPostDetails.toggle()
+                                    }
+                                }
+                        }
+                    }
+                    LazyVStack {
+                        ForEach(getOddPosts()) { post in
+                            PostView(post: post, likeFilter: true)
+                                .onTapGesture {
+                                    withAnimation(.linear(duration: 0.5)) {
+                                        viewModel.selectedPost = post
+                                        viewModel.showPostDetails.toggle()
+                                    }
+                                }
                         }
                     }
                 }
@@ -342,16 +381,28 @@ extension ProfileView {
     // likes view
     var allLikesView: some View {
         VStack {
-            GeometryReader { proxy2 in
-                let _ = proxy2.frame(in: .named("SCROLL")).minY
-                
-                LazyVGrid(columns: gridItem, spacing: 4) {
-                    ForEach(viewModel.likedPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
-                        Button {
-                            viewModel.showPostDetails.toggle()
-                            viewModel.selectedPost = post
-                        } label: {
+            ScrollView(showsIndicators: false) {
+                HStack(alignment:.top) {
+                    LazyVStack {
+                        ForEach(getEvenLikedPosts()) { post in
                             PostView(post: post, likeFilter: true)
+                                .onTapGesture {
+                                    withAnimation(.linear(duration: 0.5)) {
+                                        viewModel.selectedPost = post
+                                        viewModel.showPostDetails.toggle()
+                                    }
+                                }
+                        }
+                    }
+                    LazyVStack {
+                        ForEach(getOddLikedPosts()) { post in
+                            PostView(post: post, likeFilter: true)
+                                .onTapGesture {
+                                    withAnimation(.linear(duration: 0.5)) {
+                                        viewModel.selectedPost = post
+                                        viewModel.showPostDetails.toggle()
+                                    }
+                                }
                         }
                     }
                 }
@@ -363,16 +414,28 @@ extension ProfileView {
     // stars view
     var allStarsView: some View {
         VStack {
-            GeometryReader { proxy2 in
-                let _ = proxy2.frame(in: .named("SCROLL")).minY
-                
-                LazyVGrid(columns: gridItem, spacing: 4) {
-                    ForEach(viewModel.starPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})) { post in
-                        Button {
-                            viewModel.showPostDetails.toggle()
-                            viewModel.selectedPost = post
-                        } label: {
-                            PostView(post: post, likeFilter: false)
+            ScrollView(showsIndicators: false) {
+                HStack(alignment:.top) {
+                    LazyVStack {
+                        ForEach(getEvenStaredPosts()) { post in
+                            PostView(post: post, likeFilter: true)
+                                .onTapGesture {
+                                    withAnimation(.linear(duration: 0.5)) {
+                                        viewModel.selectedPost = post
+                                        viewModel.showPostDetails.toggle()
+                                    }
+                                }
+                        }
+                    }
+                    LazyVStack {
+                        ForEach(getOddStaredPosts()) { post in
+                            PostView(post: post, likeFilter: true)
+                                .onTapGesture {
+                                    withAnimation(.linear(duration: 0.5)) {
+                                        viewModel.selectedPost = post
+                                        viewModel.showPostDetails.toggle()
+                                    }
+                                }
                         }
                     }
                 }

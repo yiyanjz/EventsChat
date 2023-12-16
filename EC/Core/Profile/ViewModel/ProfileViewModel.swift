@@ -32,9 +32,6 @@ class ProfileViewModel: ObservableObject {
         self.user = user
         self.withBackButton = withBackButton
         fetchCurrentUser()
-        fetchLikedPosts()
-        fetchStaredPosts()
-        fetchAllPosts()
         observeLikedPost()
         observeStarPost()
         observeAllPost()
@@ -44,6 +41,9 @@ class ProfileViewModel: ObservableObject {
         Task {
             try await fetchAllStory()
             try await grabUserPostsAndFollowingUser()
+            try await fetchAllPost(user: user)
+            try await fetchStaredPosts(user: user)
+            try await fetchLikedPosts(user: user)
         }
     }
     
@@ -54,51 +54,49 @@ class ProfileViewModel: ObservableObject {
         }
     }
     
-    // filter likes
-    func fetchLikedPosts() {
-        service.fetchPostActionInfo(forUid: user.id, collectionName: CollectionFilter.userLiked.title) { posts in
-            self.likedPosts = posts
-            
-            if self.likedPosts.count > 0 {
-                for i in 0..<self.likedPosts.count {
-                    let post = self.likedPosts[i]
-                    if let ownerId = post.ownerId {
-                        UserService.fetchUserCompletion(withUid: ownerId) { postUser in
-                            self.likedPosts[i].user = postUser
-                        }
-                    }
+    @MainActor
+    // fetch all liked posts
+    func fetchLikedPosts(user: User) async throws {
+        let posts = try await service.fetchPostActionInfo(forUid: user.id, collectionName: CollectionFilter.userLiked.title)
+        self.likedPosts = posts
+        
+        if self.likedPosts.count > 0 {
+            for i in 0..<self.likedPosts.count {
+                let post = self.likedPosts[i]
+                if let ownwerID = post.ownerId {
+                    let postUser = try await UserService.fetchUser(withUid: ownwerID)
+                    self.likedPosts[i].user = postUser
                 }
             }
         }
     }
     
-    // filter stars
-    func fetchStaredPosts() {
-        service.fetchPostActionInfo(forUid: user.id, collectionName: CollectionFilter.userStared.title) { posts in
-            self.starPosts = posts
-            
-            if self.starPosts.count > 0 {
-                for i in 0..<self.starPosts.count {
-                    let post = self.starPosts[i]
-                    if let ownerId = post.ownerId {
-                        UserService.fetchUserCompletion(withUid: ownerId) { postUser in
-                            self.starPosts[i].user = postUser
-                        }
-                    }
+    @MainActor
+    // fetch all stared posts
+    func fetchStaredPosts(user: User) async throws {
+        let posts = try await service.fetchPostActionInfo(forUid: user.id, collectionName: CollectionFilter.userStared.title)
+        self.starPosts = posts
+        
+        if self.starPosts.count > 0 {
+            for i in 0..<self.starPosts.count {
+                let post = self.starPosts[i]
+                if let ownwerID = post.ownerId {
+                    let postUser = try await UserService.fetchUser(withUid: ownwerID)
+                    self.starPosts[i].user = postUser
                 }
             }
         }
     }
     
-    // filter posts
-    func fetchAllPosts() {
-        service.fetchPostActionInfo(forUid: user.id, collectionName: CollectionFilter.userPost.title) { [self] posts in
-            self.allPosts = posts
-            
-            if self.allPosts.count > 0 {
-                for i in 0..<self.allPosts.count {
-                    self.allPosts[i].user = self.user
-                }
+    @MainActor
+    // fetch all posts
+    func fetchAllPost(user: User) async throws {
+        let posts = try await service.fetchPostActionInfo(forUid: user.id, collectionName: CollectionFilter.userPost.title)
+        self.allPosts = posts
+        
+        if self.allPosts.count > 0 {
+            for i in 0..<self.allPosts.count {
+                self.allPosts[i].user = user
             }
         }
     }
@@ -154,10 +152,10 @@ class ProfileViewModel: ObservableObject {
         let followingUserCount = try await UserService().grabFollowingUser(withUid: user.id)
         let userFollow = try await UserService().grabUserFollow(withUid: user.id)
         let userLikes = try await UserService().grabUserLikes(withUid: user.id)
-        user.posts = postCount
-        user.followering = userFollow
-        user.followers = followingUserCount
-        user.likes = userLikes
+        self.user.posts = postCount
+        self.user.followering = userFollow
+        self.user.followers = followingUserCount
+        self.user.likes = userLikes
     }
     
     func fetchUpdateGrabUserPostsAndFollowingUser() {
