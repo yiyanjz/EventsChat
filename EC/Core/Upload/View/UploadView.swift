@@ -450,6 +450,26 @@ extension UploadView {
                             }
                         }
                     }
+                    
+                    // clear all selected media button
+                    Button {
+                        if viewModel.selectedMedia.count > 0 {
+                            for i in 0..<viewModel.selectedMedia.count {
+                                var key = viewModel.selectedMedia[i]
+                                let keyId = key.id
+                                let allListIdx = viewModel.allList.firstIndex(where: {key in key.id == keyId })
+                                if let allListIdx = allListIdx, viewModel.allList[allListIdx].selected == true {
+                                    viewModel.allList[allListIdx].selected.toggle()
+                                }
+                            }
+                            viewModel.selectedMedia.removeAll()
+                        }
+                    } label: {
+                        Image(systemName:"trash")
+                            .font(.system(size: 30))
+                            .foregroundColor(.gray)
+                    }
+
                 }
                 .padding()
                 .onDrop(of: [.text], delegate: DropOutsideDelegate(draggedItem: $viewModel.draggedItemSheet, hasChangedLocation: $viewModel.hasChangedLocationSheet))
