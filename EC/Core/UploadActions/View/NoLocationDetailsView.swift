@@ -10,7 +10,7 @@ import SwiftUI
 struct NoLocationDetailsView: View {
     var body: some View {
         VStack {
-            Text("Option Only Avaliable for IOS 17.0 +")
+            Text("Option Only Avaliable for IOS 17.0 + (Working on Previous Versions")
         }
     }
 }

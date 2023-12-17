@@ -19,6 +19,8 @@ class PreviewPostViewModel: ObservableObject {
     @Published var showTagView: Bool = false
     @Published var showLocationView: Bool = false
     @Published var mapSelectionLocation: MKMapItem?
+    @Published var showMentionView: Bool = false
+    @Published var selectedMentionUser = [User]()
     
     func uploadPost(selectedMedia: [LibrayPhotos]) async throws {
         var mediaUrls = [String]()

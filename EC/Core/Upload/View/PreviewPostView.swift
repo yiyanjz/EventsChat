@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct PreviewPostView: View {
     @Environment (\.dismiss) var dismiss
@@ -198,18 +199,34 @@ struct PreviewPostView: View {
                             Divider()
                                 .padding(4)
 
+                            // add mention
                             HStack{
-                                let icon = Image(systemName: "at")
-                                Text("\(icon) Mention")
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                
-                                Image(systemName: "chevron.right")
-                                    .font(.footnote)
+                                Button {
+                                    viewModel.showMentionView.toggle()
+                                } label: {
+                                    let icon = Image(systemName: "at")
+                                    Text("\(icon) Mention")
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                    
+                                    HStack {
+                                        ForEach(viewModel.selectedMentionUser, id:\.self) { user in
+                                            KFImage(URL(string: user.profileImageUrl ?? ""))
+                                                .resizable()
+                                                .frame(width: 25, height: 25)
+                                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                        }
+                                    }
+                                    
+                                    Image(systemName: "chevron.right")
+                                        .font(.footnote)
+                                }
                             }
+                            .foregroundColor(colorScheme == .light ? .black : .white )
                             
                             Divider()
                                 .padding(4)
-
+                            
+                            // add visible to
                             HStack{
                                 let icon = Image(systemName: "person.fill.badge.plus")
                                 Text("\(icon) Visible To")
@@ -242,6 +259,9 @@ struct PreviewPostView: View {
                     // Fallback on earlier versions
                     NoLocationDetailsView()
                 }
+            })
+            .fullScreenCover(isPresented: $viewModel.showMentionView, content: {
+                MentionView(selectedMentionUser: $viewModel.selectedMentionUser)
             })
         }
     }
