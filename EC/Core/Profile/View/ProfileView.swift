@@ -86,8 +86,6 @@ struct ProfileView: View {
                             footerFilterView
                         }
                     }
-                    .coordinateSpace(name: "SCROLL")
-                    .ignoresSafeArea()
                 }
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
@@ -349,7 +347,6 @@ extension ProfileView {
     var allPostView: some View {
         VStack {
             GeometryReader { proxy in
-                let minY = proxy.frame(in: .named("SCROLL")).minY
                 
                 HStack(alignment:.top) {
                     LazyVStack {
@@ -384,7 +381,6 @@ extension ProfileView {
     var allLikesView: some View {
         VStack {
             GeometryReader { proxy in
-                let minY = proxy.frame(in: .named("SCROLL")).minY
                 
                 HStack(alignment:.top) {
                     LazyVStack {
@@ -419,7 +415,6 @@ extension ProfileView {
     var allStarsView: some View {
         VStack {
             GeometryReader { proxy in
-                let minY = proxy.frame(in: .named("SCROLL")).minY
 
                 HStack(alignment:.top) {
                     LazyVStack {
