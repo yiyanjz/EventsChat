@@ -157,14 +157,23 @@ struct PreviewPostView: View {
                                     .padding(4)
                             }
                             
+                            // add Tag
                             HStack {
-                                let icon = Image(systemName: "tag")
-                                Text("\(icon) Tags")
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                
-                                Image(systemName: "chevron.right")
-                                    .font(.footnote)
+                                Button {
+                                    viewModel.showTagView.toggle()
+                                } label: {
+                                    let icon = Image(systemName: "tag")
+                                    Text("\(icon) Tags")
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                    
+                                    Text(viewModel.tagsInputText)
+                                        .font(.footnote)
+                                    
+                                    Image(systemName: "chevron.right")
+                                        .font(.footnote)
+                                }
                             }
+                            .foregroundColor(colorScheme == .light ? .black : .white )
                             
                             Divider()
                                 .padding(4)
@@ -214,6 +223,9 @@ struct PreviewPostView: View {
                 }
 
                 Spacer()
+            }
+            .fullScreenCover(isPresented: $viewModel.showTagView) {
+                TagView(tagsInputText: $viewModel.tagsInputText)
             }
         }
     }

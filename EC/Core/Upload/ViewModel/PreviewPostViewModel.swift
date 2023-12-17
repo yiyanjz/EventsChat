@@ -14,6 +14,8 @@ class PreviewPostViewModel: ObservableObject {
     @Published var captionTitle = ""
     @Published var draggedItem: LibrayPhotos?
     @Published var hasChangedLocation: Bool = false
+    @Published var tagsInputText: String = ""
+    @Published var showTagView: Bool = false
     
     func uploadPost(selectedMedia: [LibrayPhotos]) async throws {
         var mediaUrls = [String]()
