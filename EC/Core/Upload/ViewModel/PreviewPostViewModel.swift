@@ -8,6 +8,7 @@
 import SwiftUI
 import PhotosUI
 import Firebase
+import MapKit
 
 class PreviewPostViewModel: ObservableObject {
     @Published var caption = ""
@@ -16,6 +17,8 @@ class PreviewPostViewModel: ObservableObject {
     @Published var hasChangedLocation: Bool = false
     @Published var tagsInputText: String = ""
     @Published var showTagView: Bool = false
+    @Published var showLocationView: Bool = false
+    @Published var mapSelectionLocation: MKMapItem?
     
     func uploadPost(selectedMedia: [LibrayPhotos]) async throws {
         var mediaUrls = [String]()

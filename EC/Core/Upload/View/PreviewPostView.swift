@@ -178,14 +178,22 @@ struct PreviewPostView: View {
                             Divider()
                                 .padding(4)
 
+                            // add location
                             HStack {
-                                let icon = Image(systemName: "location")
-                                Text("\(icon) Location")
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                
-                                Image(systemName: "chevron.right")
-                                    .font(.footnote)
+                                Button {
+                                    viewModel.showLocationView.toggle()
+                                } label: {
+                                    let icon = Image(systemName: "location")
+                                    Text("\(icon) Location")
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                    
+                                    Text(viewModel.mapSelectionLocation?.name ?? "")
+                                    
+                                    Image(systemName: "chevron.right")
+                                        .font(.footnote)
+                                }
                             }
+                            .foregroundColor(colorScheme == .light ? .black : .white )
                             
                             Divider()
                                 .padding(4)
@@ -227,6 +235,13 @@ struct PreviewPostView: View {
             .fullScreenCover(isPresented: $viewModel.showTagView) {
                 TagView(tagsInputText: $viewModel.tagsInputText)
             }
+            .fullScreenCover(isPresented: $viewModel.showLocationView, content: {
+                if #available(iOS 17.0, *) {
+                    LocationView(mapSelectionLocation: $viewModel.mapSelectionLocation)
+                } else {
+                    // Fallback on earlier versions
+                }
+            })
         }
     }
 }
