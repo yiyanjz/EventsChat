@@ -240,6 +240,7 @@ struct PreviewPostView: View {
                     LocationView(mapSelectionLocation: $viewModel.mapSelectionLocation)
                 } else {
                     // Fallback on earlier versions
+                    NoLocationDetailsView()
                 }
             })
         }
