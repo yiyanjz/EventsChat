@@ -17,8 +17,8 @@ struct SearchResultView: View {
     
     @StateObject var viewModel: SearchResultViewModel
     
-    init(searchText: Binding<String>, searched: Binding<Bool>){
-        self._viewModel = StateObject(wrappedValue: SearchResultViewModel(searchText: searchText, searched: searched))
+    init(searchText: Binding<String>, searched: Binding<Bool>, allSearchText: Binding<[String]>){
+        self._viewModel = StateObject(wrappedValue: SearchResultViewModel(searchText: searchText, searched: searched, allSearchText: allSearchText))
     }
     
     func getEvenPosts() -> [Post]{
@@ -60,7 +60,7 @@ struct SearchResultView: View {
 
 struct SearchResultView_Previews: PreviewProvider {
     static var previews: some View {
-        SearchResultView(searchText: .constant(""), searched: .constant(false))
+        SearchResultView(searchText: .constant(""), searched: .constant(false), allSearchText: .constant([""]))
     }
 }
 
@@ -83,7 +83,21 @@ extension SearchResultView {
                 
                 HStack{
                     Image(systemName: "magnifyingglass")
-                    TextField("\(viewModel.searchText)", text: $viewModel.searchText)
+                    
+                    TextField("\(viewModel.searchText)", text: $viewModel.newSearchText)
+                        .onAppear {
+                            viewModel.newSearchText = viewModel.searchText
+                        }
+                        .onSubmit {
+                            viewModel.searchText = viewModel.newSearchText
+                            Task {
+                                try await viewModel.searchFilterResults()
+                                try await viewModel.searchFilterUserResults()
+                                try await viewModel.fetchFollowAndFollowing()
+                                try await viewModel.grabUserPostsAndFollowingUser()
+                                try await viewModel.uploadSearch()
+                            }
+                        }
                 }
                 .padding(5)
                 .background(.gray.opacity(0.2),in: RoundedRectangle(cornerRadius: 20))

@@ -12,12 +12,11 @@ struct SearchView: View {
     @Environment(\.colorScheme) var colorScheme
     @StateObject var viewModel = SearchViewModel()
     
-    let names = ["Holly", "Josh", "Rhonda", "Ted"]
     var searchResults: [String] {
         if viewModel.searchText.isEmpty {
-            return names
+            return viewModel.searchFilter
         } else {
-            return names.filter { $0.contains(viewModel.searchText) }
+            return viewModel.searchFilter.filter { $0.contains(viewModel.searchText) }
         }
     }
     
@@ -31,7 +30,7 @@ struct SearchView: View {
             .padding(.horizontal,15)
             .navigationBarHidden(true)
             .fullScreenCover(isPresented: $viewModel.showResultView) {
-                SearchResultView(searchText: $viewModel.searchText, searched: $viewModel.searched)
+                SearchResultView(searchText: $viewModel.searchText, searched: $viewModel.searched, allSearchText: $viewModel.allSearchText)
                     .NavigationHidden()
             }
         }
@@ -162,7 +161,7 @@ extension SearchView {
                 VStack{
                     ForEach(searchResults, id: \.self) { name in
                         NavigationLink{
-                            SearchResultView(searchText: $viewModel.searchText, searched: $viewModel.searched)
+                            SearchResultView(searchText: $viewModel.searchText, searched: $viewModel.searched, allSearchText: $viewModel.allSearchText)
                                 .NavigationHidden()
                         }label: {
                             HStack{

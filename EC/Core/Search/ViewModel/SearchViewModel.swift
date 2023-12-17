@@ -13,6 +13,7 @@ class SearchViewModel: ObservableObject {
     @Published var searched: Bool = false
     @Published var showResultView: Bool = false
     @Published var allSearchText = [String]()
+    @Published var searchFilter = [String]()
     
     let service = SearchService()
     
@@ -33,7 +34,7 @@ class SearchViewModel: ObservableObject {
                 guard let idx = idx else {return}
                 try await service.foundSearch(allSearchText: allSearchText, idx: idx)
             }else{
-                let newAllSearchText: [String] = allSearchText + [searchText]
+                let newAllSearchText: [String] = [searchText] + allSearchText
                 try await service.updateSearch(allSearchText: newAllSearchText)
             }
         }
@@ -56,7 +57,7 @@ class SearchViewModel: ObservableObject {
             if searchResult.count < 9 {
                 self.allSearchText = searchResult
             }else{
-                searchResult.remove(at: 0)
+                searchResult.removeLast()
                 self.allSearchText = searchResult
             }
         }

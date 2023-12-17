@@ -17,12 +17,15 @@ class SearchResultViewModel: ObservableObject {
     @Published var usersResult = [User]()
     @Published var userFollow = [User]()
     @Published var followingUser = [User]()
+    @Published var newSearchText: String = ""
+    @Binding var allSearchText: [String]
     
     let service = SearchService()
     
-    init(searchText:Binding<String>, searched: Binding<Bool>) {
+    init(searchText:Binding<String>, searched: Binding<Bool>, allSearchText: Binding<[String]>) {
         self._searchText = searchText
         self._searched = searched
+        self._allSearchText = allSearchText
         Task {
             try await searchFilterResults()
             try await searchFilterUserResults()
@@ -104,6 +107,24 @@ class SearchResultViewModel: ObservableObject {
             }
             UserService().fetchUpdateFollowingUser(withUid: user.id) { followingUserCount in
                 self.usersResult[i].followering = followingUserCount
+            }
+        }
+    }
+    
+    // upload search
+    func uploadSearch() async throws {
+        if allSearchText.isEmpty {
+            let newAllSearchText: [String] = allSearchText + [searchText]
+            try await service.uploadSearch(allSearchText: newAllSearchText)
+        }else{
+            let foundSearch = allSearchText.contains(searchText)
+            if foundSearch {
+                let idx = allSearchText.firstIndex(of: searchText)
+                guard let idx = idx else {return}
+                try await service.foundSearch(allSearchText: allSearchText, idx: idx)
+            }else{
+                let newAllSearchText: [String] = [searchText] + allSearchText
+                try await service.updateSearch(allSearchText: newAllSearchText)
             }
         }
     }
