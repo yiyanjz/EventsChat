@@ -18,6 +18,7 @@ class MentionViewModel: ObservableObject {
     
     init(selectedMentionUser: Binding<[User]>) {
         self._selectedMentionUser = selectedMentionUser
+        preFillData()
         Task {
             try await getCurrentUser()
             try await fetchFollowAndFollowing()
@@ -34,5 +35,11 @@ class MentionViewModel: ObservableObject {
     func fetchFollowAndFollowing() async throws {
         guard let uid = Auth.auth().currentUser?.uid else {return}
         self.userFollow = try await UserService().fetchUserFollow(withUid: uid)
+    }
+    
+    func preFillData() {
+        if !selectedMentionUser.isEmpty {
+            self.selectedUser = self.selectedMentionUser
+        }
     }
 }
