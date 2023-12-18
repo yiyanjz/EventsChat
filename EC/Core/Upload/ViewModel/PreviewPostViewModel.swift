@@ -15,6 +15,7 @@ class PreviewPostViewModel: ObservableObject {
     @Published var captionTitle = ""
     @Published var draggedItem: LibrayPhotos?
     @Published var hasChangedLocation: Bool = false
+    // upload actions
     @Published var tagsInputText: String = ""
     @Published var showTagView: Bool = false
     @Published var showLocationView: Bool = false
@@ -28,7 +29,7 @@ class PreviewPostViewModel: ObservableObject {
     // hide from users
     @Published var selectedVisibleTohideFrom = [User]()
     
-    func uploadPost(selectedMedia: [LibrayPhotos]) async throws {
+    func uploadPost(selectedMedia: [LibrayPhotos], tagString: String, location: MKMapItem?, selectedMentionUserId: [String], selectedVisibleTo: String, visibleToListId: [String]) async throws {
         var mediaUrls = [String]()
         guard let uid = Auth.auth().currentUser?.uid else {return}
         guard !selectedMedia.isEmpty else {return}
@@ -46,7 +47,9 @@ class PreviewPostViewModel: ObservableObject {
                 mediaUrls.append(imageUrl)
             }
         }
-        let post = Post(id: postRef.documentID, caption: caption, title: captionTitle, likes: 0, stars: 0, comments: 0, timestamp: Timestamp(), imagesUrl: mediaUrls, ownerId: uid)
+        let allTags = decodeTags(tag: tagString)
+        
+        let post = Post(id: postRef.documentID, caption: caption, title: captionTitle, likes: 0, stars: 0, comments: 0, timestamp: Timestamp(), imagesUrl: mediaUrls, ownerId: uid, tags: allTags, locationPlacemark: location?.placemark.title, mentions: selectedMentionUserId, visibleTo: selectedVisibleTo, visibleToList: visibleToListId)
         
         guard let encodedPost = try? Firestore.Encoder().encode(post) else {return}
         
@@ -55,6 +58,42 @@ class PreviewPostViewModel: ObservableObject {
         // save post to user in firebase
         let userPostRef = Firestore.firestore().collection("users").document(uid).collection("user-posts")
         try await userPostRef.document(post.id).setData([:])
+    }
+    
+    func getMentionUserId(selectedMentionUser: [User]) -> [String] {
+        var userId = [String]()
+        for i in 0..<selectedMentionUser.count {
+            let user = selectedMentionUser[i]
+            userId.append(user.id)
+        }
+        return userId
+    }
+    
+    func getVisibleToUserId(visibleToList: [User]) -> [String] {
+        var userId = [String]()
+        for i in 0..<visibleToList.count {
+            let user = visibleToList[i]
+            userId.append(user.id)
+        }
+        return userId
+    }
+    
+    func decodeTags(tag: String) -> [String]{
+        let splitTag = tag.components(separatedBy: "#")
+        
+        var allTags = [String]()
+        
+        if tag.isEmpty {
+            return allTags
+        } else {
+            for i in 0..<splitTag.count {
+                let t = splitTag[i]
+                if !t.isEmpty {
+                    allTags.append(t)
+                }
+            }
+        }
+        return allTags
     }
 }
 

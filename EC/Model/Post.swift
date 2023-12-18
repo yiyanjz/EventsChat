@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Firebase
+import MapKit
 
 struct Post: Identifiable, Codable, Hashable {
     let id: String
@@ -23,6 +24,11 @@ struct Post: Identifiable, Codable, Hashable {
     var didStar: Bool? = false
     var userLiked: [String]? = []
     var userStared: [String]? = []
+    var tags: [String]? = []
+    var locationPlacemark: String?
+    var mentions: [String]?
+    var visibleTo: String?
+    var visibleToList: [String]?
 }
 
 

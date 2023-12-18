@@ -50,7 +50,9 @@ struct PreviewPostView: View {
                     Spacer()
                     
                     Button {
-                        Task { try await viewModel.uploadPost(selectedMedia: selectedMedia) }
+                        let visibleToListUserId = viewModel.getVisibleToUserId(visibleToList: viewModel.selectedVisibleToShareWith.isEmpty ? viewModel.selectedVisibleTohideFrom : viewModel.selectedVisibleToShareWith)
+                        let mentionUserId = viewModel.getMentionUserId(selectedMentionUser: viewModel.selectedMentionUser)
+                        Task { try await viewModel.uploadPost(selectedMedia: selectedMedia, tagString: viewModel.tagsInputText, location: viewModel.mapSelectionLocation, selectedMentionUserId: mentionUserId , selectedVisibleTo: viewModel.selectedVisibleTo, visibleToListId: visibleToListUserId) }
                         completePost.toggle()
                         dismiss()
                     } label: {
