@@ -21,6 +21,12 @@ class PreviewPostViewModel: ObservableObject {
     @Published var mapSelectionLocation: MKMapItem?
     @Published var showMentionView: Bool = false
     @Published var selectedMentionUser = [User]()
+    @Published var showVisibleToView: Bool = false
+    @Published var selectedVisibleTo: String = ""
+    // share with users
+    @Published var selectedVisibleToShareWith = [User]()
+    // hide from users
+    @Published var selectedVisibleTohideFrom = [User]()
     
     func uploadPost(selectedMedia: [LibrayPhotos]) async throws {
         var mediaUrls = [String]()

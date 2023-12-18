@@ -228,17 +228,22 @@ struct PreviewPostView: View {
                             
                             // add visible to
                             HStack{
-                                let icon = Image(systemName: "person.fill.badge.plus")
-                                Text("\(icon) Visible To")
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                
-                                Text("All")
-                                    .font(.footnote)
-                                    .foregroundColor(colorScheme == .light ? .black : .white )
-
-                                Image(systemName: "chevron.right")
-                                    .font(.footnote)
+                                Button {
+                                    viewModel.showVisibleToView.toggle()
+                                } label: {
+                                    let icon = Image(systemName: "person.fill.badge.plus")
+                                    Text("\(icon) Visible To")
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                    
+                                    
+                                    Text(viewModel.selectedVisibleTo)
+                                        .font(.footnote)
+                                    
+                                    Image(systemName: "chevron.right")
+                                        .font(.footnote)
+                                }
                             }
+                            .foregroundColor(colorScheme == .light ? .black : .white )
                             
                             Divider()
                                 .padding(4)
@@ -262,6 +267,9 @@ struct PreviewPostView: View {
             })
             .fullScreenCover(isPresented: $viewModel.showMentionView, content: {
                 MentionView(selectedMentionUser: $viewModel.selectedMentionUser)
+            })
+            .fullScreenCover(isPresented: $viewModel.showVisibleToView, content: {
+                VisibleToView(shareWith: $viewModel.selectedVisibleToShareWith, hideFrom: $viewModel.selectedVisibleTohideFrom, selectedVisibleTo: $viewModel.selectedVisibleTo)
             })
         }
     }
