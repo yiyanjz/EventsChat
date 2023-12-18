@@ -43,15 +43,22 @@ struct LocationView: View {
             }
         }
         .overlay(alignment: .top) {
-            TextField("Search for a location", text: $searchText)
-                .font(.subheadline)
-                .frame(width: UIScreen.main.bounds.width / 1.5)
-                .padding(12)
-                .background(.white)
-                .cornerRadius(25)
-                .padding()
-                .padding(.trailing, 30)
-                .shadow(radius: 10)
+            HStack {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "x.square")
+                }
+                
+                TextField("Search for a location", text: $searchText)
+                    .font(.subheadline)
+                    .frame(width: UIScreen.main.bounds.width / 1.5)
+                    .padding(12)
+                    .background(.white)
+                    .cornerRadius(25)
+                    .padding(.trailing, 30)
+                    .shadow(radius: 10)
+            }
         }
         .onSubmit {
             Task { await searchPlaces() }
