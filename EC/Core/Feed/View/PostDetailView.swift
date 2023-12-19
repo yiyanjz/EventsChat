@@ -23,6 +23,13 @@ struct PostDetailView: View {
         likeCount += 1
     }
     
+    // grid Item Structure
+    private let gridItem: [GridItem] = [
+        .init(.flexible(), spacing: 4),
+        .init(.flexible(), spacing: 4),
+        .init(.flexible(), spacing: 4),
+    ]
+    
     init(showPostDetail: Binding<Bool>, post: Post) {
         self._viewModel = StateObject(wrappedValue: PostDetailViewModel(post: post))
         self._showPostDetail = showPostDetail
@@ -45,24 +52,26 @@ struct PostDetailView: View {
     }
     
     var body: some View {
-        VStack {
-            headerView
-            
-            bodyView
-        }
-        .sheet(isPresented: $viewModel.showShared) {
-            SharedView(post: viewModel.post)
-                .presentationDetents([.medium, .large])
-                .onDisappear {
-                    showPostDetail.toggle()
-                }
-        }
-        .fullScreenCover(isPresented: $viewModel.showUserProfile) {
-            if let user = viewModel.post.user, let currentUser = viewModel.currentUser {
-                if user.id == currentUser.id {
-                    ProfileView(user: currentUser, withBackButton: true)
-                }else {
-                    OtherUserProfileView(user: user)
+        NavigationStack {
+            VStack {
+                headerView
+                
+                bodyView
+            }
+            .sheet(isPresented: $viewModel.showShared) {
+                SharedView(post: viewModel.post)
+                    .presentationDetents([.medium, .large])
+                    .onDisappear {
+                        showPostDetail.toggle()
+                    }
+            }
+            .fullScreenCover(isPresented: $viewModel.showUserProfile) {
+                if let user = viewModel.post.user, let currentUser = viewModel.currentUser {
+                    if user.id == currentUser.id {
+                        ProfileView(user: currentUser, withBackButton: true)
+                    }else {
+                        OtherUserProfileView(user: user)
+                    }
                 }
             }
         }
@@ -231,6 +240,40 @@ extension PostDetailView {
                     Text("\(icon): \(viewModel.post.caption)")
                 }
                 .font(.system(size: 15))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal)
+                
+                // tag
+                if let tags = viewModel.post.tags {
+                    ScrollView{
+                        LazyVGrid(columns: gridItem , alignment: .leading, spacing: 5)  {
+                            ForEach(tags, id:\.self) { tag in
+                                Text("#\(tag)")
+                            }
+                            ForEach(viewModel.mentionedUsers) { user in
+                                NavigationLink {
+                                    OtherUserProfileView(user: user)
+                                        .navigationBarBackButtonHidden()
+                                } label: {
+                                    Text("@\(user.username)")
+                                        .foregroundColor(colorScheme == .light ? .black : .white )
+                                }
+                            }
+                        }
+                        .font(.system(size: 15))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal)
+                        .padding(.vertical)
+                    }
+                    .scrollDisabled(true)
+                }
+                
+                // location
+                VStack {
+                    Text(viewModel.post.locationPlacemark ?? "")
+                }
+                .font(.footnote)
+                .foregroundStyle(Color(uiColor: .lightGray))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal)
                 

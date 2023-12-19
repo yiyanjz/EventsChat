@@ -16,6 +16,7 @@ class PostDetailViewModel: ObservableObject {
     @Published var showUserProfile: Bool = false
     @Published var currentUser: User?
     @Published var userFollow = [User]()
+    @Published var mentionedUsers = [User]()
     
     init(post: Post) {
         self.post = post
@@ -24,6 +25,18 @@ class PostDetailViewModel: ObservableObject {
         Task {
             try await fetchCurrentUser()
             try await fetchFollowAndFollowing()
+            try await grabPostMentionUsers(post: post)
+        }
+    }
+    
+    // grab post mentioned users
+    @MainActor
+    func grabPostMentionUsers(post: Post) async throws {
+        guard let mentionUser = post.mentions else {return}
+        for i in 0..<mentionUser.count {
+            let userId = mentionUser[i]
+            let user = try await UserService.fetchUser(withUid: userId)
+            self.mentionedUsers.append(user)
         }
     }
     
