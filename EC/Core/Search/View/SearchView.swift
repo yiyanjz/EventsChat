@@ -14,7 +14,7 @@ struct SearchView: View {
     
     var searchResults: [String] {
         if viewModel.searchText.isEmpty {
-            return viewModel.searchFilter
+            return []
         } else {
             return viewModel.searchFilter.filter { $0.contains(viewModel.searchText) }
         }
@@ -132,19 +132,20 @@ extension SearchView {
                             Spacer()
                         }
                         
+                        // search trending
                         VStack(spacing:15){
-                            ForEach(0..<5) { _ in
+                            ForEach(viewModel.searchTrends.sorted(by: {$0.1 > $1.1}), id: \.key) { trends, trendsCount in
                                 Button {
-                                    viewModel.searchText = "hannah is xiao ben dan"
+                                    viewModel.searchText = trends
                                     viewModel.showResultView.toggle()
                                 } label: {
                                     HStack{
                                         Circle()
                                             .frame(width: 5, height:5)
                                             .foregroundColor(.yellow)
-                                        Text("hannah is xiao ben dan")
+                                        Text(trends.capitalized)
                                         Spacer()
-                                        Text("102.8w")
+                                        Text("\(trendsCount)")
                                         Image(systemName: "arrow.up")
                                             .font(.footnote)
                                             .foregroundColor(.red)

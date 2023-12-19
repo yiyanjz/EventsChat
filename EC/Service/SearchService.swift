@@ -13,7 +13,7 @@ struct SearchService {
     func uploadSearch(allSearchText: [String]) async throws {
         guard let uid = Auth.auth().currentUser?.uid else {return}
         // path ref
-        let searchAllRef = Firestore.firestore().collection("search").document(uid)
+        let searchAllRef = Firestore.firestore().collection("searchs").document(uid)
         
         // refactor data
         let search = Search(id: UUID().uuidString, content: allSearchText)
@@ -26,7 +26,7 @@ struct SearchService {
     // update search
     func updateSearch(allSearchText: [String]) async throws {
         guard let uid = Auth.auth().currentUser?.uid else {return}
-        let userSearchRef = Firestore.firestore().collection("search").document(uid)
+        let userSearchRef = Firestore.firestore().collection("searchs").document(uid)
         
         try await userSearchRef.updateData(["content": allSearchText])
     }
@@ -34,7 +34,7 @@ struct SearchService {
     // found search
     func foundSearch(allSearchText: [String], idx: Int) async throws {
         guard let uid = Auth.auth().currentUser?.uid else {return}
-        let userSearchRef = Firestore.firestore().collection("search").document(uid)
+        let userSearchRef = Firestore.firestore().collection("searchs").document(uid)
         
         var allSearchText = allSearchText
         let element = allSearchText.remove(at: idx)
@@ -45,13 +45,13 @@ struct SearchService {
     
     // fetch all user search
     func fetchUserSearch(withUid uid: String) async throws -> Search {
-        let snapshot = try await Firestore.firestore().collection("search").document(uid).getDocument()
+        let snapshot = try await Firestore.firestore().collection("searchs").document(uid).getDocument()
         return try snapshot.data(as: Search.self)
     }
     
     // observe fectch listern
     func observeUserSearch(withUid uid: String, completion: @escaping(Search) -> Void) {
-        Firestore.firestore().collection("search").document(uid).addSnapshotListener { querySnapshot, error in
+        Firestore.firestore().collection("searchs").document(uid).addSnapshotListener { querySnapshot, error in
             guard let document = querySnapshot else {return}
             guard let data = try? document.data(as: Search.self) else {return}
             completion(data)
@@ -60,7 +60,7 @@ struct SearchService {
     
     // delete history
     func deleteHistory(withUid uid: String) async throws {
-        try await Firestore.firestore().collection("search").document(uid).delete()
+        try await Firestore.firestore().collection("searchs").document(uid).delete()
     }
     
     // search filter results (need to add tag + location)
@@ -103,5 +103,22 @@ struct SearchService {
         }
         
         return resultPost
+    }
+    
+    func searchTrending() async throws -> [String: Int] {
+        var searchTrends = [String: Int]()
+        
+        let snapshot = try await Firestore.firestore().collection("searchs").getDocuments()
+        let searchs = try snapshot.documents.compactMap({ try $0.data(as: Search.self) })
+        
+        for i in 0..<searchs.count {
+            let content = searchs[i].content
+            let lowercaseContent = content.map{$0.capitalized}
+            for term in lowercaseContent {
+                searchTrends[term, default: 0] += 1
+            }
+        }
+        
+        return searchTrends
     }
 }

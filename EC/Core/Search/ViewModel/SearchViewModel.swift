@@ -14,12 +14,23 @@ class SearchViewModel: ObservableObject {
     @Published var showResultView: Bool = false
     @Published var allSearchText = [String]()
     @Published var searchFilter = [String]()
+    @Published var searchTrends = [String: Int]()
     
     let service = SearchService()
     
     init() {
-        Task {try await fectchSearch()}
+        Task {
+            try await fectchSearch()
+            try await searchTrending()
+        }
         observeUserSearches()
+    }
+    
+    @MainActor
+    // grab search trends
+    func searchTrending() async throws {
+        self.searchTrends = try await service.searchTrending()
+        self.searchFilter = Array(self.searchTrends.keys)
     }
     
     // upload search
