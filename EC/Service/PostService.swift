@@ -39,7 +39,7 @@ struct PostService {
                         post.user = postUser
                         allPosts.append(post)
                     }
-                } else if post.visibleTo == "All" {
+                } else {
                     if let ownerId = post.ownerId {
                         let postUser = try await UserService.fetchUser(withUid: ownerId)
                         post.user = postUser
@@ -75,7 +75,7 @@ struct PostService {
                         if post.ownerId == userId {
                             pendingPost.append(post)
                         }
-                    } else if post.visibleTo == "All" {
+                    } else {
                         pendingPost.append(post)
                     }
                 }
@@ -121,7 +121,7 @@ struct PostService {
                         if post.ownerId == userId {
                             completion(post)
                         }
-                    } else if post.visibleTo == "All" {
+                    } else {
                         completion(post)
                     }
                 }
@@ -226,7 +226,7 @@ struct PostService {
                 if post.ownerId == uid {
                     posts.append(post)
                 }
-            } else if post.visibleTo == "All" {
+            } else {
                 posts.append(post)
             }
         }
@@ -286,7 +286,21 @@ struct PostService {
                         let postId = otherUserSnapshot[i].documentID
                         let postSnapshot = try await Firestore.firestore().collection("posts").document(postId).getDocument()
                         let post = try postSnapshot.data(as: Post.self)
-                        followersPost.append(post)
+                        if let visibleList = post.visibleToList, post.visibleTo == "DontShare" {
+                            if !visibleList.contains(where: {$0 == userId}) {
+                                followersPost.append(post)
+                            }
+                        } else if let visibleList = post.visibleToList, post.visibleTo == "ShareWith"{
+                            if visibleList.contains(where: {$0 == userId}) || post.ownerId == userId {
+                                followersPost.append(post)
+                            }
+                        } else if post.visibleTo == "Private" {
+                            if post.ownerId == userId {
+                                followersPost.append(post)
+                            }
+                        } else {
+                            followersPost.append(post)
+                        }
                     }
                 }
             }
@@ -330,7 +344,21 @@ struct PostService {
                             Firestore.firestore().collection("posts").document(postId).getDocument { postSnapshot, _ in
                                 guard let post = try? postSnapshot?.data(as: Post.self) else {return}
                                 
-                                completion(post)
+                                if let visibleList = post.visibleToList, post.visibleTo == "DontShare" {
+                                    if !visibleList.contains(where: {$0 == userId}) {
+                                        completion(post)
+                                    }
+                                } else if let visibleList = post.visibleToList, post.visibleTo == "ShareWith"{
+                                    if visibleList.contains(where: {$0 == userId}) || post.ownerId == userId {
+                                        completion(post)
+                                    }
+                                } else if post.visibleTo == "Private" {
+                                    if post.ownerId == userId {
+                                        completion(post)
+                                    }
+                                } else {
+                                    completion(post)
+                                }
                             }
                         }
                     }
@@ -354,7 +382,21 @@ struct PostService {
                             Firestore.firestore().collection("posts").document(postId).getDocument { postSnapshot, _ in
                                 guard let post = try? postSnapshot?.data(as: Post.self) else {return}
                                 
-                                completion(post)
+                                if let visibleList = post.visibleToList, post.visibleTo == "DontShare" {
+                                    if !visibleList.contains(where: {$0 == userId}) {
+                                        completion(post)
+                                    }
+                                } else if let visibleList = post.visibleToList, post.visibleTo == "ShareWith"{
+                                    if visibleList.contains(where: {$0 == userId}) || post.ownerId == userId {
+                                        completion(post)
+                                    }
+                                } else if post.visibleTo == "Private" {
+                                    if post.ownerId == userId {
+                                        completion(post)
+                                    }
+                                } else {
+                                    completion(post)
+                                }
                             }
                         }
                     }

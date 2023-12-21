@@ -75,7 +75,7 @@ struct SearchService {
             let tags = post.tags?.joined() ?? ""
             let location = post.locationPlacemark ?? ""
             let searchTerm = post.title + post.caption + tags + location
-            if searchTerm.contains(searchText.lowercased()) {
+            if searchTerm.contains(searchText) || searchTerm.contains(searchText.lowercased()) || searchTerm.contains(searchText.uppercased()) {
                 if let ownerId = post.ownerId {
                     let postUser = try await UserService.fetchUser(withUid: ownerId)
                     posts[i].user = postUser

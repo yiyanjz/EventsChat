@@ -157,29 +157,9 @@ extension FeedView {
                 LazyVStack {
                     ForEach(viewModel.followersPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}), id: \.self) { post in
                         // logic in post service therfore dont need to rewrite it in feed, explore, profile and other profile to filter visible to
-                        if let visibleList = post.visibleToList, post.visibleTo == "DontShare" {
-                            if !visibleList.contains(where: {$0 == viewModel.currentUser?.id}) {
-                                FollowView(post: post)
-                                    .background(Color(uiColor: .systemBackground).brightness(0.1))
-                                    .cornerRadius(15)
-                            }
-                        } else if let visibleList = post.visibleToList, post.visibleTo == "ShareWith" {
-                            if visibleList.contains(where: {$0 == viewModel.currentUser?.id}) || post.user == viewModel.currentUser {
-                                FollowView(post: post)
-                                    .background(Color(uiColor: .systemBackground).brightness(0.1))
-                                    .cornerRadius(15)
-                            }
-                        } else if post.visibleTo == "Private" {
-                            if post.user == viewModel.currentUser {
-                                FollowView(post: post)
-                                    .background(Color(uiColor: .systemBackground).brightness(0.1))
-                                    .cornerRadius(15)
-                            }
-                        } else {
-                            FollowView(post: post)
-                                .background(Color(uiColor: .systemBackground).brightness(0.1))
-                                .cornerRadius(15)
-                        }
+                        FollowView(post: post)
+                            .background(Color(uiColor: .systemBackground).brightness(0.1))
+                            .cornerRadius(15)
                     }
                 }
             }
