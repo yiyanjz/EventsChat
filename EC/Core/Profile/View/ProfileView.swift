@@ -120,7 +120,7 @@ struct ProfileView: View {
                     }
                 }
                 .sheet(isPresented: $viewModel.showSharedCard) {
-                    SharedView()
+                    SharedView(actionButtonClicked: $viewModel.actionButtonClicked)
                         .presentationDetents([.medium, .large])
                 }
                 .fullScreenCover(isPresented: $viewModel.showPostDetails) {

@@ -12,6 +12,7 @@ import _AVKit_SwiftUI
 
 struct FollowView: View {
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dismiss) var dismiss
     @State private var selectedFilter: FeedFilter = .follow
     @StateObject var viewModel: FollowViewModel
     
@@ -66,7 +67,7 @@ struct FollowView: View {
             }
         }
         .sheet(isPresented: $viewModel.showShared) {
-            SharedView(post: viewModel.post)
+            SharedView(post: viewModel.post, actionButtonClicked: $viewModel.actionButtonClicked)
                 .presentationDetents([.medium, .large])
         }
     }

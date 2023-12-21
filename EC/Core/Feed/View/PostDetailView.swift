@@ -59,10 +59,12 @@ struct PostDetailView: View {
                 bodyView
             }
             .sheet(isPresented: $viewModel.showShared) {
-                SharedView(post: viewModel.post)
+                SharedView(post: viewModel.post, actionButtonClicked: $viewModel.actionButtonClicked)
                     .presentationDetents([.medium, .large])
                     .onDisappear {
-                        showPostDetail.toggle()
+                        if viewModel.actionButtonClicked {
+                            showPostDetail.toggle()
+                        }
                     }
             }
             .fullScreenCover(isPresented: $viewModel.showUserProfile) {

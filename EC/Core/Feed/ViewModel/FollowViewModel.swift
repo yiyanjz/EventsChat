@@ -15,6 +15,7 @@ class FollowViewModel: ObservableObject {
     @Published var showComments: Bool = false
     @Published var showShared: Bool = false
     @Published var currentUser: User?
+    @Published var actionButtonClicked: Bool = false // not used
     
     init(post: Post) {
         self.post = post

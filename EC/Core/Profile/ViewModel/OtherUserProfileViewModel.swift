@@ -19,7 +19,8 @@ class OtherUserProfileViewModel: ObservableObject {
     @Published var selectedPost: Post?
     @Published var userFollow = [User]()
     @Published var showSharedView: Bool = false
-    
+    @Published var actionButtonClicked: Bool = false // not used
+
     let service = PostService()
 
     init(user: User) {

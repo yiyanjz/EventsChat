@@ -14,6 +14,7 @@ struct SharedView: View {
     let screenWidth = UIScreen.main.bounds.width
     @StateObject var viewModel = ShareViewModel()
     @State var post: Post?
+    @Binding var actionButtonClicked: Bool
     
     func searchResults() -> [User]{
         if viewModel.searchUser.isEmpty {
@@ -37,7 +38,7 @@ struct SharedView: View {
 
 struct SharedView_Previews: PreviewProvider {
     static var previews: some View {
-        SharedView(post: Post.MOCK_POST[0])
+        SharedView(post: Post.MOCK_POST[0], actionButtonClicked: .constant(false))
     }
 }
 
@@ -106,6 +107,7 @@ extension SharedView {
                     // Add to Story
                     Button {
                         print("StoryView: Add new Story button clicked")
+                        actionButtonClicked.toggle()
                     } label: {
                         VStack(spacing: 5) {
                             Image(systemName: "memories.badge.plus")
@@ -126,6 +128,7 @@ extension SharedView {
                     // Share
                     Button {
                         print("StoryView: Share button clicked")
+                        actionButtonClicked.toggle()
                     } label: {
                         VStack(spacing: 5) {
                             Image(systemName: "square.and.arrow.up.circle")
@@ -148,6 +151,7 @@ extension SharedView {
                         Button {
                             Task {
                                 try await viewModel.deletePost(post: post)
+                                actionButtonClicked.toggle()
                                 dismiss()
                             }
                         } label: {

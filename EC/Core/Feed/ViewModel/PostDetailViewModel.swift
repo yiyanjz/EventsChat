@@ -17,6 +17,7 @@ class PostDetailViewModel: ObservableObject {
     @Published var currentUser: User?
     @Published var userFollow = [User]()
     @Published var mentionedUsers = [User]()
+    @Published var actionButtonClicked: Bool = false
     
     init(post: Post) {
         self.post = post

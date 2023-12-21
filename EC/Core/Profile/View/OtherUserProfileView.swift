@@ -104,7 +104,7 @@ struct OtherUserProfileView: View {
                 }
             }
             .sheet(isPresented: $viewModel.showSharedView) {
-                SharedView()
+                SharedView(actionButtonClicked: $viewModel.actionButtonClicked)
                     .presentationDetents([.medium, .large])
             }
         }
