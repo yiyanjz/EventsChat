@@ -14,11 +14,13 @@ class FeedViewModel: ObservableObject {
     @Published var showPostDetail: Bool = false
     @Published var selectedPost: Post?
     @Published var followersPosts = [Post]()
+    @Published var currentUser: User?
     
     init(){
         Task {
             try await fetchPost()
             try await fetchFollowerPosts()
+            try await getCurrentUser()
         }
         observePostAdded()
         observePostRemoved()
@@ -27,8 +29,15 @@ class FeedViewModel: ObservableObject {
     }
     
     @MainActor
+    func getCurrentUser() async throws {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        self.currentUser = try await UserService.fetchUser(withUid: uid)
+    }
+    
+    @MainActor
     func fetchPost() async throws {
-        self.posts = try await PostService.fetchPost()
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        self.posts = try await PostService.fetchPost(withUserId: uid)
     }
     
     // listener for user infor changes

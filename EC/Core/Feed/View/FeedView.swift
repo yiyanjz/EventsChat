@@ -15,6 +15,7 @@ struct FeedView: View {
     @Binding var showTabBar: Bool
     
     func getEvenPosts() -> [Post]{
+        var allPost = [Post]()
         let sortedPosts = viewModel.posts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})
         return stride(from: 0, to: sortedPosts.count, by: 2).map { sortedPosts[$0] }
     }
@@ -155,9 +156,30 @@ extension FeedView {
                 // posts
                 LazyVStack {
                     ForEach(viewModel.followersPosts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()}), id: \.self) { post in
-                        FollowView(post: post)
-                            .background(Color(uiColor: .systemBackground).brightness(0.1))
-                            .cornerRadius(15)
+                        // logic in post service therfore dont need to rewrite it in feed, explore, profile and other profile to filter visible to
+                        if let visibleList = post.visibleToList, post.visibleTo == "DontShare" {
+                            if !visibleList.contains(where: {$0 == viewModel.currentUser?.id}) {
+                                FollowView(post: post)
+                                    .background(Color(uiColor: .systemBackground).brightness(0.1))
+                                    .cornerRadius(15)
+                            }
+                        } else if let visibleList = post.visibleToList, post.visibleTo == "ShareWith" {
+                            if visibleList.contains(where: {$0 == viewModel.currentUser?.id}) || post.user == viewModel.currentUser {
+                                FollowView(post: post)
+                                    .background(Color(uiColor: .systemBackground).brightness(0.1))
+                                    .cornerRadius(15)
+                            }
+                        } else if post.visibleTo == "Private" {
+                            if post.user == viewModel.currentUser {
+                                FollowView(post: post)
+                                    .background(Color(uiColor: .systemBackground).brightness(0.1))
+                                    .cornerRadius(15)
+                            }
+                        } else {
+                            FollowView(post: post)
+                                .background(Color(uiColor: .systemBackground).brightness(0.1))
+                                .cornerRadius(15)
+                        }
                     }
                 }
             }
