@@ -26,6 +26,8 @@ class OtherUserProfileViewModel: ObservableObject {
         self.user = user
         observeUserFollow()
         fetchUpdateGrabUserPostsAndFollowingUser()
+        observeAllPost()
+        observePostRemoved()
         Task {
             try await fetchFollowAndFollowing()
             try await grabUserPostsAndFollowingUser()
@@ -114,6 +116,20 @@ class OtherUserProfileViewModel: ObservableObject {
         }
         UserService().fetchUpdateUserLikes(withUid: user.id) { userLikes in
             self.user.likes = userLikes
+        }
+    }
+    
+    // observePostRemoved
+    func observePostRemoved() {
+        PostService.observePostsRemoved { post in
+            self.allPosts = self.allPosts.filter({ $0.id != post.id})
+        }
+    }
+    
+    // observe post filter
+    func observeAllPost() {
+        service.observePostsActionInfo(forUid: user.id, collectionName: CollectionFilter.userPost.title) { post in
+            self.allPosts.append(post)
         }
     }
 }
