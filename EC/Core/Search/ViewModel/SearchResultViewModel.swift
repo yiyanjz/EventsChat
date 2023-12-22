@@ -40,7 +40,8 @@ class SearchResultViewModel: ObservableObject {
     // stores in a array of post
     @MainActor
     func searchFilterResults() async throws {
-        self.postsResult = try await service.searchFilterResults(searchText: searchText)
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        self.postsResult = try await service.searchFilterResults(withUserId: uid, searchText: searchText)
     }
     
     @MainActor

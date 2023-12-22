@@ -64,22 +64,46 @@ struct SearchService {
     }
     
     // search filter results (need to add tag + location)
-    func searchFilterResults(searchText: String) async throws -> [Post] {
+    func searchFilterResults(withUserId userId: String, searchText: String) async throws -> [Post] {
         let snapshot = try await Firestore.firestore().collection("posts").getDocuments()
         var posts = try snapshot.documents.compactMap({ try $0.data(as: Post.self) })
         
         var resultPost = [Post]()
         
         for i in 0..<posts.count {
-            let post = posts[i]
+            var post = posts[i]
             let tags = post.tags?.joined() ?? ""
             let location = post.locationPlacemark ?? ""
             let searchTerm = post.title + post.caption + tags + location
             if searchTerm.contains(searchText) || searchTerm.contains(searchText.lowercased()) || searchTerm.contains(searchText.uppercased()) {
-                if let ownerId = post.ownerId {
-                    let postUser = try await UserService.fetchUser(withUid: ownerId)
-                    posts[i].user = postUser
-                    resultPost.append(posts[i])
+                if let visibleList = post.visibleToList, post.visibleTo == "DontShare" {
+                    if !visibleList.contains(where: {$0 == userId}) {
+                        if let ownerId = post.ownerId {
+                            let postUser = try await UserService.fetchUser(withUid: ownerId)
+                            post.user = postUser
+                            resultPost.append(post)
+                        }
+                    }
+                } else if let visibleList = post.visibleToList, post.visibleTo == "ShareWith"{
+                    if visibleList.contains(where: {$0 == userId}) || post.ownerId == userId {
+                        if let ownerId = post.ownerId {
+                            let postUser = try await UserService.fetchUser(withUid: ownerId)
+                            post.user = postUser
+                            resultPost.append(post)
+                        }
+                    }
+                } else if post.visibleTo == "Private" {
+                    if let ownerId = post.ownerId, ownerId == userId {
+                        let postUser = try await UserService.fetchUser(withUid: ownerId)
+                        post.user = postUser
+                        resultPost.append(post)
+                    }
+                } else {
+                    if let ownerId = post.ownerId {
+                        let postUser = try await UserService.fetchUser(withUid: ownerId)
+                        post.user = postUser
+                        resultPost.append(post)
+                    }
                 }
             }
         }
