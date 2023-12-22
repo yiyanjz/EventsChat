@@ -178,6 +178,8 @@ class ProfileViewModel: ObservableObject {
     func observePostRemoved() {
         PostService.observePostsRemoved { post in
             self.allPosts = self.allPosts.filter({ $0.id != post.id})
+            self.likedPosts = self.likedPosts.filter({ $0.id != post.id})
+            self.starPosts = self.starPosts.filter({ $0.id != post.id})
         }
     }
 }

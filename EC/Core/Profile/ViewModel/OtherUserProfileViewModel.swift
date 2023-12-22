@@ -128,6 +128,7 @@ class OtherUserProfileViewModel: ObservableObject {
     func observePostRemoved() {
         PostService.observePostsRemoved { post in
             self.allPosts = self.allPosts.filter({ $0.id != post.id})
+            self.staredPosts = self.staredPosts.filter({ $0.id != post.id})
         }
     }
     
