@@ -419,7 +419,7 @@ extension ProfileView {
                 HStack(alignment:.top) {
                     LazyVStack {
                         ForEach(getEvenStaredPosts()) { post in
-                            PostView(post: post, likeFilter: true)
+                            PostView(post: post, likeFilter: false)
                                 .onTapGesture {
                                     withAnimation(.linear(duration: 0.5)) {
                                         viewModel.selectedPost = post
@@ -430,7 +430,7 @@ extension ProfileView {
                     }
                     LazyVStack {
                         ForEach(getOddStaredPosts()) { post in
-                            PostView(post: post, likeFilter: true)
+                            PostView(post: post, likeFilter: false)
                                 .onTapGesture {
                                     withAnimation(.linear(duration: 0.5)) {
                                         viewModel.selectedPost = post
