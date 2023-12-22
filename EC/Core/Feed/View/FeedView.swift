@@ -15,7 +15,6 @@ struct FeedView: View {
     @Binding var showTabBar: Bool
     
     func getEvenPosts() -> [Post]{
-        var allPost = [Post]()
         let sortedPosts = viewModel.posts.sorted(by: {$0.timestamp.dateValue() > $1.timestamp.dateValue()})
         return stride(from: 0, to: sortedPosts.count, by: 2).map { sortedPosts[$0] }
     }
