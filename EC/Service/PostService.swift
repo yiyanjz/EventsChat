@@ -345,15 +345,15 @@ struct PostService {
                                 guard let post = try? postSnapshot?.data(as: Post.self) else {return}
                                 
                                 if let visibleList = post.visibleToList, post.visibleTo == "DontShare" {
-                                    if !visibleList.contains(where: {$0 == userId}) {
+                                    if !visibleList.contains(where: {$0 == uid}) {
                                         completion(post)
                                     }
                                 } else if let visibleList = post.visibleToList, post.visibleTo == "ShareWith"{
-                                    if visibleList.contains(where: {$0 == userId}) || post.ownerId == userId {
+                                    if visibleList.contains(where: {$0 == uid}) || post.ownerId == uid {
                                         completion(post)
                                     }
                                 } else if post.visibleTo == "Private" {
-                                    if post.ownerId == userId {
+                                    if post.ownerId == uid {
                                         completion(post)
                                     }
                                 } else {
@@ -381,22 +381,7 @@ struct PostService {
                             let postId = doc.documentID
                             Firestore.firestore().collection("posts").document(postId).getDocument { postSnapshot, _ in
                                 guard let post = try? postSnapshot?.data(as: Post.self) else {return}
-                                
-                                if let visibleList = post.visibleToList, post.visibleTo == "DontShare" {
-                                    if !visibleList.contains(where: {$0 == userId}) {
-                                        completion(post)
-                                    }
-                                } else if let visibleList = post.visibleToList, post.visibleTo == "ShareWith"{
-                                    if visibleList.contains(where: {$0 == userId}) || post.ownerId == userId {
-                                        completion(post)
-                                    }
-                                } else if post.visibleTo == "Private" {
-                                    if post.ownerId == userId {
-                                        completion(post)
-                                    }
-                                } else {
-                                    completion(post)
-                                }
+                                completion(post)
                             }
                         }
                     }
