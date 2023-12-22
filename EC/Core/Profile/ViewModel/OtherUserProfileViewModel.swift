@@ -29,17 +29,20 @@ class OtherUserProfileViewModel: ObservableObject {
         fetchUpdateGrabUserPostsAndFollowingUser()
         observeAllPost()
         observePostRemoved()
+        observeStarPost()
         Task {
             try await fetchFollowAndFollowing()
             try await grabUserPostsAndFollowingUser()
             try await fetchallUsersPosts(user: user)
+            try await fetchStaredPosts(user: user)
         }
     }
     
     @MainActor
     // fetch all posts
     func fetchallUsersPosts(user: User) async throws {
-        let posts = try await service.fetchPostActionInfo(forUid: user.id, collectionName: CollectionFilter.userPost.title)
+        guard let currentUid = Auth.auth().currentUser?.uid else {return}
+        let posts = try await service.fetchPostActionInfoOtherUser(forCurrentUid: currentUid, forUid: user.id, collectionName: CollectionFilter.userPost.title)
         self.allPosts = posts
         
         if self.allPosts.count > 0 {
@@ -52,7 +55,8 @@ class OtherUserProfileViewModel: ObservableObject {
     @MainActor
     // fetch all stared posts
     func fetchStaredPosts(user: User) async throws {
-        let posts = try await service.fetchPostActionInfo(forUid: user.id, collectionName: CollectionFilter.userStared.title)
+        guard let currentUid = Auth.auth().currentUser?.uid else {return}
+        let posts = try await service.fetchPostActionInfoOtherUser(forCurrentUid: currentUid, forUid: user.id, collectionName: CollectionFilter.userStared.title)
         self.staredPosts = posts
         
         if self.staredPosts.count > 0 {
@@ -129,8 +133,22 @@ class OtherUserProfileViewModel: ObservableObject {
     
     // observe post filter
     func observeAllPost() {
-        service.observePostsActionInfo(forUid: user.id, collectionName: CollectionFilter.userPost.title) { post in
+        guard let currentUid = Auth.auth().currentUser?.uid else {return}
+        service.observePostsActionInfoOtherUser(forCurrentUid: currentUid, forUid: user.id, collectionName: CollectionFilter.userPost.title) { post in
             self.allPosts.append(post)
+        }
+    }
+    
+    // observe star filter
+    func observeStarPost() {
+        guard let currentUid = Auth.auth().currentUser?.uid else {return}
+        service.observePostsActionInfoOtherUser(forCurrentUid: currentUid, forUid: user.id, collectionName: CollectionFilter.userStared.title) { post in
+            guard let postDidStar = post.didStar else {return}
+            if postDidStar {
+                self.staredPosts.append(post)
+            } else if !postDidStar {
+                self.staredPosts = self.staredPosts.filter({ $0.id != post.id})
+            }
         }
     }
 }

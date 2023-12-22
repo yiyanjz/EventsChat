@@ -214,16 +214,33 @@ struct PostService {
             let postSnapshot = try await Firestore.firestore().collection("posts").document(postId).getDocument()
             let post = try postSnapshot.data(as: Post.self)
             
+            posts.append(post)
+        }
+        
+        return posts
+    }
+    
+    // filter likes / stars for other user (detailed going into user - user-posts)
+    func fetchPostActionInfoOtherUser(forCurrentUid CurrentUid:String, forUid uid:String, collectionName name: String) async throws -> [Post] {
+        let snapshot = try await Firestore.firestore().collection("users").document(uid).collection(name).getDocuments()
+        let documents = snapshot.documents
+        
+        var posts = [Post]()
+        for i in 0..<documents.count {
+            let doc = documents[i]
+            let postId = doc.documentID
+            let postSnapshot = try await Firestore.firestore().collection("posts").document(postId).getDocument()
+            let post = try postSnapshot.data(as: Post.self)
             if let visibleList = post.visibleToList, post.visibleTo == "DontShare" {
-                if !visibleList.contains(where: {$0 == uid}) {
+                if !visibleList.contains(where: {$0 == CurrentUid}) {
                     posts.append(post)
                 }
             } else if let visibleList = post.visibleToList, post.visibleTo == "ShareWith"{
-                if visibleList.contains(where: {$0 == uid}) || post.ownerId == uid {
+                if visibleList.contains(where: {$0 == CurrentUid}) || post.ownerId == CurrentUid {
                     posts.append(post)
                 }
             } else if post.visibleTo == "Private" {
-                if post.ownerId == uid {
+                if post.ownerId == CurrentUid {
                     posts.append(post)
                 }
             } else {
@@ -235,6 +252,7 @@ struct PostService {
     }
     
     // check for liked posts / stars
+    // in viewModel checks if stared or not to tell whether removed or not
     func observePostsActionInfo(forUid uid:String, collectionName name: String, completion: @escaping(Post) -> Void) {
         Firestore.firestore().collection("users").document(uid).collection(name).addSnapshotListener { (querySnapshot, error) in
             guard let snapshot = querySnapshot else { return }
@@ -261,6 +279,71 @@ struct PostService {
                             UserService.fetchUserCompletion(withUid: ownerId) { postUser in
                                 post.user = postUser
                                 completion(post)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // check for liked posts / stars (detailed going into user - user-posts)
+    // in viewModel checks if stared or not to tell whether removed or not
+    func observePostsActionInfoOtherUser(forCurrentUid CurrentUid:String, forUid uid:String, collectionName name: String, completion: @escaping(Post) -> Void) {
+        Firestore.firestore().collection("users").document(uid).collection(name).addSnapshotListener { (querySnapshot, error) in
+            guard let snapshot = querySnapshot else { return }
+            
+            snapshot.documentChanges.forEach { documentChange in
+                if documentChange.type == .added {
+                    let docID = documentChange.document.documentID
+                    Firestore.firestore().collection("posts").document(docID).getDocument { querySnapshot, _ in
+                        guard let snapshot = querySnapshot else { return }
+                        guard var post = try? snapshot.data(as: Post.self) else {return}
+                        if let ownerId = post.ownerId {
+                            UserService.fetchUserCompletion(withUid: ownerId) { postUser in
+                                post.user = postUser
+                                if let visibleList = post.visibleToList, post.visibleTo == "DontShare" {
+                                    if !visibleList.contains(where: {$0 == CurrentUid}) {
+                                        completion(post)
+                                    }
+                                } else if let visibleList = post.visibleToList, post.visibleTo == "ShareWith"{
+                                    if visibleList.contains(where: {$0 == CurrentUid}) || post.ownerId == CurrentUid {
+                                        completion(post)
+                                    }
+                                } else if post.visibleTo == "Private" {
+                                    if post.ownerId == CurrentUid {
+                                        completion(post)
+                                    }
+                                } else {
+                                    completion(post)
+                                }
+                            }
+                        }
+                    }
+                }
+                else if documentChange.type == .removed {
+                    let docID = documentChange.document.documentID
+                    Firestore.firestore().collection("posts").document(docID).getDocument { querySnapshot, _ in
+                        guard let snapshot = querySnapshot else { return }
+                        guard var post = try? snapshot.data(as: Post.self) else {return}
+                        if let ownerId = post.ownerId {
+                            UserService.fetchUserCompletion(withUid: ownerId) { postUser in
+                                post.user = postUser
+                                if let visibleList = post.visibleToList, post.visibleTo == "DontShare" {
+                                    if !visibleList.contains(where: {$0 == CurrentUid}) {
+                                        completion(post)
+                                    }
+                                } else if let visibleList = post.visibleToList, post.visibleTo == "ShareWith"{
+                                    if visibleList.contains(where: {$0 == CurrentUid}) || post.ownerId == CurrentUid {
+                                        completion(post)
+                                    }
+                                } else if post.visibleTo == "Private" {
+                                    if post.ownerId == CurrentUid {
+                                        completion(post)
+                                    }
+                                } else {
+                                    completion(post)
+                                }
                             }
                         }
                     }
