@@ -95,6 +95,8 @@
 		179664412AF59645001CCED9 /* PreviewImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179664402AF59645001CCED9 /* PreviewImageView.swift */; };
 		179664432AF5A079001CCED9 /* PreviewVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179664422AF5A079001CCED9 /* PreviewVideoView.swift */; };
 		179664452AF5A33F001CCED9 /* PreviewPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179664442AF5A33F001CCED9 /* PreviewPostView.swift */; };
+		17A4FB972B3A0C7000B476BA /* StoryEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A4FB962B3A0C7000B476BA /* StoryEditView.swift */; };
+		17A4FB992B3A0EF800B476BA /* StoryFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A4FB982B3A0EF800B476BA /* StoryFilter.swift */; };
 		17A7E8A02B2526B600B4701C /* ShareNewGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A7E89F2B2526B600B4701C /* ShareNewGroupView.swift */; };
 		17A7E8A22B25364800B4701C /* ShareNewGroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A7E8A12B25364800B4701C /* ShareNewGroupViewModel.swift */; };
 		17A7E8A62B253F9500B4701C /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A7E8A52B253F9500B4701C /* Comment.swift */; };
@@ -201,6 +203,8 @@
 		179664402AF59645001CCED9 /* PreviewImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreviewImageView.swift; path = EC/Core/Upload/View/PreviewImageView.swift; sourceTree = SOURCE_ROOT; };
 		179664422AF5A079001CCED9 /* PreviewVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreviewVideoView.swift; path = EC/Core/Upload/View/PreviewVideoView.swift; sourceTree = SOURCE_ROOT; };
 		179664442AF5A33F001CCED9 /* PreviewPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PreviewPostView.swift; path = EC/Core/Upload/View/PreviewPostView.swift; sourceTree = SOURCE_ROOT; };
+		17A4FB962B3A0C7000B476BA /* StoryEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryEditView.swift; sourceTree = "<group>"; };
+		17A4FB982B3A0EF800B476BA /* StoryFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryFilter.swift; sourceTree = "<group>"; };
 		17A7E89F2B2526B600B4701C /* ShareNewGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareNewGroupView.swift; sourceTree = "<group>"; };
 		17A7E8A12B25364800B4701C /* ShareNewGroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareNewGroupViewModel.swift; sourceTree = "<group>"; };
 		17A7E8A52B253F9500B4701C /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
@@ -684,6 +688,7 @@
 				178D648F2B1801FC008F38FD /* StoryView.swift */,
 				178D64932B181846008F38FD /* StorySelectMediaView.swift */,
 				171836A32B191005000ACF94 /* StoryTitleView.swift */,
+				17A4FB962B3A0C7000B476BA /* StoryEditView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -693,6 +698,7 @@
 			children = (
 				178D648D2B1801D2008F38FD /* CounterTime.swift */,
 				17FEC5222B391AC80073C7D7 /* ImageEditor.swift */,
+				17A4FB982B3A0EF800B476BA /* StoryFilter.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -841,6 +847,7 @@
 				172F59452B2FCE2700252B1C /* VisibleToView.swift in Sources */,
 				177B18E52B26F7C8007081B3 /* ProfileInfoView.swift in Sources */,
 				1782EA522AF70AB6006867FD /* VideoUploader.swift in Sources */,
+				17A4FB992B3A0EF800B476BA /* StoryFilter.swift in Sources */,
 				177FBA242AF487E9008C2175 /* FeedFilter.swift in Sources */,
 				1782EA542AF72352006867FD /* test.swift in Sources */,
 				1748FBF52B06BDBE005B1DFF /* SearchService.swift in Sources */,
@@ -868,6 +875,7 @@
 				1748FBF12B06B094005B1DFF /* SearchViewModel.swift in Sources */,
 				177FBA262AF48800008C2175 /* FeedView.swift in Sources */,
 				177FBA162AF4848A008C2175 /* EditProfileViewModel.swift in Sources */,
+				17A4FB972B3A0C7000B476BA /* StoryEditView.swift in Sources */,
 				176EF4B42B2F9F3D0058ADD8 /* NoLocationDetailsView.swift in Sources */,
 				177FB9B02AF46237008C2175 /* ContentView.swift in Sources */,
 				1759604F2B04338C00203003 /* CommentsView.swift in Sources */,
