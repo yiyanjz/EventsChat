@@ -106,6 +106,7 @@ struct StoryView: View {
             }
 
             Button("Edit Highlight") {
+                viewModel.showEditStoryView.toggle()
             }
             
             Button("Dimiss") {
@@ -120,6 +121,9 @@ struct StoryView: View {
         .onChange(of: viewModel.media.selectedMedia, perform: { value in
             self.countTimer.max = value.count
         })
+        .fullScreenCover(isPresented: $viewModel.showEditStoryView) {
+            StoryEditView()
+        }
     }
 }
 

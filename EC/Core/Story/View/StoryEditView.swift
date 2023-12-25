@@ -10,10 +10,8 @@ import SwiftUI
 struct StoryEditView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
-    @State var storyTitle: String = ""
     @State private var selectedFilter: StoryFilter = .stories
-    @State var imageListStories = ["shin", "jian", "ni", "background"]
-    @State var imageListLibrary = ["shin", "jian", "ni", "background"]
+    @StateObject var viewModel = StoryEditViewModel()
     
     // grid Item Structure
     private let gridItem: [GridItem] = [
@@ -39,6 +37,16 @@ struct StoryEditView: View {
             selectionView
             
             Spacer()
+        }
+        .onAppear {
+            DispatchQueue.main.async{
+                viewModel.getAlbum()
+            }
+        }
+        .onChange(of: viewModel.selectAlbum) { newValue in
+            DispatchQueue.main.async{
+                viewModel.getImages()
+            }
         }
     }
 }
@@ -102,7 +110,7 @@ extension StoryEditView {
             Text("Story Name: ")
                 .font(.system(size: 15))
             
-            TextField("Story Title", text: $storyTitle)
+            TextField("Story Title", text: $viewModel.storyTitle)
                 .font(.system(size: 15))
                 .multilineTextAlignment(.leading)
         }
@@ -146,22 +154,32 @@ extension StoryEditView {
     var storiesView: some View {
         ScrollView {
             LazyVGrid(columns: gridItem, spacing: 1)  {
-                ForEach(imageListStories, id:\.self) { image in
-                    Image(image)
-                        .resizable()
-                        .frame(width: UIScreen.main.bounds.width/3, height: 200)
-                        .overlay(
-                            Button {
-                            } label: {
-                                Image(systemName: "checkmark.seal.fill")
-                                    .font(.title3)
-                                    .foregroundColor(.white)
-                                    .padding(5)
-                                    .background(.black.opacity(0.5),in: Circle())
-                                    .frame(width: UIScreen.main.bounds.width/3, height: 200, alignment: .bottomTrailing)
-                                    .padding(8)
-                            }
-                        )
+                ForEach(Array(viewModel.selectedMedia.enumerated()), id: \.element) { index, item in
+                    Button {
+                    } label: {
+                        Image(uiImage: item.uiImage)
+                            .resizable()
+                            .frame(width: UIScreen.main.bounds.width/3, height: 200)
+                            .overlay(
+                                Button {
+                                    if viewModel.allList[index].selected {
+                                        viewModel.allList[index].selected.toggle()
+                                        let media = viewModel.allList[index]
+                                        if viewModel.selectedMedia.contains(where: { key in key.id == media.id }) {
+                                            viewModel.selectedMedia.removeAll(where: { key in key.id == media.id })
+                                        }
+                                    }
+                                } label: {
+                                    Image(systemName: "checkmark.seal.fill")
+                                        .font(.title3)
+                                        .foregroundColor(.white)
+                                        .padding(5)
+                                        .background(.black.opacity(0.5),in: Circle())
+                                        .frame(width: UIScreen.main.bounds.width/3, height: 200, alignment: .bottomTrailing)
+                                        .padding(8)
+                                }
+                            )
+                    }
                 }
             }
         }
@@ -170,22 +188,36 @@ extension StoryEditView {
     var libraryView: some View {
         ScrollView {
             LazyVGrid(columns: gridItem, spacing: 1)  {
-                ForEach(imageListLibrary, id:\.self) { image in
-                    Image(image)
-                        .resizable()
-                        .frame(width: UIScreen.main.bounds.width/3, height: 200)
-                        .overlay(
-                            Button {
-                            } label: {
-                                Image(systemName: "checkmark.seal")
-                                    .font(.title3)
-                                    .foregroundColor(.white)
-                                    .padding(5)
-                                    .background(.black.opacity(0.5),in: Circle())
-                                    .frame(width: UIScreen.main.bounds.width/3, height: 200, alignment: .bottomTrailing)
-                                    .padding(8)
-                            }
-                        )
+                ForEach(Array(viewModel.allList.enumerated()), id: \.element) { index, item in
+                    Button {
+                    } label: {
+                        Image(uiImage: item.uiImage)
+                            .resizable()
+                            .frame(width: UIScreen.main.bounds.width/3, height: 200)
+                            .overlay(
+                                Button {
+                                    if viewModel.allList[index].selected == false {
+                                        viewModel.allList[index].selected.toggle()
+                                        let media = viewModel.allList[index]
+                                        viewModel.selectedMedia.append(media)
+                                    } else if viewModel.allList[index].selected {
+                                        viewModel.allList[index].selected.toggle()
+                                        let media = viewModel.allList[index]
+                                        if viewModel.selectedMedia.contains(where: { key in key.id == media.id }) {
+                                            viewModel.selectedMedia.removeAll(where: { key in key.id == media.id })
+                                        }
+                                    }
+                                } label: {
+                                    Image(systemName: item.selected ? "checkmark.seal.fill" : "checkmark.seal")
+                                        .font(.title3)
+                                        .foregroundColor(.white)
+                                        .padding(5)
+                                        .background(.black.opacity(0.5),in: Circle())
+                                        .frame(width: UIScreen.main.bounds.width/3, height: 200, alignment: .bottomTrailing)
+                                        .padding(8)
+                                }
+                            )
+                    }
                 }
             }
         }

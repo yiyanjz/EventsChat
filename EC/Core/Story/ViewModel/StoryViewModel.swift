@@ -14,6 +14,7 @@ class StoryViewModel: ObservableObject {
     @Published var media: Story
     @Published var user: User
     @Published var selectedStory: Story?
+    @Published var showEditStoryView: Bool = false
     
     init(media: Story, user: User) {
         self.media = media
