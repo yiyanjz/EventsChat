@@ -18,12 +18,21 @@ class StoryViewModel: ObservableObject {
     init(media: Story, user: User) {
         self.media = media
         self.user = user
+        observeStoryModify(withStoryId: media.id)
     }
     
     // delete story
     func deleteProfileStory(withStory story: Story, deleteStoryIndex: Int) {
         guard let uid = Auth.auth().currentUser?.uid else {return}
         StoryService().deleteProfileStory(withUid: uid, withStory: story, deleteStoryIndex: deleteStoryIndex) {
+        }
+    }
+    
+    func observeStoryModify(withStoryId storyId: String) {
+        StoryService().observeStoryModify(withStoryId: storyId) { [weak self] story in
+            if story.id == self?.media.id {
+                self?.media.selectedMedia = story.selectedMedia
+            }
         }
     }
 }

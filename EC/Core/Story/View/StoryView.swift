@@ -112,7 +112,9 @@ struct StoryView: View {
                 countTimer.start()
             }
         })
-
+        .onChange(of: viewModel.media.selectedMedia, perform: { value in
+            self.countTimer.max = value.count
+        })
     }
 }
 

@@ -99,4 +99,13 @@ struct StoryService {
             userStoryRef.delete()
         }
     }
+    
+    // check for modify posts (Not Used)
+    func observeStoryModify(withStoryId storyId: String, completion: @escaping(Story) -> Void) {        
+        Firestore.firestore().collection("storys").document(storyId).addSnapshotListener { querySnapshot, error in
+            guard let document = querySnapshot else {return}
+            guard let data = try? document.data(as: Story.self) else {return}
+            completion(data)
+        }
+    }
 }

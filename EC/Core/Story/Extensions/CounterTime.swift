@@ -11,7 +11,7 @@ import Combine
 class CountTimer:ObservableObject{
     @Published var progress: Double
     private var interval: TimeInterval
-    private var max:Int
+    @Published var max:Int
     private let publisher: Timer.TimerPublisher
     private var cancellable: Cancellable?
     
