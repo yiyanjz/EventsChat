@@ -115,10 +115,4 @@ extension StoryCoverEditView {
         }
         .padding(.horizontal)
     }
-    
-    var cropImageView: some View {
-        VStack {
-            
-        }
-    }
 }
