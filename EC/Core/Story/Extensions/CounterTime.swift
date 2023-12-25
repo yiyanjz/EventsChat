@@ -32,4 +32,8 @@ class CountTimer:ObservableObject{
         let newProgress = Swift.max((Int(self.progress) + number) % self.max, 0)
         self.progress = Double(newProgress)
     }
+    
+    func cancel() {
+        self.cancellable?.cancel()
+    }
 }

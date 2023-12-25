@@ -10,19 +10,21 @@ import Kingfisher
 import Firebase
 
 struct StoryView: View {
-    var media: Story
-    let user: User
     @ObservedObject var countTimer: CountTimer
     @Environment(\.dismiss) var dismiss
-    @State var browseButtonClicked: Bool = false
-    @State var showMoreActionSheet: Bool = false
+    @StateObject var viewModel: StoryViewModel
+    
+    init(media: Story, user: User, countTimer: CountTimer) {
+        self.countTimer = countTimer
+        self._viewModel = StateObject(wrappedValue: StoryViewModel(media: media, user: user))
+    }
     
     var body: some View {
         VStack {
             // story view
             GeometryReader{geometry in
                 ZStack(alignment: .top){
-                    KFImage(URL(string: self.media.selectedMedia[Int(self.countTimer.progress)]))
+                    KFImage(URL(string: viewModel.media.selectedMedia[Int(self.countTimer.progress)]))
                         .resizable()
                         .scaledToFill()
                         .frame(width: geometry.size.width,height: nil,alignment: .center)
@@ -30,7 +32,7 @@ struct StoryView: View {
                     // Loading Bar
                     VStack {
                         HStack(alignment: .center, spacing: 4){
-                            ForEach(self.media.selectedMedia.indices, id: \.self){ image in
+                            ForEach(viewModel.media.selectedMedia.indices, id: \.self){ image in
                                 LoadingBarView(progress: min( max( (CGFloat(self.countTimer.progress) - CGFloat(image)), 0.0) , 1.0) )
                                     .frame(width:nil,height: 2, alignment:.leading)
                             }
@@ -40,11 +42,11 @@ struct StoryView: View {
                         
                         // user profile
                         HStack {
-                            CircularProfileImageView(user: user, size: .xxsmall)
+                            CircularProfileImageView(user: viewModel.user, size: .xxsmall)
                             
-                            Text(user.username)
+                            Text(viewModel.user.username)
                             
-                            let date = media.timestamp.dateValue()
+                            let date = viewModel.media.timestamp.dateValue()
                             Text("\(date.calenderTimeSinceNow())")
                                 .opacity(0.4)
                         }
@@ -61,8 +63,8 @@ struct StoryView: View {
                             .foregroundColor(.clear)
                             .contentShape(Rectangle())
                             .onTapGesture {
-                                if browseButtonClicked {
-                                    browseButtonClicked.toggle()
+                                if viewModel.browseButtonClicked {
+                                    viewModel.browseButtonClicked.toggle()
                                 } else {
                                     self.countTimer.advancePage(by: -1)
                                 }
@@ -71,8 +73,8 @@ struct StoryView: View {
                             .foregroundColor(.clear)
                             .contentShape(Rectangle())
                             .onTapGesture {
-                                if browseButtonClicked {
-                                    browseButtonClicked.toggle()
+                                if viewModel.browseButtonClicked {
+                                    viewModel.browseButtonClicked.toggle()
                                 } else {
                                     self.countTimer.advancePage(by: 1)
                                 }
@@ -86,14 +88,14 @@ struct StoryView: View {
             
             ZStack {
                 actionButton
-                    .opacity(browseButtonClicked ? 0 : 1)
+                    .opacity(viewModel.browseButtonClicked ? 0 : 1)
                 
                 browseView
-                    .opacity(browseButtonClicked ? 1 : 0)
+                    .opacity(viewModel.browseButtonClicked ? 1 : 0)
             }
         }
         .background(.black)
-        .confirmationDialog("", isPresented: $showMoreActionSheet, titleVisibility: .hidden) {
+        .confirmationDialog("", isPresented: $viewModel.showMoreActionSheet, titleVisibility: .hidden) {
             Button("Remove Highlight") {
             }
 
@@ -104,6 +106,11 @@ struct StoryView: View {
                 dismiss()
             }
         }
+        .onChange(of: viewModel.showMoreActionSheet, perform: { value in
+            if viewModel.showMoreActionSheet == false {
+                countTimer.start()
+            }
+        })
 
     }
 }
@@ -133,7 +140,7 @@ extension StoryView {
             
             // Send
             Button {
-                browseButtonClicked.toggle()
+                viewModel.browseButtonClicked.toggle()
             } label: {
                 VStack(spacing: 5) {
                     Image(systemName: "rectangle.portrait.and.arrow.right")
@@ -171,7 +178,9 @@ extension StoryView {
             
             // Edit
             Button {
-                showMoreActionSheet.toggle()
+                viewModel.showMoreActionSheet.toggle()
+                countTimer.cancel()
+//                print(Int(self.countTimer.progress)) // story index can use media.id and find selectedmedia
             } label: {
                 VStack(spacing: 5) {
                     Image(systemName: "ellipsis")
@@ -195,7 +204,7 @@ extension StoryView {
     
     var browseView: some View {
         HStack {
-            ForEach(Array(media.selectedMedia.enumerated()), id: \.element) { index, item in
+            ForEach(Array(viewModel.media.selectedMedia.enumerated()), id: \.element) { index, item in
                 KFImage(URL(string: item))
                     .resizable()
                     .frame(width: 40, height: 60)
