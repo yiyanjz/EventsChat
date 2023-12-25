@@ -15,6 +15,7 @@ struct StoryView: View {
     @ObservedObject var countTimer: CountTimer
     @Environment(\.dismiss) var dismiss
     @State var browseButtonClicked: Bool = false
+    @State var showMoreActionSheet: Bool = false
     
     var body: some View {
         VStack {
@@ -60,18 +61,20 @@ struct StoryView: View {
                             .foregroundColor(.clear)
                             .contentShape(Rectangle())
                             .onTapGesture {
-                                self.countTimer.advancePage(by: -1)
                                 if browseButtonClicked {
                                     browseButtonClicked.toggle()
+                                } else {
+                                    self.countTimer.advancePage(by: -1)
                                 }
                             }
                         Rectangle()
                             .foregroundColor(.clear)
                             .contentShape(Rectangle())
                             .onTapGesture {
-                                self.countTimer.advancePage(by: 1)
                                 if browseButtonClicked {
                                     browseButtonClicked.toggle()
+                                } else {
+                                    self.countTimer.advancePage(by: 1)
                                 }
                             }
                     }
@@ -90,6 +93,18 @@ struct StoryView: View {
             }
         }
         .background(.black)
+        .confirmationDialog("", isPresented: $showMoreActionSheet, titleVisibility: .hidden) {
+            Button("Remove Highlight") {
+            }
+
+            Button("Edit Highlight") {
+            }
+            
+            Button("Dimiss") {
+                dismiss()
+            }
+        }
+
     }
 }
 
@@ -135,9 +150,28 @@ extension StoryView {
                 }
             }
             
+            // Send
+            Button {
+                print("StoryView: Send button clicked")
+            } label: {
+                VStack(spacing: 5) {
+                    Image(systemName: "paperplane.fill")
+                        .font(.system(size:23))
+                        .frame(width: 30, height: 30)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.white, lineWidth: 1)
+                                .frame(width: 30, height: 30)
+                        )
+                    
+                    Text("Send")
+                        .font(.system(size:15))
+                }
+            }
+            
             // Edit
             Button {
-                print("StoryView: Edit Story button clicked")
+                showMoreActionSheet.toggle()
             } label: {
                 VStack(spacing: 5) {
                     Image(systemName: "ellipsis")
@@ -153,25 +187,6 @@ extension StoryView {
                         .font(.system(size:15))
                 }
             }
-            
-            // Clear
-            Button {
-                dismiss()
-            } label: {
-                VStack(spacing: 5) {
-                    Image(systemName: "person")
-                        .font(.system(size:27))
-                        .frame(width: 30, height: 30)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.white, lineWidth: 1)
-                                .frame(width: 30, height: 30)
-                        )
-                    
-                    Text("Dismiss")
-                        .font(.system(size:15))
-                }
-            }
         }
         .foregroundColor(.white)
         .padding(.horizontal)
@@ -180,11 +195,14 @@ extension StoryView {
     
     var browseView: some View {
         HStack {
-            ForEach(media.selectedMedia, id: \.self) { image in
-                KFImage(URL(string: image))
+            ForEach(Array(media.selectedMedia.enumerated()), id: \.element) { index, item in
+                KFImage(URL(string: item))
                     .resizable()
                     .frame(width: 40, height: 60)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .onTapGesture {
+                        self.countTimer.progress = CGFloat(index)
+                    }
             }
         }
         .foregroundColor(.white)
