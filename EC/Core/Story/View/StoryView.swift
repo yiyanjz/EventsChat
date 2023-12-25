@@ -21,7 +21,6 @@ struct StoryView: View {
                 ZStack(alignment: .top){
                     KFImage(URL(string: self.media.selectedMedia[Int(self.countTimer.progress)]))
                         .resizable()
-                        .edgesIgnoringSafeArea(.all)
                         .scaledToFill()
                         .frame(width: geometry.size.width,height: nil,alignment: .center)
                     
@@ -83,6 +82,7 @@ struct StoryView: View {
                     VStack(spacing: 5) {
                         Image(systemName: "square.grid.3x1.folder.fill.badge.plus")
                             .font(.system(size:20))
+                            .frame(width: 30, height: 30)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color.white, lineWidth: 1)
@@ -96,18 +96,19 @@ struct StoryView: View {
                 
                 // Send
                 Button {
-                    print("StoryView: Send Story button clicked")
+                    print("StoryView: Browse Story button clicked")
                 } label: {
                     VStack(spacing: 5) {
-                        Image(systemName: "paperplane")
+                        Image(systemName: "rectangle.portrait.and.arrow.right")
                             .font(.system(size:20))
+                            .frame(width: 30, height: 30)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color.white, lineWidth: 1)
                                     .frame(width: 30, height: 30)
                             )
                         
-                        Text("Send")
+                        Text("Browse")
                             .font(.system(size:15))
                     }
                 }
@@ -117,15 +118,16 @@ struct StoryView: View {
                     print("StoryView: Edit Story button clicked")
                 } label: {
                     VStack(spacing: 5) {
-                        Image(systemName: "pencil")
+                        Image(systemName: "ellipsis")
                             .font(.system(size:27))
+                            .frame(width: 30, height: 30)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color.white, lineWidth: 1)
                                     .frame(width: 30, height: 30)
                             )
                         
-                        Text("Edit")
+                        Text("More")
                             .font(.system(size:15))
                     }
                 }
@@ -137,13 +139,14 @@ struct StoryView: View {
                     VStack(spacing: 5) {
                         Image(systemName: "person")
                             .font(.system(size:27))
+                            .frame(width: 30, height: 30)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color.white, lineWidth: 1)
                                     .frame(width: 30, height: 30)
                             )
                         
-                        Text("dismiss")
+                        Text("Dismiss")
                             .font(.system(size:15))
                     }
                 }
