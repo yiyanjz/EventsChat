@@ -84,6 +84,20 @@ struct StoryService {
         }
     }
     
+    // observe profile story removed
+    static func observeStorysRemoved(forUid uid:String, completion: @escaping(String) -> Void) {
+        Firestore.firestore().collection("users").document(uid).collection("user-profile-storys").addSnapshotListener { (querySnapshot, error) in
+            guard let snapshot = querySnapshot else { return }
+
+            snapshot.documentChanges.forEach { documentChange in
+                if documentChange.type == .removed {
+                    let storyId = documentChange.document.documentID
+                    completion(storyId)
+                }
+            }
+        }
+    }
+    
     // delete story
     func deleteProfileStory(withUid uid: String, withStory story: Story, deleteStoryIndex: Int, completion: @escaping() -> Void) {
         var story = story

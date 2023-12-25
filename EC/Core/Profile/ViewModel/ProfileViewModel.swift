@@ -38,6 +38,7 @@ class ProfileViewModel: ObservableObject {
         observeAllPost()
         observeAllStory()
         observePostRemoved()
+        observeStoryRemoved()
         fetchUpdateGrabUserPostsAndFollowingUser()
         Task {
             try await fetchAllStory()
@@ -143,6 +144,13 @@ class ProfileViewModel: ObservableObject {
     func observeAllStory() {
         StoryService.observeStorysAdd(forUid: user.id) { story in
             self.profileStorys.append(story)
+        }
+    }
+    
+    // obser storys removed
+    func observeStoryRemoved() {
+        StoryService.observeStorysRemoved(forUid: user.id) { storyId in
+            self.profileStorys = self.profileStorys.filter({$0.id != storyId})
         }
     }
     

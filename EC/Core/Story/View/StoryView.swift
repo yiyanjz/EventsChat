@@ -97,7 +97,12 @@ struct StoryView: View {
         .background(.black)
         .confirmationDialog("", isPresented: $viewModel.showMoreActionSheet, titleVisibility: .hidden) {
             Button("Remove Highlight") {
-                viewModel.deleteProfileStory(withStory: viewModel.media, deleteStoryIndex: Int(self.countTimer.progress))
+                if viewModel.media.selectedMedia.count == 1 {
+                    viewModel.deleteProfileStory(withStory: viewModel.media, deleteStoryIndex: Int(self.countTimer.progress))
+                    dismiss()
+                } else {
+                    viewModel.deleteProfileStory(withStory: viewModel.media, deleteStoryIndex: Int(self.countTimer.progress))
+                }
             }
 
             Button("Edit Highlight") {
