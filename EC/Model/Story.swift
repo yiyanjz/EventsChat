@@ -15,3 +15,9 @@ struct Story:  Identifiable, Hashable, Encodable, Decodable {
     var selectedCover: String
     var timestamp: Timestamp
 }
+
+extension Story {
+    static var MOCK_STORY: [Story] = [
+        .init(id: UUID().uuidString, caption: "fsdf", selectedMedia: ["shin"], selectedCover: "shn", timestamp: Timestamp())
+    ]
+}

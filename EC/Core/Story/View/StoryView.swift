@@ -7,12 +7,14 @@
 
 import SwiftUI
 import Kingfisher
+import Firebase
 
 struct StoryView: View {
     var media: Story
     let user: User
     @ObservedObject var countTimer: CountTimer
     @Environment(\.dismiss) var dismiss
+    @State var browseButtonClicked: Bool = false
     
     var body: some View {
         VStack {
@@ -59,12 +61,18 @@ struct StoryView: View {
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 self.countTimer.advancePage(by: -1)
+                                if browseButtonClicked {
+                                    browseButtonClicked.toggle()
+                                }
                             }
                         Rectangle()
                             .foregroundColor(.clear)
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 self.countTimer.advancePage(by: 1)
+                                if browseButtonClicked {
+                                    browseButtonClicked.toggle()
+                                }
                             }
                     }
                 }
@@ -73,88 +81,121 @@ struct StoryView: View {
                 self.countTimer.start()
             }
             
-            // action buttons
-            HStack(spacing: 30) {
-                // create
-                Button {
-                    print("StoryView: Add new Story button clicked")
-                } label: {
-                    VStack(spacing: 5) {
-                        Image(systemName: "square.grid.3x1.folder.fill.badge.plus")
-                            .font(.system(size:20))
-                            .frame(width: 30, height: 30)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.white, lineWidth: 1)
-                                    .frame(width: 30, height: 30)
-                            )
-                        
-                        Text("Add")
-                            .font(.system(size:15))
-                    }
-                }
+            ZStack {
+                actionButton
+                    .opacity(browseButtonClicked ? 0 : 1)
                 
-                // Send
-                Button {
-                    print("StoryView: Browse Story button clicked")
-                } label: {
-                    VStack(spacing: 5) {
-                        Image(systemName: "rectangle.portrait.and.arrow.right")
-                            .font(.system(size:20))
-                            .frame(width: 30, height: 30)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.white, lineWidth: 1)
-                                    .frame(width: 30, height: 30)
-                            )
-                        
-                        Text("Browse")
-                            .font(.system(size:15))
-                    }
-                }
-                
-                // Edit
-                Button {
-                    print("StoryView: Edit Story button clicked")
-                } label: {
-                    VStack(spacing: 5) {
-                        Image(systemName: "ellipsis")
-                            .font(.system(size:27))
-                            .frame(width: 30, height: 30)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.white, lineWidth: 1)
-                                    .frame(width: 30, height: 30)
-                            )
-                        
-                        Text("More")
-                            .font(.system(size:15))
-                    }
-                }
-                
-                // Clear
-                Button {
-                    dismiss()
-                } label: {
-                    VStack(spacing: 5) {
-                        Image(systemName: "person")
-                            .font(.system(size:27))
-                            .frame(width: 30, height: 30)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.white, lineWidth: 1)
-                                    .frame(width: 30, height: 30)
-                            )
-                        
-                        Text("Dismiss")
-                            .font(.system(size:15))
-                    }
-                }
+                browseView
+                    .opacity(browseButtonClicked ? 1 : 0)
             }
-            .foregroundColor(.white)
-            .padding(.horizontal)
-            .frame(width:UIScreen.main.bounds.width, height: 70, alignment: .trailing)
         }
         .background(.black)
+    }
+}
+
+extension StoryView {
+    var actionButton: some View {
+        // action buttons
+        HStack(spacing: 30) {
+            // create
+            Button {
+                print("StoryView: Add new Story button clicked")
+            } label: {
+                VStack(spacing: 5) {
+                    Image(systemName: "square.grid.3x1.folder.fill.badge.plus")
+                        .font(.system(size:20))
+                        .frame(width: 30, height: 30)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.white, lineWidth: 1)
+                                .frame(width: 30, height: 30)
+                        )
+                    
+                    Text("Add")
+                        .font(.system(size:15))
+                }
+            }
+            
+            // Send
+            Button {
+                browseButtonClicked.toggle()
+            } label: {
+                VStack(spacing: 5) {
+                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                        .font(.system(size:20))
+                        .frame(width: 30, height: 30)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.white, lineWidth: 1)
+                                .frame(width: 30, height: 30)
+                        )
+                    
+                    Text("Browse")
+                        .font(.system(size:15))
+                }
+            }
+            
+            // Edit
+            Button {
+                print("StoryView: Edit Story button clicked")
+            } label: {
+                VStack(spacing: 5) {
+                    Image(systemName: "ellipsis")
+                        .font(.system(size:27))
+                        .frame(width: 30, height: 30)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.white, lineWidth: 1)
+                                .frame(width: 30, height: 30)
+                        )
+                    
+                    Text("More")
+                        .font(.system(size:15))
+                }
+            }
+            
+            // Clear
+            Button {
+                dismiss()
+            } label: {
+                VStack(spacing: 5) {
+                    Image(systemName: "person")
+                        .font(.system(size:27))
+                        .frame(width: 30, height: 30)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.white, lineWidth: 1)
+                                .frame(width: 30, height: 30)
+                        )
+                    
+                    Text("Dismiss")
+                        .font(.system(size:15))
+                }
+            }
+        }
+        .foregroundColor(.white)
+        .padding(.horizontal)
+        .frame(width:UIScreen.main.bounds.width, height: 70, alignment: .trailing)
+    }
+    
+    var browseView: some View {
+        HStack {
+            ForEach(media.selectedMedia, id: \.self) { image in
+                KFImage(URL(string: image))
+                    .resizable()
+                    .frame(width: 40, height: 60)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+        }
+        .foregroundColor(.white)
+        .padding(.horizontal)
+        .frame(width:UIScreen.main.bounds.width, height: 70, alignment: .trailing)
+    }
+}
+
+struct StoryView_Previews: PreviewProvider {
+    static var previews: some View {
+        let countTime = CountTimer(items: 1, interval: 4.0)
+        StoryView(media: Story.MOCK_STORY[0], user: User.MOCK_USERS[0], countTimer: countTime)
     }
 }

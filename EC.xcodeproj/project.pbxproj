@@ -113,7 +113,6 @@
 		17FEC51C2B3905290073C7D7 /* testing55.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FEC51B2B3905290073C7D7 /* testing55.swift */; };
 		17FEC5212B39158E0073C7D7 /* Mantis in Frameworks */ = {isa = PBXBuildFile; productRef = 17FEC5202B39158E0073C7D7 /* Mantis */; };
 		17FEC5232B391AC80073C7D7 /* ImageEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FEC5222B391AC80073C7D7 /* ImageEditor.swift */; };
-		17FEC5252B39354D0073C7D7 /* testing666.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FEC5242B39354D0073C7D7 /* testing666.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -218,7 +217,6 @@
 		17FEC5192B353E520073C7D7 /* testing4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testing4.swift; sourceTree = "<group>"; };
 		17FEC51B2B3905290073C7D7 /* testing55.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testing55.swift; sourceTree = "<group>"; };
 		17FEC5222B391AC80073C7D7 /* ImageEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageEditor.swift; sourceTree = "<group>"; };
-		17FEC5242B39354D0073C7D7 /* testing666.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testing666.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -604,7 +602,6 @@
 				17F6EAA62B0B1FC8005C9D9F /* test3.swift */,
 				17FEC5192B353E520073C7D7 /* testing4.swift */,
 				17FEC51B2B3905290073C7D7 /* testing55.swift */,
-				17FEC5242B39354D0073C7D7 /* testing666.swift */,
 			);
 			path = Test;
 			sourceTree = "<group>";
@@ -915,7 +912,6 @@
 				177B18DC2B254388007081B3 /* CommentsViewModel.swift in Sources */,
 				177FBA1C2AF485FA008C2175 /* SettingView.swift in Sources */,
 				178D64922B1815A3008F38FD /* StoryService.swift in Sources */,
-				17FEC5252B39354D0073C7D7 /* testing666.swift in Sources */,
 				178BC96B2AF723C300330BBC /* test2.swift in Sources */,
 				17F4BC2D2B030C730078A088 /* AllLikesView.swift in Sources */,
 				1748FBF32B06BD8F005B1DFF /* Search.swift in Sources */,
