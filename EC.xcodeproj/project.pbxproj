@@ -112,6 +112,8 @@
 		17F8337A2B16C468009205FF /* OtherUserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F833792B16C468009205FF /* OtherUserProfileView.swift */; };
 		17FEC51A2B353E520073C7D7 /* testing4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FEC5192B353E520073C7D7 /* testing4.swift */; };
 		17FEC51C2B3905290073C7D7 /* testing55.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FEC51B2B3905290073C7D7 /* testing55.swift */; };
+		17FEC5212B39158E0073C7D7 /* Mantis in Frameworks */ = {isa = PBXBuildFile; productRef = 17FEC5202B39158E0073C7D7 /* Mantis */; };
+		17FEC5232B391AC80073C7D7 /* ImageEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FEC5222B391AC80073C7D7 /* ImageEditor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -216,6 +218,7 @@
 		17F833792B16C468009205FF /* OtherUserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherUserProfileView.swift; sourceTree = "<group>"; };
 		17FEC5192B353E520073C7D7 /* testing4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testing4.swift; sourceTree = "<group>"; };
 		17FEC51B2B3905290073C7D7 /* testing55.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testing55.swift; sourceTree = "<group>"; };
+		17FEC5222B391AC80073C7D7 /* ImageEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageEditor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -223,6 +226,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				17FEC5212B39158E0073C7D7 /* Mantis in Frameworks */,
 				177FB9EC2AF476A8008C2175 /* FirebaseAuth in Frameworks */,
 				177FB9F22AF476A8008C2175 /* FirebaseStorage in Frameworks */,
 				177FB9EE2AF476A8008C2175 /* FirebaseFirestore in Frameworks */,
@@ -688,6 +692,7 @@
 			isa = PBXGroup;
 			children = (
 				178D648D2B1801D2008F38FD /* CounterTime.swift */,
+				17FEC5222B391AC80073C7D7 /* ImageEditor.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -771,6 +776,7 @@
 				177FB9EF2AF476A8008C2175 /* FirebaseFirestoreSwift */,
 				177FB9F12AF476A8008C2175 /* FirebaseStorage */,
 				177FBA022AF47C6B008C2175 /* Kingfisher */,
+				17FEC5202B39158E0073C7D7 /* Mantis */,
 			);
 			productName = EC;
 			productReference = 177FB9AA2AF46237008C2175 /* EC.app */;
@@ -803,6 +809,7 @@
 			packageReferences = (
 				177FB9EA2AF476A8008C2175 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				177FBA012AF47C6B008C2175 /* XCRemoteSwiftPackageReference "kingfisher" */,
+				17FEC51F2B39158E0073C7D7 /* XCRemoteSwiftPackageReference "Mantis" */,
 			);
 			productRefGroup = 177FB9AB2AF46237008C2175 /* Products */;
 			projectDirPath = "";
@@ -867,6 +874,7 @@
 				177FB9DD2AF471E3008C2175 /* LoginButtonModifer.swift in Sources */,
 				1782EA502AF6ECAD006867FD /* PreviewPostViewModel.swift in Sources */,
 				1785C83C2AFD737F00B2B927 /* SearchView.swift in Sources */,
+				17FEC5232B391AC80073C7D7 /* ImageEditor.swift in Sources */,
 				17E698A02B048048006799E2 /* LikeAnimation.swift in Sources */,
 				177FB9DF2AF472D7008C2175 /* LoginWithEmailView.swift in Sources */,
 				177FBA102AF47D81008C2175 /* RoundedShape.swift in Sources */,
@@ -1161,6 +1169,14 @@
 				minimumVersion = 7.0.0;
 			};
 		};
+		17FEC51F2B39158E0073C7D7 /* XCRemoteSwiftPackageReference "Mantis" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/guoyingtao/Mantis.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.7.5;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1188,6 +1204,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 177FBA012AF47C6B008C2175 /* XCRemoteSwiftPackageReference "kingfisher" */;
 			productName = Kingfisher;
+		};
+		17FEC5202B39158E0073C7D7 /* Mantis */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 17FEC51F2B39158E0073C7D7 /* XCRemoteSwiftPackageReference "Mantis" */;
+			productName = Mantis;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

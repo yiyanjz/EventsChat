@@ -17,44 +17,44 @@ struct testing4: View {
     
     var body: some View {
         VStack {
-            GeometryReader { geometry in
-                
-                ZStack {
-                    Image("shin")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(maxWidth: geometry.size.width, maxHeight: geometry.size.height)
-                        .offset(x: self.currentPosition.width, y: self.currentPosition.height)
-
-                    RoundedRectangle(cornerRadius: 25)
-                        .fill(Color.black.opacity(0.3))
-                        .frame(width: 200 , height: 200)
-                        .overlay(RoundedRectangle(cornerRadius: 25).stroke(Color.white, lineWidth: 3))
-                        .offset(x: screenWidth)
-                }
-                .clipShape(
-                    CropFrame(isActive:clipped)
-                )
-                .gesture(DragGesture()
-                    .onChanged { value in
-                        self.currentPosition = CGSize(width: value.translation.width + self.newPosition.width, height: value.translation.height + self.newPosition.height)
-                }
-                .onEnded { value in
-                    self.currentPosition = CGSize(width: value.translation.width + self.newPosition.width, height: value.translation.height + self.newPosition.height)
-
-                    self.newPosition = self.currentPosition
-                })
-            }
-            .ignoresSafeArea()
-            
-            Button (action : { self.clipped.toggle() }) {
-                Text("Crop Image")
-                    .padding(.all, 10)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .shadow(color: .gray, radius: 1)
-                    .padding(.top, 50)
-            }
+//            GeometryReader { geometry in
+//                
+//                ZStack {
+//                    Image("shin")
+//                        .resizable()
+//                        .scaledToFill()
+//                        .frame(maxWidth: geometry.size.width, maxHeight: geometry.size.height)
+//                        .offset(x: self.currentPosition.width, y: self.currentPosition.height)
+//
+//                    RoundedRectangle(cornerRadius: 25)
+//                        .fill(Color.black.opacity(0.3))
+//                        .frame(width: 200 , height: 200)
+//                        .overlay(RoundedRectangle(cornerRadius: 25).stroke(Color.white, lineWidth: 3))
+//                        .offset(x: screenWidth)
+//                }
+//                .clipShape(
+//                    CropFrame(isActive:clipped)
+//                )
+//                .gesture(DragGesture()
+//                    .onChanged { value in
+//                        self.currentPosition = CGSize(width: value.translation.width + self.newPosition.width, height: value.translation.height + self.newPosition.height)
+//                }
+//                .onEnded { value in
+//                    self.currentPosition = CGSize(width: value.translation.width + self.newPosition.width, height: value.translation.height + self.newPosition.height)
+//
+//                    self.newPosition = self.currentPosition
+//                })
+//            }
+//            .ignoresSafeArea()
+//            
+//            Button (action : { self.clipped.toggle() }) {
+//                Text("Crop Image")
+//                    .padding(.all, 10)
+//                    .background(Color.blue)
+//                    .foregroundColor(.white)
+//                    .shadow(color: .gray, radius: 1)
+//                    .padding(.top, 50)
+//            }
         }
 
     }

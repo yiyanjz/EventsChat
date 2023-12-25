@@ -26,14 +26,18 @@ struct StoryService {
                 let videoData = try Data(contentsOf: itemUrl)
                 guard let videoUrl = try await VideoUploader.uploadVideo(withData:videoData, path: .postVideo) else {return}
                 mediaUrls.append(videoUrl)
-                if item == selectedCover {
+                if item.id == selectedCover.id {
                     selectedMediaUrl = videoUrl
                 }
             }else {
-                guard let imageUrl = try await ImageUploader.uploadImage(image: item.uiImage, path: .postImages) else {return}
-                mediaUrls.append(imageUrl)
-                if item == selectedCover {
-                    selectedMediaUrl = imageUrl
+                if item.id == selectedCover.id {
+                    guard let imageCoverUrl = try await ImageUploader.uploadImage(image: selectedCover.uiImage, path: .postImages) else {return}
+                    guard let imageUrl = try await ImageUploader.uploadImage(image: item.uiImage, path: .postImages) else {return}
+                    mediaUrls.append(imageUrl)
+                    selectedMediaUrl = imageCoverUrl
+                } else {
+                    guard let imageUrl = try await ImageUploader.uploadImage(image: item.uiImage, path: .postImages) else {return}
+                    mediaUrls.append(imageUrl)
                 }
             }
         }

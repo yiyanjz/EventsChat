@@ -22,7 +22,7 @@ class StoryTitleViewModel: ObservableObject {
         self.selectedStoryCoverImage = selectedMedia.first
     }
     
-    func uploadProfileStory() async throws {
+    func uploadProfileStory(selectedStoryCoverImage: LibrayPhotos?) async throws {
         if let selectedStoryCoverImage = selectedStoryCoverImage {
             try await service.uploadProfileStory(selectedMedia: selectedMedia, selectedCover: selectedStoryCoverImage, caption: storyTitle)
         }

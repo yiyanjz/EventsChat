@@ -26,9 +26,12 @@ struct StoryTitleView: View {
             bodyView
             
             Spacer()
+            
+            imageSelectionView
         }
         .fullScreenCover(isPresented: $viewModel.showEditCover) {
-            StoryCoverEditView(images: viewModel.selectedMedia, selectedImage: $viewModel.selectedStoryCoverImage)
+            ImageEditor(theImage: $viewModel.selectedStoryCoverImage, isShowing: $viewModel.showEditCover)
+                .ignoresSafeArea()
         }
     }
 }
@@ -57,7 +60,7 @@ extension StoryTitleView {
             Spacer()
             
             Button {
-                Task { try await viewModel.uploadProfileStory() }
+                Task { try await viewModel.uploadProfileStory(selectedStoryCoverImage: viewModel.selectedStoryCoverImage) }
                 dismiss()
                 viewModel.completStory.toggle()
             } label: {
@@ -90,5 +93,32 @@ extension StoryTitleView {
                 .multilineTextAlignment(.center)
                 
         }
+    }
+    
+    var imageSelectionView: some View {
+        HStack {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    ForEach(viewModel.selectedMedia, id: \.self) { librayPhoto in
+                        Button {
+                            viewModel.selectedStoryCoverImage = librayPhoto
+                        } label: {
+                            Image(uiImage: librayPhoto.uiImage)
+                                .resizable()
+                                .frame(width: 70, height: 70)
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                                .overlay(
+                                    librayPhoto == viewModel.selectedStoryCoverImage
+                                    ? RoundedRectangle(cornerRadius: 16)
+                                        .stroke(.white, lineWidth: 2)
+                                    : RoundedRectangle(cornerRadius: 16)
+                                        .stroke(.clear, lineWidth: 2)
+                                )
+                        }
+                    }
+                }
+            }
+        }
+        .padding(.horizontal)
     }
 }
