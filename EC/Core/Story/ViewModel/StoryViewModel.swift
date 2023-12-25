@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Firebase
 
 class StoryViewModel: ObservableObject {
     @Published var browseButtonClicked: Bool = false
@@ -17,5 +18,12 @@ class StoryViewModel: ObservableObject {
     init(media: Story, user: User) {
         self.media = media
         self.user = user
+    }
+    
+    // delete story
+    func deleteProfileStory(withStory story: Story, deleteStoryIndex: Int) {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        StoryService().deleteProfileStory(withUid: uid, withStory: story, deleteStoryIndex: deleteStoryIndex) {
+        }
     }
 }

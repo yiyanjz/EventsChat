@@ -83,4 +83,20 @@ struct StoryService {
             }
         }
     }
+    
+    // delete story
+    func deleteProfileStory(withUid uid: String, withStory story: Story, deleteStoryIndex: Int, completion: @escaping() -> Void) {
+        var story = story
+        let storyRef = Firestore.firestore().collection("storys").document(story.id)
+        story.selectedMedia.remove(at: deleteStoryIndex)
+        
+        if story.selectedMedia.count > 0 {
+            Firestore.firestore().collection("storys").document(story.id).updateData(["selectedMedia": story.selectedMedia]) { _ in
+            }
+        } else {
+            storyRef.delete()
+            let userStoryRef = Firestore.firestore().collection("users").document(uid).collection("user-profile-storys").document(story.id)
+            userStoryRef.delete()
+        }
+    }
 }

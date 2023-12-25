@@ -97,6 +97,7 @@ struct StoryView: View {
         .background(.black)
         .confirmationDialog("", isPresented: $viewModel.showMoreActionSheet, titleVisibility: .hidden) {
             Button("Remove Highlight") {
+                viewModel.deleteProfileStory(withStory: viewModel.media, deleteStoryIndex: Int(self.countTimer.progress))
             }
 
             Button("Edit Highlight") {
@@ -180,7 +181,6 @@ extension StoryView {
             Button {
                 viewModel.showMoreActionSheet.toggle()
                 countTimer.cancel()
-//                print(Int(self.countTimer.progress)) // story index can use media.id and find selectedmedia
             } label: {
                 VStack(spacing: 5) {
                     Image(systemName: "ellipsis")
