@@ -122,7 +122,7 @@ struct StoryView: View {
             self.countTimer.max = value.count
         })
         .fullScreenCover(isPresented: $viewModel.showEditStoryView) {
-            StoryEditView()
+            StoryEditView(media: viewModel.media)
         }
     }
 }

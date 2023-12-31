@@ -6,12 +6,17 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct StoryEditView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(\.colorScheme) var colorScheme
     @State private var selectedFilter: StoryFilter = .stories
-    @StateObject var viewModel = StoryEditViewModel()
+    @StateObject var viewModel: StoryEditViewModel
+    
+    init(media: Story) {
+        self._viewModel = StateObject(wrappedValue: StoryEditViewModel(media: media))
+    }
     
     // grid Item Structure
     private let gridItem: [GridItem] = [
@@ -38,21 +43,14 @@ struct StoryEditView: View {
             
             Spacer()
         }
-        .onAppear {
-            DispatchQueue.main.async{
-                viewModel.getAlbum()
-            }
-        }
-        .onChange(of: viewModel.selectAlbum) { newValue in
-            DispatchQueue.main.async{
-                viewModel.getImages()
-            }
+        .fullScreenCover(isPresented: $viewModel.showImageEditor) {
+            ImageEditor(theImage: $viewModel.selectedImage, isShowing: $viewModel.showImageEditor)
         }
     }
 }
 
 #Preview {
-    StoryEditView()
+    StoryEditView(media: Story.MOCK_STORY[0])
 }
 
 extension StoryEditView {
@@ -90,15 +88,29 @@ extension StoryEditView {
     var bodyView: some View {
         VStack {
             Button {
+                viewModel.showImageEditor.toggle()
+                if !viewModel.selectedMedia.isEmpty {
+                    viewModel.selectedImage = viewModel.selectedMedia.first
+                }
             } label: {
                 VStack {
-                    Image(systemName: "person.circle.fill")
-                        .resizable()
-                        .frame(width: 100, height: 100)
-                        .clipShape(Circle())
-                        .foregroundColor(Color(.systemGray4))
-                    
-                    Text("Edit Cover")
+                    if let firstImage = viewModel.selectedImage?.uiImage {
+                        Image(uiImage: firstImage)
+                            .resizable()
+                            .frame(width: 100, height: 100)
+                            .clipShape(Circle())
+                            .foregroundColor(Color(.systemGray4))
+                        
+                        Text("Edit Cover")
+                    } else {
+                        KFImage(URL(string: viewModel.story.selectedCover))
+                            .resizable()
+                            .frame(width: 100, height: 100)
+                            .clipShape(Circle())
+                            .foregroundColor(Color(.systemGray4))
+                        
+                        Text("Edit Cover")
+                    }
                 }
             }
         }
@@ -110,7 +122,7 @@ extension StoryEditView {
             Text("Story Name: ")
                 .font(.system(size: 15))
             
-            TextField("Story Title", text: $viewModel.storyTitle)
+            TextField("Story Title", text: $viewModel.story.caption)
                 .font(.system(size: 15))
                 .multilineTextAlignment(.leading)
         }
@@ -162,9 +174,9 @@ extension StoryEditView {
                             .frame(width: UIScreen.main.bounds.width/3, height: 200)
                             .overlay(
                                 Button {
-                                    if viewModel.allList[index].selected {
-                                        viewModel.allList[index].selected.toggle()
-                                        let media = viewModel.allList[index]
+                                    if viewModel.selectedMedia[index].selected {
+                                        viewModel.selectedMedia[index].selected.toggle()
+                                        let media = viewModel.selectedMedia[index]
                                         if viewModel.selectedMedia.contains(where: { key in key.id == media.id }) {
                                             viewModel.selectedMedia.removeAll(where: { key in key.id == media.id })
                                         }
@@ -196,17 +208,6 @@ extension StoryEditView {
                             .frame(width: UIScreen.main.bounds.width/3, height: 200)
                             .overlay(
                                 Button {
-                                    if viewModel.allList[index].selected == false {
-                                        viewModel.allList[index].selected.toggle()
-                                        let media = viewModel.allList[index]
-                                        viewModel.selectedMedia.append(media)
-                                    } else if viewModel.allList[index].selected {
-                                        viewModel.allList[index].selected.toggle()
-                                        let media = viewModel.allList[index]
-                                        if viewModel.selectedMedia.contains(where: { key in key.id == media.id }) {
-                                            viewModel.selectedMedia.removeAll(where: { key in key.id == media.id })
-                                        }
-                                    }
                                 } label: {
                                     Image(systemName: item.selected ? "checkmark.seal.fill" : "checkmark.seal")
                                         .font(.title3)
