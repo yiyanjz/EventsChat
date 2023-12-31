@@ -18,6 +18,7 @@ enum TabBarSelection {
 struct TabBarView: View {
     @State var selectedFilted: TabBarSelection = .feed
     @State var showTabBar: Bool = true
+    @State var uploadButtonPressed: Bool = false
     let user: User
     
     init(user: User){
@@ -46,6 +47,16 @@ struct TabBarView: View {
             
             if showTabBar {
                 TabBar
+            }
+        }
+        .confirmationDialog("", isPresented: $uploadButtonPressed, titleVisibility: .hidden) {
+            Button("Upload Story") {
+                
+            }
+
+            Button("Upload Post") {
+                selectedFilted = .upload
+                showTabBar = false
             }
         }
     }
@@ -85,8 +96,7 @@ extension TabBarView {
             
             // plus button
             Button {
-                selectedFilted = .upload
-                showTabBar = false
+                uploadButtonPressed.toggle()
             } label: {
                 Image(systemName: "plus")
                     .font(.system(size: 18))
