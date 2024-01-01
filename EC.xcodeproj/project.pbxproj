@@ -102,6 +102,12 @@
 		17A7E8A22B25364800B4701C /* ShareNewGroupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A7E8A12B25364800B4701C /* ShareNewGroupViewModel.swift */; };
 		17A7E8A62B253F9500B4701C /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A7E8A52B253F9500B4701C /* Comment.swift */; };
 		17B710D12B047F88003BFF67 /* CommentsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B710D02B047F88003BFF67 /* CommentsCell.swift */; };
+		17C276912B4265490057A6E9 /* CameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C276902B4265490057A6E9 /* CameraService.swift */; };
+		17C276942B4265C30057A6E9 /* PhotoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C276932B4265C30057A6E9 /* PhotoModel.swift */; };
+		17C276962B4267850057A6E9 /* PhotoCaptureProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C276952B4267850057A6E9 /* PhotoCaptureProcessor.swift */; };
+		17C276982B4268FE0057A6E9 /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C276972B4268FE0057A6E9 /* CameraViewModel.swift */; };
+		17C2769A2B4269410057A6E9 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C276992B4269410057A6E9 /* CameraView.swift */; };
+		17C2769C2B426AF50057A6E9 /* ImageResizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C2769B2B426AF50057A6E9 /* ImageResizer.swift */; };
 		17D0F89C2AFB315D00AEFC41 /* UploadViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D0F89B2AFB315D00AEFC41 /* UploadViewModel.swift */; };
 		17D73E572B058E9300D844FC /* PostDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D73E562B058E9300D844FC /* PostDetailView.swift */; };
 		17D73E5A2B05BF0F00D844FC /* PostDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D73E592B05BF0F00D844FC /* PostDetailViewModel.swift */; };
@@ -211,6 +217,12 @@
 		17A7E8A12B25364800B4701C /* ShareNewGroupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareNewGroupViewModel.swift; sourceTree = "<group>"; };
 		17A7E8A52B253F9500B4701C /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		17B710D02B047F88003BFF67 /* CommentsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsCell.swift; sourceTree = "<group>"; };
+		17C276902B4265490057A6E9 /* CameraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraService.swift; sourceTree = "<group>"; };
+		17C276932B4265C30057A6E9 /* PhotoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PhotoModel.swift; path = EC/Service/PhotoModel.swift; sourceTree = SOURCE_ROOT; };
+		17C276952B4267850057A6E9 /* PhotoCaptureProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PhotoCaptureProcessor.swift; path = EC/Service/PhotoCaptureProcessor.swift; sourceTree = SOURCE_ROOT; };
+		17C276972B4268FE0057A6E9 /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
+		17C276992B4269410057A6E9 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		17C2769B2B426AF50057A6E9 /* ImageResizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageResizer.swift; sourceTree = "<group>"; };
 		17D0F89B2AFB315D00AEFC41 /* UploadViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadViewModel.swift; sourceTree = "<group>"; };
 		17D73E562B058E9300D844FC /* PostDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailView.swift; sourceTree = "<group>"; };
 		17D73E592B05BF0F00D844FC /* PostDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewModel.swift; sourceTree = "<group>"; };
@@ -323,6 +335,7 @@
 			isa = PBXGroup;
 			children = (
 				177FB9C22AF462E6008C2175 /* Authentication */,
+				17C2768C2B4264DC0057A6E9 /* Camera */,
 				177B18E12B267168007081B3 /* Comment */,
 				177FB9C32AF462FA008C2175 /* Feed */,
 				177FB9C42AF46304008C2175 /* Profile */,
@@ -373,6 +386,7 @@
 				1748FBF42B06BDBE005B1DFF /* SearchService.swift */,
 				178D64912B1815A3008F38FD /* StoryService.swift */,
 				177B18DD2B2545A3007081B3 /* CommentService.swift */,
+				17C276902B4265490057A6E9 /* CameraService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -736,6 +750,42 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		17C2768C2B4264DC0057A6E9 /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				17C276922B4265B70057A6E9 /* Extension */,
+				17C2768E2B4265270057A6E9 /* View */,
+				17C2768D2B4265220057A6E9 /* ViewModel */,
+			);
+			path = Camera;
+			sourceTree = "<group>";
+		};
+		17C2768D2B4265220057A6E9 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				17C276972B4268FE0057A6E9 /* CameraViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		17C2768E2B4265270057A6E9 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				17C276992B4269410057A6E9 /* CameraView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		17C276922B4265B70057A6E9 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				17C276932B4265C30057A6E9 /* PhotoModel.swift */,
+				17C276952B4267850057A6E9 /* PhotoCaptureProcessor.swift */,
+				17C2769B2B426AF50057A6E9 /* ImageResizer.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
 		17D4A4552B25185C00F12267 /* Share */ = {
 			isa = PBXGroup;
 			children = (
@@ -859,6 +909,7 @@
 				176EF4B02B2ECFC80058ADD8 /* LocationView.swift in Sources */,
 				177FBA0A2AF47CCF008C2175 /* ProfileViewModel.swift in Sources */,
 				171FD51C2AFEFE6B00E701A4 /* SearchFilter.swift in Sources */,
+				17C276962B4267850057A6E9 /* PhotoCaptureProcessor.swift in Sources */,
 				177FBA1F2AF48635008C2175 /* SettingFilter.swift in Sources */,
 				178D64942B181846008F38FD /* StorySelectMediaView.swift in Sources */,
 				177FBA082AF47CAD008C2175 /* ProfileFilter.swift in Sources */,
@@ -885,6 +936,7 @@
 				1759604F2B04338C00203003 /* CommentsView.swift in Sources */,
 				177FB9DD2AF471E3008C2175 /* LoginButtonModifer.swift in Sources */,
 				1782EA502AF6ECAD006867FD /* PreviewPostViewModel.swift in Sources */,
+				17C276912B4265490057A6E9 /* CameraService.swift in Sources */,
 				1785C83C2AFD737F00B2B927 /* SearchView.swift in Sources */,
 				17FEC5232B391AC80073C7D7 /* ImageEditor.swift in Sources */,
 				17E698A02B048048006799E2 /* LikeAnimation.swift in Sources */,
@@ -898,12 +950,14 @@
 				172F593A2B2FA04C00252B1C /* MentionView.swift in Sources */,
 				172F593C2B2FA42400252B1C /* MentionViewModel.swift in Sources */,
 				177FBA0C2AF47D09008C2175 /* CircularProfileImageView.swift in Sources */,
+				17C276982B4268FE0057A6E9 /* CameraViewModel.swift in Sources */,
 				177FB9FA2AF47899008C2175 /* User.swift in Sources */,
 				177B18E72B26FF94007081B3 /* ProfileInfoViewModel.swift in Sources */,
 				179664412AF59645001CCED9 /* PreviewImageView.swift in Sources */,
 				17B710D12B047F88003BFF67 /* CommentsCell.swift in Sources */,
 				177FB9F82AF4786A008C2175 /* AuthService.swift in Sources */,
 				171836A42B191005000ACF94 /* StoryTitleView.swift in Sources */,
+				17C2769C2B426AF50057A6E9 /* ImageResizer.swift in Sources */,
 				17F4BC2B2B02F8940078A088 /* FollowViewModel.swift in Sources */,
 				177FBA282AF4882F008C2175 /* Post.swift in Sources */,
 				177FBA002AF4798C008C2175 /* ContentViewModel.swift in Sources */,
@@ -945,6 +999,8 @@
 				177FB9E12AF473C0008C2175 /* LoginViewModel.swift in Sources */,
 				17D0F89C2AFB315D00AEFC41 /* UploadViewModel.swift in Sources */,
 				17FEC51A2B353E520073C7D7 /* testing4.swift in Sources */,
+				17C2769A2B4269410057A6E9 /* CameraView.swift in Sources */,
+				17C276942B4265C30057A6E9 /* PhotoModel.swift in Sources */,
 				17A7E8A22B25364800B4701C /* ShareNewGroupViewModel.swift in Sources */,
 				179664432AF5A079001CCED9 /* PreviewVideoView.swift in Sources */,
 				17F6EAA52B0AE6BE005C9D9F /* SearchResultViewModel.swift in Sources */,

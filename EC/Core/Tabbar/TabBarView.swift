@@ -19,6 +19,7 @@ struct TabBarView: View {
     @State var selectedFilted: TabBarSelection = .feed
     @State var showTabBar: Bool = true
     @State var uploadButtonPressed: Bool = false
+    @State var showCameraView: Bool = false
     let user: User
     
     init(user: User){
@@ -51,7 +52,7 @@ struct TabBarView: View {
         }
         .confirmationDialog("", isPresented: $uploadButtonPressed, titleVisibility: .hidden) {
             Button("Upload Story") {
-                
+                showCameraView.toggle()
             }
 
             Button("Upload Post") {
@@ -59,6 +60,9 @@ struct TabBarView: View {
                 showTabBar = false
             }
         }
+        .fullScreenCover(isPresented: $showCameraView, content: {
+            CameraView()
+        })
     }
 }
 
