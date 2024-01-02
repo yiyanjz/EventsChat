@@ -25,6 +25,10 @@ class CameraViewModel: NSObject,ObservableObject,AVCaptureFileOutputRecordingDel
     // preview
     @Published var previewURL: URL?
     @Published var showPreview: Bool = false
+    // top progress bar
+    @Published var recordedDuration: CGFloat = 0
+    // your own timing
+    @Published var maxDuration: CGFloat = 10
     
     override init() {
         super .init()
@@ -168,6 +172,21 @@ class CameraViewModel: NSObject,ObservableObject,AVCaptureFileOutputRecordingDel
         exporter.outputURL = tempURL
         exporter.videoComposition = videoComposition
         completion(exporter)
+    }
+    
+    // thumbnail for videos
+    func generateThumbnail(path: URL) -> UIImage? {
+        do {
+            let asset = AVURLAsset(url: path, options: nil)
+            let imgGenerator = AVAssetImageGenerator(asset: asset)
+            imgGenerator.appliesPreferredTrackTransform = true
+            let cgImage = try imgGenerator.copyCGImage(at: CMTimeMake(value: 0, timescale: 1), actualTime: nil)
+            let thumbnail = UIImage(cgImage: cgImage)
+            return thumbnail
+        } catch let error {
+            print("*** Error generating thumbnail: \(error.localizedDescription)")
+            return nil
+        }
     }
 }
 

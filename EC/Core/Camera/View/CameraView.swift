@@ -27,14 +27,20 @@ struct CameraView: View {
                 .onTapGesture {
                     model.capturePhoto()
                 }
-                .onLongPressGesture(minimumDuration: 0.1) {
-                    print("Long tap")
-                    if model.isRecording {
-                        model.stopRecording()
-                    } else {
-                        model.startRecording()
-                    }
-                }
+                .gesture(
+                    LongPressGesture(minimumDuration: 0.5) /// 2.
+                                .onEnded { _ in /// 0.5 seconds is over, start recording
+                                    if model.isRecording == false {
+                                        model.startRecording()
+                                    }
+                                }
+                                .sequenced(before: DragGesture(minimumDistance: 0)) /// 3.
+                                .onEnded { _ in /// finger lifted, stop recording
+                                    if model.isRecording == true {
+                                        model.stopRecording()
+                                    }
+                                }
+                )
         })
     }
     
@@ -61,21 +67,23 @@ struct CameraView: View {
         }
         .frame(maxWidth: .infinity, alignment:.trailing)
         .padding(.bottom)
-//        .opacity((model.previewURLRef == nil && model.recordedURLsRef.isEmpty) || model.isRecordingRef ? 0 : 1)
-//        Group {
-//            if model.photo != nil {
-//                Image(uiImage: model.photo.image!)
-//                    .resizable()
-//                    .aspectRatio(contentMode: .fill)
-//                    .frame(width: 60, height: 60)
-//                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-//                
-//            } else {
-//                RoundedRectangle(cornerRadius: 10)
-//                    .frame(width: 60, height: 60, alignment: .center)
-//                    .foregroundColor(.black)
-//            }
-//        }
+    }
+    
+    var thumbnailPhoto: some View {
+        Group {
+            if model.photo != nil {
+                Image(uiImage: model.photo.image!)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 60, height: 60)
+                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+
+            } else {
+                RoundedRectangle(cornerRadius: 10)
+                    .frame(width: 60, height: 60, alignment: .center)
+                    .foregroundColor(.black)
+            }
+        }
     }
     
     var flipCameraButton: some View {
@@ -93,8 +101,21 @@ struct CameraView: View {
     
     var body: some View {
         GeometryReader { reader in
+            let size = reader.size
+
             ZStack {
                 Color.black.edgesIgnoringSafeArea(.all)
+                
+                ZStack(alignment: .leading) {
+                    Rectangle()
+                        .fill(.black.opacity(0.25))
+                    
+                    Rectangle()
+                        .fill(Color(uiColor: .red))
+                        .frame(width: size.width * (model.recordedDuration / model.maxDuration))
+                }
+                .frame(height: 10)
+                .frame(maxHeight: .infinity, alignment: .top)
                 
                 VStack {
                     Button(action: {
@@ -135,6 +156,10 @@ struct CameraView: View {
                     
                     
                     HStack {
+                        thumbnailPhoto
+                        
+                        Spacer()
+                        
                         capturedPhotoThumbnail
                         
                         Spacer()
@@ -155,6 +180,16 @@ struct CameraView: View {
                         .transition(.move(edge: .trailing))
                 }
             })
+            .onReceive(Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()) { _ in
+                if model.recordedDuration <= model.maxDuration && model.isRecording {
+                    model.recordedDuration += 0.01
+                }
+                
+                if model.recordedDuration >= model.maxDuration && model.isRecording {
+                    model.stopRecording()
+                    model.isRecording = false
+                }
+            }
         }
     }
 }
