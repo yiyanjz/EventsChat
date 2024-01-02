@@ -2,7 +2,7 @@
 //  CameraViewModel.swift
 //  EC
 //
-//  Created by Justin Zhang on 12/31/23.
+//  Created by Justin Zhang on 1/2/24.
 //
 
 import Combine
@@ -73,3 +73,4 @@ final class CameraViewModel: ObservableObject {
         service.flashMode = service.flashMode == .on ? .off : .on
     }
 }
+
