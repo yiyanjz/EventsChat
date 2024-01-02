@@ -61,7 +61,7 @@ struct TabBarView: View {
             }
         }
         .fullScreenCover(isPresented: $showCameraView, content: {
-            CameraView()
+            CameraHomeView()
         })
     }
 }
