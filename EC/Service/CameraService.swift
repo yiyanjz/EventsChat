@@ -41,6 +41,7 @@ public class CameraService {
         
     private var keyValueObservations = [NSKeyValueObservation]()
     
+    @Published var audioOutput = AVCaptureMovieFileOutput()
     
     public func configure() {
         sessionQueue.async {
@@ -83,7 +84,6 @@ public class CameraService {
             return
         }
         session.beginConfiguration()
-        
         session.sessionPreset = .photo
         
         // Add video input.
@@ -104,9 +104,13 @@ public class CameraService {
             }
             
             let videoDeviceInput = try AVCaptureDeviceInput(device: videoDevice)
+            // audio input
+            let audioDevice = AVCaptureDevice.default(for: .audio)
+            let audioInput = try AVCaptureDeviceInput(device: audioDevice!)
             
-            if session.canAddInput(videoDeviceInput) {
+            if session.canAddInput(videoDeviceInput) && session.canAddInput(audioInput) {
                 session.addInput(videoDeviceInput)
+                session.addInput(audioInput)
                 self.videoDeviceInput = videoDeviceInput
                 
             } else {
@@ -123,8 +127,9 @@ public class CameraService {
         }
         
         // Add the photo output.
-        if session.canAddOutput(photoOutput) {
+        if session.canAddOutput(photoOutput) && session.canAddOutput(self.audioOutput) {
             session.addOutput(photoOutput)
+            session.addOutput(self.audioOutput)
             
             photoOutput.isHighResolutionCaptureEnabled = true
             photoOutput.maxPhotoQualityPrioritization = .quality

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AVFoundation
+import _AVKit_SwiftUI
 
 struct CameraView: View {
     @StateObject var model = CameraViewModel()
@@ -14,9 +15,7 @@ struct CameraView: View {
     @State var currentZoomFactor: CGFloat = 1.0
     
     var captureButton: some View {
-        Button(action: {
-            model.capturePhoto()
-        }, label: {
+        Button(action: {}, label: {
             Circle()
                 .foregroundColor(.white)
                 .frame(width: 80, height: 80, alignment: .center)
@@ -25,24 +24,58 @@ struct CameraView: View {
                         .stroke(Color.black.opacity(0.8), lineWidth: 2)
                         .frame(width: 65, height: 65, alignment: .center)
                 )
+                .onTapGesture {
+                    model.capturePhoto()
+                }
+                .onLongPressGesture(minimumDuration: 0.1) {
+                    print("Long tap")
+                    if model.isRecording {
+                        model.stopRecording()
+                    } else {
+                        model.startRecording()
+                    }
+                }
         })
     }
     
     var capturedPhotoThumbnail: some View {
-        Group {
-            if model.photo != nil {
-                Image(uiImage: model.photo.image!)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 60, height: 60)
-                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                
-            } else {
-                RoundedRectangle(cornerRadius: 10)
-                    .frame(width: 60, height: 60, alignment: .center)
-                    .foregroundColor(.black)
+        // preview button
+        Button {
+            if let _ = model.previewURL {
+                model.showPreview.toggle()
+            }
+        } label: {
+            Label {
+                Image(systemName: "chevron.right")
+                    .font(.callout)
+            } icon: {
+                Text("Preview")
+            }
+            .foregroundStyle(.black)
+            .padding(.horizontal)
+            .padding(.vertical)
+            .background{
+                Capsule()
+                    .fill(.white)
             }
         }
+        .frame(maxWidth: .infinity, alignment:.trailing)
+        .padding(.bottom)
+//        .opacity((model.previewURLRef == nil && model.recordedURLsRef.isEmpty) || model.isRecordingRef ? 0 : 1)
+//        Group {
+//            if model.photo != nil {
+//                Image(uiImage: model.photo.image!)
+//                    .resizable()
+//                    .aspectRatio(contentMode: .fill)
+//                    .frame(width: 60, height: 60)
+//                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+//                
+//            } else {
+//                RoundedRectangle(cornerRadius: 10)
+//                    .frame(width: 60, height: 60, alignment: .center)
+//                    .foregroundColor(.black)
+//            }
+//        }
     }
     
     var flipCameraButton: some View {
@@ -116,6 +149,12 @@ struct CameraView: View {
                     .padding(.horizontal, 20)
                 }
             }
+            .fullScreenCover(isPresented: $model.showPreview, content: {
+                if let url = model.previewURL, model.showPreview {
+                    FinalPreview(url: url, showPreview: $model.showPreview)
+                        .transition(.move(edge: .trailing))
+                }
+            })
         }
     }
 }
@@ -150,5 +189,33 @@ struct CameraPreview: UIViewRepresentable {
     
     func updateUIView(_ uiView: VideoPreviewView, context: Context) {
         
+    }
+}
+
+// MARk: Final Video Preview
+struct FinalPreview: View {
+    var url: URL
+    @Binding var showPreview: Bool
+    
+    var body: some View {
+        GeometryReader { proxy in
+            let size = proxy.size
+            
+            VideoPlayer(player: AVPlayer(url: url))
+                .aspectRatio(contentMode: .fill)
+                .frame(width: size.width, height: size.height)
+                .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
+                .overlay(alignment: .topLeading) {
+                    Button {
+                        showPreview.toggle()
+                    } label: {
+                        Label {
+                            Text("Back")
+                        } icon: {
+                            Image(systemName: "chevron.left")
+                        }
+                    }
+                }
+        }
     }
 }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 struct CameraTest: View {
     @EnvironmentObject var cameraModel: CameraVideoViewModel
@@ -47,4 +48,29 @@ struct CameraTest: View {
 
 #Preview {
     CameraTest()
+}
+
+struct CameraVideoModelPreview: UIViewRepresentable {
+    @EnvironmentObject var cameraModel: CameraVideoViewModel
+    var size: CGSize
+    
+    func makeUIView(context: Context) -> some UIView {
+        let view = UIView()
+        
+        DispatchQueue.main.async {
+            cameraModel.preview = AVCaptureVideoPreviewLayer(session: cameraModel.session)
+            cameraModel.preview.frame.size = size
+            
+            cameraModel.preview.videoGravity = .resizeAspectFill
+            view.layer.addSublayer(cameraModel.preview)
+        }
+        
+        DispatchQueue.global(qos: .background).async {
+            cameraModel.session.startRunning()
+        }
+        return view
+    }
+    
+    func updateUIView(_ uiView: UIViewType, context: Context) {
+    }
 }
