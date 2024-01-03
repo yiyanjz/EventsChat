@@ -28,6 +28,7 @@ struct CameraView: View {
                 .onTapGesture {
                     model.capturePhoto()
                     model.doneWithCamera.toggle()
+                    model.freezeCamera()
                 }
                 .gesture(
                     LongPressGesture(minimumDuration: 0.5)
@@ -44,11 +45,11 @@ struct CameraView: View {
                             if model.isRecording == true {
                                 model.stopRecording()
                             }
-                            model.doneWithCamera.toggle()
                             if model.isFlashOn {
                                 model.toggleTorch(on: false)
                             }
                             model.recordedDuration = 0
+                            model.doneWithCamera.toggle()
                         }
                 )
                 .padding(.vertical)

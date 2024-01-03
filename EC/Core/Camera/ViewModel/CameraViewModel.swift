@@ -79,6 +79,14 @@ class CameraViewModel: NSObject,ObservableObject,AVCaptureFileOutputRecordingDel
         service.flashMode = service.flashMode == .on ? .off : .on
     }
     
+    func freezeCamera() {
+        service.stop()
+    }
+    
+    func startCamera() {
+        service.start()
+    }
+    
     func toggleTorch(on: Bool) {
         guard
             let device = AVCaptureDevice.default(for: AVMediaType.video),
