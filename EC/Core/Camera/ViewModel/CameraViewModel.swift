@@ -29,6 +29,7 @@ class CameraViewModel: NSObject,ObservableObject,AVCaptureFileOutputRecordingDel
     @Published var recordedDuration: CGFloat = 0
     // your own timing
     @Published var maxDuration: CGFloat = 10
+    @Published var doneWithCamera: Bool = false
     
     override init() {
         super .init()
@@ -77,6 +78,8 @@ class CameraViewModel: NSObject,ObservableObject,AVCaptureFileOutputRecordingDel
     func switchFlash() {
         service.flashMode = service.flashMode == .on ? .off : .on
     }
+    
+    
     
     // camera record
     func startRecording() {

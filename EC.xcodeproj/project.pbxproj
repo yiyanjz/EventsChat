@@ -112,6 +112,7 @@
 		17D73E5A2B05BF0F00D844FC /* PostDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D73E592B05BF0F00D844FC /* PostDetailViewModel.swift */; };
 		17E698A02B048048006799E2 /* LikeAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E6989F2B048048006799E2 /* LikeAnimation.swift */; };
 		17E746AE2B449F6200DFB13C /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E746AD2B449F6200DFB13C /* CameraViewModel.swift */; };
+		17E746B02B44E76900DFB13C /* testButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E746AF2B44E76900DFB13C /* testButtons.swift */; };
 		17F4BC2B2B02F8940078A088 /* FollowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F4BC2A2B02F8940078A088 /* FollowViewModel.swift */; };
 		17F4BC2D2B030C730078A088 /* AllLikesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F4BC2C2B030C730078A088 /* AllLikesView.swift */; };
 		17F6BCC02B226E93004D46D0 /* ShareViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F6BCBF2B226E93004D46D0 /* ShareViewModel.swift */; };
@@ -227,6 +228,7 @@
 		17D73E592B05BF0F00D844FC /* PostDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostDetailViewModel.swift; sourceTree = "<group>"; };
 		17E6989F2B048048006799E2 /* LikeAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeAnimation.swift; sourceTree = "<group>"; };
 		17E746AD2B449F6200DFB13C /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
+		17E746AF2B44E76900DFB13C /* testButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testButtons.swift; sourceTree = "<group>"; };
 		17F4BC2A2B02F8940078A088 /* FollowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowViewModel.swift; sourceTree = "<group>"; };
 		17F4BC2C2B030C730078A088 /* AllLikesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllLikesView.swift; sourceTree = "<group>"; };
 		17F6BCBF2B226E93004D46D0 /* ShareViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewModel.swift; sourceTree = "<group>"; };
@@ -624,6 +626,7 @@
 				17F6EAA62B0B1FC8005C9D9F /* test3.swift */,
 				17FEC5192B353E520073C7D7 /* testing4.swift */,
 				17FEC51B2B3905290073C7D7 /* testing55.swift */,
+				17E746AF2B44E76900DFB13C /* testButtons.swift */,
 			);
 			path = Test;
 			sourceTree = "<group>";
@@ -960,6 +963,7 @@
 				17F4BC2B2B02F8940078A088 /* FollowViewModel.swift in Sources */,
 				177FBA282AF4882F008C2175 /* Post.swift in Sources */,
 				177FBA002AF4798C008C2175 /* ContentViewModel.swift in Sources */,
+				17E746B02B44E76900DFB13C /* testButtons.swift in Sources */,
 				1785C83F2AFD80BB00B2B927 /* ExtensionHelper.swift in Sources */,
 				177FB9CD2AF463E5008C2175 /* TabBarView.swift in Sources */,
 				179664452AF5A33F001CCED9 /* PreviewPostView.swift in Sources */,

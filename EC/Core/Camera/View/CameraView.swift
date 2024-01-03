@@ -19,29 +19,32 @@ struct CameraView: View {
         Button(action: {}, label: {
             Circle()
                 .foregroundColor(.white)
-                .frame(width: 80, height: 80, alignment: .center)
+                .frame(width: 70, height: 70, alignment: .center)
                 .overlay(
                     Circle()
                         .stroke(Color.black.opacity(0.8), lineWidth: 2)
-                        .frame(width: 65, height: 65, alignment: .center)
+                        .frame(width: 55, height: 55, alignment: .center)
                 )
                 .onTapGesture {
                     model.capturePhoto()
+                    model.doneWithCamera.toggle()
                 }
                 .gesture(
-                    LongPressGesture(minimumDuration: 0.5) /// 2.
-                                .onEnded { _ in /// 0.5 seconds is over, start recording
-                                    if model.isRecording == false {
-                                        model.startRecording()
-                                    }
-                                }
-                                .sequenced(before: DragGesture(minimumDistance: 0)) /// 3.
-                                .onEnded { _ in /// finger lifted, stop recording
-                                    if model.isRecording == true {
-                                        model.stopRecording()
-                                    }
-                                }
+                    LongPressGesture(minimumDuration: 0.5)
+                        .onEnded { _ in /// 0.5 seconds is over, start recording
+                            if model.isRecording == false {
+                                model.startRecording()
+                            }
+                        }
+                        .sequenced(before: DragGesture(minimumDistance: 0))
+                        .onEnded { _ in /// finger lifted, stop recording
+                            if model.isRecording == true {
+                                model.stopRecording()
+                            }
+                            model.doneWithCamera.toggle()
+                        }
                 )
+                .padding(.vertical)
         })
     }
     
@@ -100,6 +103,51 @@ struct CameraView: View {
         })
     }
     
+    var flashButton: some View {
+        Button(action: {
+            model.switchFlash()
+        }, label: {
+            Image(systemName: model.isFlashOn ? "bolt.fill" : "bolt.slash.fill")
+                .font(.system(size: 20, weight: .medium, design: .default))
+        })
+        .accentColor(model.isFlashOn ? .yellow : .white)
+    }
+    
+    var cancelButton: some View {
+        Button {
+            model.recordedDuration = 0
+            model.previewURL = nil
+            model.recordedURLs.removeAll()
+            dismiss()
+        } label: {
+            Image(systemName: "xmark")
+                .font(.title)
+                .foregroundStyle(.white)
+        }
+    }
+    
+    var saveToLibraryButton: some View {
+        Button {
+        } label: {
+            Image(systemName: "square.and.arrow.down")
+                .frame(width: 50, height: 50)
+                .background(.gray.opacity(0.2),in: RoundedRectangle(cornerRadius: 20))
+        }
+    }
+    
+    var addToStoryButton: some View {
+        Button {
+            
+        } label: {
+            let icon = Image(systemName: "plus")
+            
+            Text("\(icon) Story")
+                .frame(width: 200, height: 50)
+                .font(.system(size: 15))
+                .background(.gray.opacity(0.2),in: RoundedRectangle(cornerRadius: 20))
+        }
+    }
+    
     var body: some View {
         GeometryReader { reader in
             let size = reader.size
@@ -120,13 +168,22 @@ struct CameraView: View {
                 .frame(maxHeight: .infinity, alignment: .top)
                 
                 VStack {
-                    Button(action: {
-                        model.switchFlash()
-                    }, label: {
-                        Image(systemName: model.isFlashOn ? "bolt.fill" : "bolt.slash.fill")
-                            .font(.system(size: 20, weight: .medium, design: .default))
-                    })
-                    .accentColor(model.isFlashOn ? .yellow : .white)
+                    HStack {
+                        // cancel button
+                        cancelButton
+                        
+                        Spacer()
+                        
+                        // flash button
+                        flashButton
+                        
+                        Spacer()
+                            
+                        // flip camera button
+                        flipCameraButton
+
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                     
                     CameraPreview(session: model.session)
                         .gesture(
@@ -156,40 +213,36 @@ struct CameraView: View {
                             }
                         )
                     
-                    
-                    HStack {
-                        thumbnailPhoto
+                    ZStack {
+                        HStack {
+//                            thumbnailPhoto
+//
+//                            Spacer()
+//                            
+//                            capturedPhotoThumbnail
+                            
+                            Spacer()
+                            
+                            captureButton
+                            
+                            Spacer()
+                            
+                            
+                        }
+                        .padding(.horizontal, 20)
+                        .opacity(model.doneWithCamera ? 0 : 1)
                         
-                        Spacer()
-                        
-                        capturedPhotoThumbnail
-                        
-                        Spacer()
-                        
-                        captureButton
-                        
-                        Spacer()
-                        
-                        flipCameraButton
-                        
+                        HStack {
+                            // save to library button
+                            saveToLibraryButton
+                            
+                            // add to story button
+                            addToStoryButton
+                        }
+                        .opacity(model.doneWithCamera ? 1 : 0)
                     }
-                    .padding(.horizontal, 20)
+                    .background(.gray.opacity(0.2),in: RoundedRectangle(cornerRadius: 20))
                 }
-                
-                // cancel button
-                Button {
-                    model.recordedDuration = 0
-                    model.previewURL = nil
-                    model.recordedURLs.removeAll()
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark")
-                        .font(.title)
-                        .foregroundStyle(.white)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                .padding()
-                .padding(.top)
             }
             .fullScreenCover(isPresented: $model.showPreview, content: {
                 if let url = model.previewURL, model.showPreview {
