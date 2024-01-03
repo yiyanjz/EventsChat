@@ -34,8 +34,9 @@ struct CameraView: View {
                         .onEnded { _ in /// 0.5 seconds is over, start recording
                             if model.isRecording == false {
                                 model.startRecording()
-                                model.switchFlash()
-                                model.toggleTorch(on: true)
+                                if model.isFlashOn {
+                                    model.toggleTorch(on: true)
+                                }
                             }
                         }
                         .sequenced(before: DragGesture(minimumDistance: 0))
@@ -44,8 +45,10 @@ struct CameraView: View {
                                 model.stopRecording()
                             }
                             model.doneWithCamera.toggle()
-                            model.switchFlash()
-                            model.toggleTorch(on: false)
+                            if model.isFlashOn {
+                                model.toggleTorch(on: false)
+                            }
+                            model.recordedDuration = 0
                         }
                 )
                 .padding(.vertical)
