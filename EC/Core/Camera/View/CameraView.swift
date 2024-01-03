@@ -11,6 +11,7 @@ import _AVKit_SwiftUI
 
 struct CameraView: View {
     @StateObject var model = CameraViewModel()
+    @Environment (\.dismiss) var dismiss
     
     @State var currentZoomFactor: CGFloat = 1.0
     
@@ -106,6 +107,7 @@ struct CameraView: View {
             ZStack {
                 Color.black.edgesIgnoringSafeArea(.all)
                 
+                // timer zone
                 ZStack(alignment: .leading) {
                     Rectangle()
                         .fill(.black.opacity(0.25))
@@ -173,6 +175,21 @@ struct CameraView: View {
                     }
                     .padding(.horizontal, 20)
                 }
+                
+                // cancel button
+                Button {
+                    model.recordedDuration = 0
+                    model.previewURL = nil
+                    model.recordedURLs.removeAll()
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark")
+                        .font(.title)
+                        .foregroundStyle(.white)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .padding()
+                .padding(.top)
             }
             .fullScreenCover(isPresented: $model.showPreview, content: {
                 if let url = model.previewURL, model.showPreview {
@@ -180,9 +197,9 @@ struct CameraView: View {
                         .transition(.move(edge: .trailing))
                 }
             })
-            .onReceive(Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()) { _ in
+            .onReceive(Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()) { _ in
                 if model.recordedDuration <= model.maxDuration && model.isRecording {
-                    model.recordedDuration += 0.01
+                    model.recordedDuration += 0.1
                 }
                 
                 if model.recordedDuration >= model.maxDuration && model.isRecording {
