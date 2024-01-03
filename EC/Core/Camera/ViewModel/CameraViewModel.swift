@@ -79,7 +79,20 @@ class CameraViewModel: NSObject,ObservableObject,AVCaptureFileOutputRecordingDel
         service.flashMode = service.flashMode == .on ? .off : .on
     }
     
-    
+    func toggleTorch(on: Bool) {
+        guard
+            let device = AVCaptureDevice.default(for: AVMediaType.video),
+            device.hasTorch
+        else { return }
+
+        do {
+            try device.lockForConfiguration()
+            device.torchMode = on ? .on : .off
+            device.unlockForConfiguration()
+        } catch {
+            print("Torch could not be used")
+        }
+    }
     
     // camera record
     func startRecording() {

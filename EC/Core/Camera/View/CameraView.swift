@@ -34,6 +34,8 @@ struct CameraView: View {
                         .onEnded { _ in /// 0.5 seconds is over, start recording
                             if model.isRecording == false {
                                 model.startRecording()
+                                model.switchFlash()
+                                model.toggleTorch(on: true)
                             }
                         }
                         .sequenced(before: DragGesture(minimumDistance: 0))
@@ -42,6 +44,8 @@ struct CameraView: View {
                                 model.stopRecording()
                             }
                             model.doneWithCamera.toggle()
+                            model.switchFlash()
+                            model.toggleTorch(on: false)
                         }
                 )
                 .padding(.vertical)
@@ -181,9 +185,7 @@ struct CameraView: View {
                             
                         // flip camera button
                         flipCameraButton
-
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                     
                     CameraPreview(session: model.session)
                         .gesture(
@@ -215,19 +217,11 @@ struct CameraView: View {
                     
                     ZStack {
                         HStack {
-//                            thumbnailPhoto
-//
-//                            Spacer()
-//                            
-//                            capturedPhotoThumbnail
-                            
                             Spacer()
                             
                             captureButton
                             
                             Spacer()
-                            
-                            
                         }
                         .padding(.horizontal, 20)
                         .opacity(model.doneWithCamera ? 0 : 1)
@@ -238,6 +232,9 @@ struct CameraView: View {
                             
                             // add to story button
                             addToStoryButton
+                            
+                            // preview button
+                            capturedPhotoThumbnail
                         }
                         .opacity(model.doneWithCamera ? 1 : 0)
                     }
@@ -288,6 +285,7 @@ struct CameraPreview: UIViewRepresentable {
         view.videoPreviewLayer.cornerRadius = 0
         view.videoPreviewLayer.session = session
         view.videoPreviewLayer.connection?.videoOrientation = .portrait
+        view.videoPreviewLayer.videoGravity = .resizeAspectFill
 
         return view
     }
