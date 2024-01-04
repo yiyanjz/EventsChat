@@ -80,72 +80,73 @@ public class CameraService {
         
     /// - Tag: ConfigureSession
     private func configureSession() {
-        if setupResult != .success {
-            return
-        }
-        session.beginConfiguration()
-        session.sessionPreset = .photo
-        
-        // Add video input.
-        do {
-            var defaultVideoDevice: AVCaptureDevice?
-            
-            if let backCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
-                defaultVideoDevice = backCameraDevice
-            } else if let frontCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) {
-                defaultVideoDevice = frontCameraDevice
-            }
-            
-            guard let videoDevice = defaultVideoDevice else {
-                print("Default video device is unavailable.")
-                setupResult = .configurationFailed
-                session.commitConfiguration()
+        DispatchQueue.global().async {
+            if self.setupResult != .success {
                 return
             }
+            self.session.beginConfiguration()
+            self.session.sessionPreset = .photo
             
-            let videoDeviceInput = try AVCaptureDeviceInput(device: videoDevice)
-            // audio input
-            let audioDevice = AVCaptureDevice.default(for: .audio)
-            let audioInput = try AVCaptureDeviceInput(device: audioDevice!)
-            
-            if session.canAddInput(videoDeviceInput) && session.canAddInput(audioInput) {
-                session.addInput(videoDeviceInput)
-                session.addInput(audioInput)
-                self.videoDeviceInput = videoDeviceInput
+            // Add video input.
+            do {
+                var defaultVideoDevice: AVCaptureDevice?
                 
-            } else {
-                print("Couldn't add video device input to the session.")
-                setupResult = .configurationFailed
-                session.commitConfiguration()
+                if let backCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
+                    defaultVideoDevice = backCameraDevice
+                } else if let frontCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) {
+                    defaultVideoDevice = frontCameraDevice
+                }
+                
+                guard let videoDevice = defaultVideoDevice else {
+                    print("Default video device is unavailable.")
+                    self.setupResult = .configurationFailed
+                    self.session.commitConfiguration()
+                    return
+                }
+                
+                let videoDeviceInput = try AVCaptureDeviceInput(device: videoDevice)
+                // audio input
+                let audioDevice = AVCaptureDevice.default(for: .audio)
+                let audioInput = try AVCaptureDeviceInput(device: audioDevice!)
+                
+                if self.session.canAddInput(videoDeviceInput) && self.session.canAddInput(audioInput) {
+                    self.session.addInput(videoDeviceInput)
+                    self.session.addInput(audioInput)
+                    self.videoDeviceInput = videoDeviceInput
+                    
+                } else {
+                    print("Couldn't add video device input to the session.")
+                    self.setupResult = .configurationFailed
+                    self.session.commitConfiguration()
+                    return
+                }
+            } catch {
+                print("Couldn't create video device input: \(error)")
+                self.setupResult = .configurationFailed
+                self.session.commitConfiguration()
                 return
             }
-        } catch {
-            print("Couldn't create video device input: \(error)")
-            setupResult = .configurationFailed
-            session.commitConfiguration()
-            return
-        }
-        
-        // Add the photo output.
-        if session.canAddOutput(photoOutput) && session.canAddOutput(self.audioOutput) {
-            session.addOutput(photoOutput)
-            session.addOutput(self.audioOutput)
             
-            photoOutput.isHighResolutionCaptureEnabled = true
-            photoOutput.maxPhotoQualityPrioritization = .quality
+            // Add the photo output.
+            if self.session.canAddOutput(self.photoOutput) && self.session.canAddOutput(self.audioOutput) {
+                self.session.addOutput(self.photoOutput)
+                self.session.addOutput(self.audioOutput)
+                
+                self.photoOutput.isHighResolutionCaptureEnabled = true
+                self.photoOutput.maxPhotoQualityPrioritization = .quality
+            } else {
+                print("Could not add photo output to the session")
+                self.setupResult = .configurationFailed
+                self.session.commitConfiguration()
+                return
+            }
             
-        } else {
-            print("Could not add photo output to the session")
-            setupResult = .configurationFailed
-            session.commitConfiguration()
-            return
+            self.session.commitConfiguration()
+            
+            self.isConfigured = true
+            
+            self.start()
         }
-        
-        session.commitConfiguration()
-        
-        self.isConfigured = true
-        
-        self.start()
     }
      
     /// - Tag: ChangeCamera

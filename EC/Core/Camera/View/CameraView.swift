@@ -28,7 +28,9 @@ struct CameraView: View {
                 .onTapGesture {
                     model.capturePhoto()
                     model.doneWithCamera.toggle()
-                    model.freezeCamera()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6, execute: {
+                        model.freezeCamera()
+                    })
                 }
                 .gesture(
                     LongPressGesture(minimumDuration: 0.5)
@@ -50,52 +52,12 @@ struct CameraView: View {
                             }
                             model.recordedDuration = 0
                             model.doneWithCamera.toggle()
+                            model.doneRecording.toggle()
+                            model.freezeCamera()
                         }
                 )
                 .padding(.vertical)
         })
-    }
-    
-    var capturedPhotoThumbnail: some View {
-        // preview button
-        Button {
-            if let _ = model.previewURL {
-                model.showPreview.toggle()
-            }
-        } label: {
-            Label {
-                Image(systemName: "chevron.right")
-                    .font(.callout)
-            } icon: {
-                Text("Preview")
-            }
-            .foregroundStyle(.black)
-            .padding(.horizontal)
-            .padding(.vertical)
-            .background{
-                Capsule()
-                    .fill(.white)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment:.trailing)
-        .padding(.bottom)
-    }
-    
-    var thumbnailPhoto: some View {
-        Group {
-            if model.photo != nil {
-                Image(uiImage: model.photo.image!)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 60, height: 60)
-                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-
-            } else {
-                RoundedRectangle(cornerRadius: 10)
-                    .frame(width: 60, height: 60, alignment: .center)
-                    .foregroundColor(.black)
-            }
-        }
     }
     
     var flipCameraButton: some View {
@@ -122,15 +84,34 @@ struct CameraView: View {
     }
     
     var cancelButton: some View {
-        Button {
-            model.recordedDuration = 0
-            model.previewURL = nil
-            model.recordedURLs.removeAll()
-            dismiss()
-        } label: {
-            Image(systemName: "xmark")
-                .font(.title)
-                .foregroundStyle(.white)
+        if model.doneWithCamera {
+            Button {
+                if model.doneRecording && model.doneWithCamera {
+                    model.doneWithCamera.toggle()
+                    model.doneRecording.toggle()
+                    model.previewURL = nil
+                    model.recordedURLs.removeAll()
+                    model.startCamera()
+                } else if model.doneWithCamera {
+                    model.doneWithCamera.toggle()
+                    model.startCamera()
+                }
+            } label: {
+                Image(systemName: "chevron.left")
+                    .font(.title)
+                    .foregroundStyle(.white)
+            }
+        } else {
+            Button {
+                model.recordedDuration = 0
+                model.previewURL = nil
+                model.recordedURLs.removeAll()
+                dismiss()
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.title)
+                    .foregroundStyle(.white)
+            }
         }
     }
     
@@ -190,34 +171,69 @@ struct CameraView: View {
                         // flip camera button
                         flipCameraButton
                     }
+                    .padding(.horizontal)
                     
-                    CameraPreview(session: model.session)
-                        .gesture(
-                            DragGesture().onChanged({ (val) in
-                                if abs(val.translation.height) > abs(val.translation.width) {
-                                    let percentage: CGFloat = -(val.translation.height / reader.size.height)
-                                    let calc = currentZoomFactor + percentage
-                                    let zoomFactor: CGFloat = min(max(calc, 1), 5)
-                                    currentZoomFactor = zoomFactor
-                                    model.zoom(with: zoomFactor)
+                    ZStack {
+                        VStack {
+                            CameraPreview(session: model.session)
+                                .gesture(
+                                    DragGesture().onChanged({ (val) in
+                                        if abs(val.translation.height) > abs(val.translation.width) {
+                                            let percentage: CGFloat = -(val.translation.height / reader.size.height)
+                                            let calc = currentZoomFactor + percentage
+                                            let zoomFactor: CGFloat = min(max(calc, 1), 5)
+                                            currentZoomFactor = zoomFactor
+                                            model.zoom(with: zoomFactor)
+                                        }
+                                    })
+                                )
+                                .onAppear {
+                                    model.configure()
                                 }
-                            })
-                        )
-                        .onAppear {
-                            model.configure()
+                                .alert(isPresented: $model.showAlertError, content: {
+                                    Alert(title: Text(model.alertError.title), message: Text(model.alertError.message), dismissButton: .default(Text(model.alertError.primaryButtonTitle), action: {
+                                        model.alertError.primaryAction?()
+                                    }))
+                                })
+                                .overlay(
+                                    Group {
+                                        if model.willCapturePhoto {
+                                            Color.black
+                                        }
+                                    }
+                                )
                         }
-                        .alert(isPresented: $model.showAlertError, content: {
-                            Alert(title: Text(model.alertError.title), message: Text(model.alertError.message), dismissButton: .default(Text(model.alertError.primaryButtonTitle), action: {
-                                model.alertError.primaryAction?()
-                            }))
-                        })
-                        .overlay(
-                            Group {
-                                if model.willCapturePhoto {
-                                    Color.black
-                                }
+                        .opacity(model.doneRecording ? 0 : 1)
+                        
+                        VStack {
+                            if let previewURL = model.previewURL {
+                                let video: (player: AVPlayer, looper: AVPlayerLooper)  = {
+                                    let asset = AVAsset(url: previewURL)
+                                    let item = AVPlayerItem(asset: asset)
+                                    let queuePlayer = AVQueuePlayer(playerItem: item)
+                                    let playerLooper = AVPlayerLooper(player: queuePlayer, templateItem: item)
+                                    
+                                    return (queuePlayer, playerLooper)
+                                }()
+                                
+                                VideoPlayer(player: video.player)
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: size.width)
+                                    .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
+                                    .onAppear {
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                                            video.player.play()
+                                        })
+                                    }
+                                    .onDisappear{
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                                            video.player.pause()
+                                        })
+                                    }
                             }
-                        )
+                        }
+                        .opacity(model.doneRecording ? 1 : 0)
+                    }
                     
                     ZStack {
                         HStack {
@@ -236,21 +252,12 @@ struct CameraView: View {
                             
                             // add to story button
                             addToStoryButton
-                            
-                            // preview button
-                            capturedPhotoThumbnail
                         }
                         .opacity(model.doneWithCamera ? 1 : 0)
                     }
                     .background(.gray.opacity(0.2),in: RoundedRectangle(cornerRadius: 20))
                 }
             }
-            .fullScreenCover(isPresented: $model.showPreview, content: {
-                if let url = model.previewURL, model.showPreview {
-                    FinalPreview(url: url, showPreview: $model.showPreview)
-                        .transition(.move(edge: .trailing))
-                }
-            })
             .onReceive(Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()) { _ in
                 if model.recordedDuration <= model.maxDuration && model.isRecording {
                     model.recordedDuration += 0.1
@@ -296,33 +303,5 @@ struct CameraPreview: UIViewRepresentable {
     
     func updateUIView(_ uiView: VideoPreviewView, context: Context) {
         
-    }
-}
-
-// MARk: Final Video Preview
-struct FinalPreview: View {
-    var url: URL
-    @Binding var showPreview: Bool
-    
-    var body: some View {
-        GeometryReader { proxy in
-            let size = proxy.size
-            
-            VideoPlayer(player: AVPlayer(url: url))
-                .aspectRatio(contentMode: .fill)
-                .frame(width: size.width, height: size.height)
-                .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
-                .overlay(alignment: .topLeading) {
-                    Button {
-                        showPreview.toggle()
-                    } label: {
-                        Label {
-                            Text("Back")
-                        } icon: {
-                            Image(systemName: "chevron.left")
-                        }
-                    }
-                }
-        }
     }
 }
