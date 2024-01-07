@@ -64,29 +64,10 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
             photoData = photo.fileDataRepresentation()
         }
     }
-    
-    /// - Tag: Saves capture to photo library
-    func saveToPhotoLibrary(_ photoData: Data) {
+        
+    func returnPhotoData() {
         PHPhotoLibrary.requestAuthorization { status in
             if status == .authorized {
-                PHPhotoLibrary.shared().performChanges({
-                    let options = PHAssetResourceCreationOptions()
-                    let creationRequest = PHAssetCreationRequest.forAsset()
-                    options.uniformTypeIdentifier = self.requestedPhotoSettings.processedFileType.map { $0.rawValue }
-                    creationRequest.addResource(with: .photo, data: photoData, options: options)
-                    
-                    
-                }, completionHandler: { _, error in
-                    if let error = error {
-                        print("Error occurred while saving photo to photo library: \(error)")
-                    }
-                    
-                    DispatchQueue.main.async {
-                        self.completionHandler(self)
-                    }
-                }
-                )
-            } else {
                 DispatchQueue.main.async {
                     self.completionHandler(self)
                 }
@@ -103,14 +84,13 @@ extension PhotoCaptureProcessor: AVCapturePhotoCaptureDelegate {
             }
             return
         } else {
-            guard let data  = photoData else {
+            guard let _ = photoData else {
                 DispatchQueue.main.async {
                     self.completionHandler(self)
                 }
                 return
             }
-            
-            self.saveToPhotoLibrary(data)
+            self.returnPhotoData()
         }
     }
 }

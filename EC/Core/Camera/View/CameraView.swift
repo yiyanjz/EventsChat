@@ -28,9 +28,6 @@ struct CameraView: View {
                 .onTapGesture {
                     model.capturePhoto()
                     model.doneWithCamera.toggle()
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6, execute: {
-                        model.freezeCamera()
-                    })
                 }
                 .gesture(
                     LongPressGesture(minimumDuration: 0.5)
@@ -89,11 +86,16 @@ struct CameraView: View {
                 if model.doneRecording && model.doneWithCamera {
                     model.doneWithCamera.toggle()
                     model.doneRecording.toggle()
+                    model.mediaSaved = false
                     model.previewURL = nil
                     model.recordedURLs.removeAll()
                     model.startCamera()
                 } else if model.doneWithCamera {
                     model.doneWithCamera.toggle()
+                    model.photo?.originalData = Data()
+                    model.doneTakingFlashPhoto = false
+                    model.mediaSaved = false
+                    model.doneTakingNormalPhoto = false
                     model.startCamera()
                 }
             } label: {
@@ -117,8 +119,12 @@ struct CameraView: View {
     
     var saveToLibraryButton: some View {
         Button {
+            if model.mediaSaved == false {
+                model.saveImageToLibaray()
+                model.mediaSaved.toggle()
+            }
         } label: {
-            Image(systemName: "square.and.arrow.down")
+            Image(systemName: model.mediaSaved ? "checkmark" : "square.and.arrow.down")
                 .frame(width: 50, height: 50)
                 .background(.gray.opacity(0.2),in: RoundedRectangle(cornerRadius: 20))
         }
@@ -203,7 +209,7 @@ struct CameraView: View {
                                     }
                                 )
                         }
-                        .opacity(model.doneRecording ? 0 : 1)
+                        .opacity(model.doneTakingFlashPhoto || model.doneRecording ? 0 : 1)
                         
                         VStack {
                             if let previewURL = model.previewURL {
@@ -233,6 +239,17 @@ struct CameraView: View {
                             }
                         }
                         .opacity(model.doneRecording ? 1 : 0)
+                        
+                        VStack {
+                            if let imageData = model.photo?.originalData, let image = UIImage(data: imageData) {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: size.width)
+                                    .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
+                            }
+                        }
+                        .opacity(model.doneTakingFlashPhoto ? 1 : 0)
                     }
                     
                     ZStack {
@@ -244,7 +261,7 @@ struct CameraView: View {
                             Spacer()
                         }
                         .padding(.horizontal, 20)
-                        .opacity(model.doneWithCamera ? 0 : 1)
+                        .opacity(model.doneTakingNormalPhoto || model.doneTakingFlashPhoto || model.doneRecording  ? 0 : 1)
                         
                         HStack {
                             // save to library button
@@ -253,7 +270,7 @@ struct CameraView: View {
                             // add to story button
                             addToStoryButton
                         }
-                        .opacity(model.doneWithCamera ? 1 : 0)
+                        .opacity(model.doneTakingNormalPhoto || model.doneTakingFlashPhoto || model.doneRecording  ? 1 : 0)
                     }
                     .background(.gray.opacity(0.2),in: RoundedRectangle(cornerRadius: 20))
                 }

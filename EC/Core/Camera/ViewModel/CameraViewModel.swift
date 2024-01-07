@@ -12,7 +12,7 @@ import AVFoundation
 class CameraViewModel: NSObject,ObservableObject,AVCaptureFileOutputRecordingDelegate {
     let service = CameraService()
     
-    @Published var photo: Photo!
+    @Published var photo: Photo?
     @Published var showAlertError = false
     @Published var isFlashOn = false
     @Published var willCapturePhoto = false
@@ -29,8 +29,11 @@ class CameraViewModel: NSObject,ObservableObject,AVCaptureFileOutputRecordingDel
     @Published var recordedDuration: CGFloat = 0
     // your own timing
     @Published var maxDuration: CGFloat = 10
-    @Published var doneWithCamera: Bool = false
-    @Published var doneRecording: Bool = false
+    @Published var doneWithCamera: Bool = false // used for no flash capture image
+    @Published var doneRecording: Bool = false // only for recording
+    @Published var doneTakingFlashPhoto: Bool = false // only for flash
+    @Published var doneTakingNormalPhoto: Bool = false
+    @Published var mediaSaved: Bool = false
     
     override init() {
         super .init()
@@ -66,6 +69,17 @@ class CameraViewModel: NSObject,ObservableObject,AVCaptureFileOutputRecordingDel
     
     func capturePhoto() {
         service.capturePhoto()
+        if isFlashOn {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.6, execute: {
+                self.freezeCamera()
+                self.doneTakingFlashPhoto.toggle()
+            })
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6, execute: {
+                self.freezeCamera()
+                self.doneTakingNormalPhoto.toggle()
+            })
+        }
     }
     
     func flipCamera() {
@@ -197,6 +211,20 @@ class CameraViewModel: NSObject,ObservableObject,AVCaptureFileOutputRecordingDel
         exporter.outputURL = tempURL
         exporter.videoComposition = videoComposition
         completion(exporter)
+    }
+    
+    func saveImageToLibaray() {
+        DispatchQueue.main.async {
+            if let photoData = self.photo?.originalData {
+                guard let image = UIImage(data: photoData) else {return}
+                UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+                print("Image Saved")
+            }
+        }
+    }
+    
+    func saveVideoToLibaray() {
+        
     }
 }
 
