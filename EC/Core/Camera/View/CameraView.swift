@@ -139,7 +139,16 @@ struct CameraView: View {
     
     var addToStoryButton: some View {
         Button {
-            
+            if model.doneTakingFlashPhoto || model.doneTakingNormalPhoto {
+                Task {
+                    try await model.uploadToStory(type: 0)
+                }
+            } else if model.doneRecording {
+                Task {
+                    try await model.uploadToStory(type: 1)
+                }
+            }
+            dismiss()
         } label: {
             let icon = Image(systemName: "plus")
             

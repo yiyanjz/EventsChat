@@ -21,3 +21,9 @@ extension Story {
         .init(id: UUID().uuidString, caption: "fsdf", selectedMedia: ["shin"], selectedCover: "shn", timestamp: Timestamp())
     ]
 }
+
+struct SingleStory:  Identifiable, Hashable, Encodable, Decodable {
+    let id: String
+    var selectedMedia: String
+    var timestamp: Timestamp
+}

@@ -52,6 +52,33 @@ struct StoryService {
         try await userStoryRef.document(story.id).setData([:])
     }
     
+    // upload to feed story
+    func uploadSingleProfileStory(item:LibrayPhotos) async throws {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        let storyRef = Firestore.firestore().collection("storys").document()
+        
+        // upload media
+        var mediaUrls = ""
+        if item.imageUrl != nil {
+            guard let itemUrl = item.imageUrl else {return}
+            let videoData = try Data(contentsOf: itemUrl)
+            guard let videoUrl = try await VideoUploader.uploadVideo(withData:videoData, path: .postVideo) else {return}
+            mediaUrls = videoUrl
+        }else {
+            guard let imageUrl = try await ImageUploader.uploadImage(image: item.uiImage, path: .postImages) else {return}
+            mediaUrls = imageUrl
+        }
+        
+        // upload story
+        let story = SingleStory(id: storyRef.documentID, selectedMedia: mediaUrls, timestamp: Timestamp())
+        guard let encodedStory = try? Firestore.Encoder().encode(story) else {return}
+        try await storyRef.setData(encodedStory)
+        
+        // save story to firebase
+        let userStoryRef = Firestore.firestore().collection("users").document(uid).collection("user-main-storys")
+        try await userStoryRef.document(story.id).setData([:])
+    }
+    
     // fetch profile storys
     static func fetchProfileStorys(forUid uid:String) async throws -> [Story] {
         let snapshot = try await Firestore.firestore().collection("users").document(uid).collection("user-profile-storys").getDocuments()
