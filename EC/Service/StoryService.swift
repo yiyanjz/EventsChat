@@ -70,7 +70,7 @@ struct StoryService {
         }
         
         // upload story
-        let story = SingleStory(id: storyRef.documentID, selectedMedia: mediaUrls, timestamp: Timestamp())
+        let story = SingleStory(id: storyRef.documentID, selectedMedia: mediaUrls, timestamp: Timestamp(), ownerId: uid)
         guard let encodedStory = try? Firestore.Encoder().encode(story) else {return}
         try await storyRef.setData(encodedStory)
         

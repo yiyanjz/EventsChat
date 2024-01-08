@@ -26,4 +26,5 @@ struct SingleStory:  Identifiable, Hashable, Encodable, Decodable {
     let id: String
     var selectedMedia: String
     var timestamp: Timestamp
+    var ownerId: String
 }
