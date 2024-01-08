@@ -119,9 +119,16 @@ struct CameraView: View {
     
     var saveToLibraryButton: some View {
         Button {
-            if model.mediaSaved == false {
-                model.saveImageToLibaray()
-                model.mediaSaved.toggle()
+            if model.doneTakingFlashPhoto || model.doneTakingNormalPhoto {
+                if model.mediaSaved == false {
+                    model.saveImageToLibaray()
+                    model.mediaSaved.toggle()
+                }
+            } else if model.doneRecording {
+                if model.mediaSaved == false {
+                    model.saveVideoToLibaray()
+                    model.mediaSaved.toggle()
+                }
             }
         } label: {
             Image(systemName: model.mediaSaved ? "checkmark" : "square.and.arrow.down")

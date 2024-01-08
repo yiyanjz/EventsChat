@@ -8,6 +8,7 @@
 import Combine
 import SwiftUI
 import AVFoundation
+import Photos
 
 class CameraViewModel: NSObject,ObservableObject,AVCaptureFileOutputRecordingDelegate {
     let service = CameraService()
@@ -224,7 +225,22 @@ class CameraViewModel: NSObject,ObservableObject,AVCaptureFileOutputRecordingDel
     }
     
     func saveVideoToLibaray() {
-        
+        PHPhotoLibrary.shared().performChanges({
+            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: self.previewURL!)}) { saved, error in
+                if saved {
+                    let fetchOptions = PHFetchOptions()
+                    fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+
+                    // After uploading we fetch the PHAsset for most recent video and then get its current location url
+
+                    let fetchResult = PHAsset.fetchAssets(with: .video, options: fetchOptions).lastObject
+                    PHImageManager().requestAVAsset(forVideo: fetchResult!, options: nil, resultHandler: { (avurlAsset, audioMix, dict) in
+                        let newObj = avurlAsset as! AVURLAsset
+                        print("Video Saved")
+//                        print(newObj.url) // This is the URL we need now to access the video from gallery directly.
+                        })
+                }
+        }
     }
 }
 
