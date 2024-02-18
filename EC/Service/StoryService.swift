@@ -149,4 +149,20 @@ struct StoryService {
             completion(data)
         }
     }
+    
+    // query all storys that user follows
+    func QueryUserMainStory() async throws -> [SingleStory] {
+        guard let uid = Firebase.Auth.auth().currentUser?.uid else {return []}
+        let snapshot = try await Firestore.firestore().collection("users").document(uid).collection("user-main-storys").getDocuments()
+        var mainStories = [SingleStory]()
+        
+        for document in snapshot.documents {
+            let storyId = document.documentID
+            let storySnapshot = try await Firestore.firestore().collection("storys").document(storyId).getDocument()
+            let story = try storySnapshot.data(as: SingleStory.self)
+            mainStories.append(story)
+        }
+        
+        return mainStories
+    }
 }

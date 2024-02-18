@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct FeedView: View {
     @Environment(\.colorScheme) var colorScheme
@@ -55,6 +56,14 @@ struct FeedView: View {
                     showTabBar.toggle()
                 }
             }
+            .onAppear(perform: {
+                Task {
+                    try await viewModel.getCurrentUser()
+                    try await viewModel.queryUserMainStory()
+                }
+            })
+            .fullScreenCover(isPresented: $viewModel.previewStory, content: {
+            })
         }
     }
 }
@@ -134,6 +143,23 @@ extension FeedView {
                 // Story
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
+                        Button(action: {
+                            viewModel.previewStory.toggle()
+                        }, label: {
+                            VStack {
+                                KFImage(URL(string: viewModel.currentUser?.profileImageUrl ?? ""))
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 55, height: 55)
+                                    .clipShape(Circle())
+                                
+                                Text(viewModel.currentUser?.username ?? "")
+                                    .font(.footnote)
+                                    .foregroundColor(colorScheme == .light ? .black : .white )
+                                    .frame(width: 70)
+                            }
+                        })
+                        
                         ForEach(0 ... 2, id: \.self) { story in
                             VStack {
                                 Image("shin")

@@ -15,12 +15,13 @@ class FeedViewModel: ObservableObject {
     @Published var selectedPost: Post?
     @Published var followersPosts = [Post]()
     @Published var currentUser: User?
+    @Published var mainStoriesSelf = [SingleStory]()
+    @Published var previewStory: Bool = false
     
     init(){
         Task {
             try await fetchPost()
             try await fetchFollowerPosts()
-            try await getCurrentUser()
         }
         observePostAdded()
         observePostRemoved()
@@ -86,5 +87,10 @@ class FeedViewModel: ObservableObject {
         PostService().observeUserFollowRemoved { post in
             self.followersPosts = self.followersPosts.filter({ $0.id != post.id})
         }
+    }
+    
+    // query users main story
+    func queryUserMainStory() async throws {
+        self.mainStoriesSelf = try await StoryService().QueryUserMainStory()
     }
 }
